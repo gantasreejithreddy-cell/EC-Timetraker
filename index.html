@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>EC Time Tracker – JNGPT DECE C-26</title>
 
+<meta name="google-site-verification" content="XYZ123..." />
+
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
 <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
@@ -235,7 +237,6 @@ function TimetablePage() {
       <div style={{ display: "flex", gap: 6, overflowX: "auto", paddingBottom: 4 }}>
         {DAYS.map((d) => {
           const active = d === selectedDay;
-          const isToday = d === currentDayName && isTeachingDay;
           return (
             <button key={d} onClick={() => setSelectedDay(d)} className="mono" style={{ flexShrink: 0, padding: "8px 12px", borderRadius: 8, border: `1px solid ${active ? C.copper : C.line}`, background: active ? C.copperSoft : "transparent", color: active ? C.copper : C.text, cursor: "pointer", position: "relative" }}>
               <span style={{ fontSize: 11, letterSpacing: 0.5 }}>{d.slice(0, 3).toUpperCase()}</span>
@@ -406,7 +407,6 @@ function ExamsPage() {
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(<App />);
 
-// Render icons after DOM load
 setTimeout(() => { if (window.lucide) lucide.createIcons(); }, 500);
 </script>
 
