@@ -3,9 +3,23 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>EC Time Tracker – JNGPT ECE C-26</title>
+<title>ECE Timetracker 26-27 – JNGP Ramanthapur</title>
 
+<meta name="description" content="Official ECE Timetracker 2026-27 for JNGP Ramanthapur C-26 students. Check live timetable, exams, and SBTET attendance." />
 <meta name="google-site-verification" content="55STJi9ytAiyID_DaIHX_9DXiMtMOxeTRe63lz3HbS4" />
+
+<meta property="og:title" content="ECE Timetracker 26-27 – JNGP Ramanthapur" />
+<meta property="og:description" content="Live Class Timetable and SBTET Attendance Tracker for JNGP ECE C-26." />
+<meta property="og:type" content="website" />
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "EducationalOrganization",
+  "name": "ECE Timetracker 26-27 JNGP Ramanthapur",
+  "url": "https://gantasreejithreddy-cell.github.io/SR-nest.-Sreejithreddy-/"
+}
+</script>
 
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
 <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
@@ -19,6 +33,15 @@
   .mono { font-family: 'IBM Plex Mono', monospace; }
   ::-webkit-scrollbar { width: 6px; height: 6px; }
   ::-webkit-scrollbar-thumb { background: #1C2B47; border-radius: 4px; }
+  
+  @keyframes pulseGlow {
+    0% { box-shadow: 0 0 4px rgba(201, 129, 75, 0.3); }
+    50% { box-shadow: 0 0 14px rgba(201, 129, 75, 0.7); }
+    100% { box-shadow: 0 0 4px rgba(201, 129, 75, 0.3); }
+  }
+  .live-card {
+    animation: pulseGlow 2s infinite ease-in-out;
+  }
 </style>
 </head>
 <body>
@@ -28,26 +51,108 @@
 <script type="text/babel">
 const { useState, useEffect } = React;
 
-/* Tokens */
+/* UI Colors */
 const C = {
   ink: "#0F1826",
   ink2: "#16223A",
   ink3: "#1C2B47",
   copper: "#C9814B",
-  copperSoft: "rgba(201,129,75,0.16)",
-  copperGlow: "rgba(201,129,75,0.45)",
+  copperSoft: "rgba(201,129,75,0.20)",
   trace: "#5FA98C",
   text: "#EAE5D6",
   muted: "#8B93A8",
   line: "rgba(234,229,214,0.10)",
 };
 
+/* Official JNGP College Emblem SVG Component */
+function JNGPLogo({ size = 44 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 100 110" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M50 5 L92 20 V60 C92 82 50 100 50 100 C50 100 8 82 8 60 V20 Z" fill="#FCE8B2" stroke="#1F226B" strokeWidth="4"/>
+      <text x="50" y="52" fill="#005A2B" fontSize="22" fontWeight="900" fontFamily="sans-serif" textAnchor="middle">JNGP</text>
+      <text x="50" y="64" fill="#1F226B" fontSize="8" fontWeight="700" fontFamily="sans-serif" textAnchor="middle">RAMANTHAPUR</text>
+      <path d="M12 82 L50 92 L88 82 L96 90 L84 96 L50 102 L16 96 L4 90 Z" fill="#D81B60" stroke="#1F226B" strokeWidth="2"/>
+    </svg>
+  );
+}
+
+/* Class Roster (66 Students) */
+const CLASS_STUDENTS = [
+  { pin: "26002-EC-039", name: "PULI RIYON PRATHIK" },
+  { pin: "26002-EC-010", name: "MAMIDIMADA PAVAN" },
+  { pin: "26002-EC-001", name: "KARRI SRAVANI" },
+  { pin: "26002-EC-061", name: "BASHETTY VARSHITH KUMAR" },
+  { pin: "26002-EC-051", name: "GANTA SREEJITH REDDY" },
+  { pin: "26002-EC-021", name: "KOLANUPAKA NITHYA SRI" },
+  { pin: "26002-EC-022", name: "KURELLA SANJANA" },
+  { pin: "26002-EC-020", name: "BALLA SAHITHI" },
+  { pin: "26002-EC-063", name: "VASAM JASHWANTH" },
+  { pin: "26002-EC-059", name: "ARAMALLA AKANKSH" },
+  { pin: "26002-EC-004", name: "JELLA VISHAL" },
+  { pin: "26002-EC-055", name: "MACHA SATHWIK" },
+  { pin: "26002-EC-054", name: "ERRA INDRAJA" },
+  { pin: "26002-EC-041", name: "GURRAM DAIVIKA" },
+  { pin: "26002-EC-018", name: "KASINA CHAKRI" },
+  { pin: "26002-EC-064", name: "PALAKURA SHIVA SHANKER" },
+  { pin: "26002-EC-043", name: "SHAFIA SULTANA" },
+  { pin: "26002-EC-047", name: "JORREGALA KARTHIK" },
+  { pin: "26002-EC-062", name: "KOMPALLY SRI SANJANA" },
+  { pin: "26002-EC-042", name: "JATOTH NANDEESHWAR" },
+  { pin: "26002-EC-017", name: "GANDHAMALA HARSHAVARDHAN" },
+  { pin: "26002-EC-014", name: "KONDALA YUGENDER YADAV" },
+  { pin: "26002-EC-002", name: "SHAIK SHARFUDDIN" },
+  { pin: "26002-EC-008", name: "TEPPA SUPRITHA" },
+  { pin: "26002-EC-031", name: "DEEPIKA SHIVAJI MANTHEN" },
+  { pin: "26002-EC-046", name: "CHALAMALASHETTY DHIRAJ SAI SATHWIK" },
+  { pin: "26002-EC-006", name: "NIMMAKANTI VISHNU TEJA" },
+  { pin: "26002-EC-065", name: "REBBANAMONI GANESH" },
+  { pin: "26002-EC-013", name: "BALNE JAHNAVI" },
+  { pin: "26002-EC-011", name: "NAGULA ASHVITHA" },
+  { pin: "26002-EC-040", name: "PADIGELA LASYAPRIYA" },
+  { pin: "26002-EC-012", name: "GOUNIKADI LAVANYA" },
+  { pin: "26002-EC-049", name: "CHILUKA KARTHIK" },
+  { pin: "26002-EC-015", name: "GUNTUKA SAHASRA" },
+  { pin: "26002-EC-050", name: "MD ABRAR PASHA" },
+  { pin: "26002-EC-019", name: "VIGNESHWAR MISKIN" },
+  { pin: "26002-EC-058", name: "V.TILAK KUMAR REDDY" },
+  { pin: "26002-EC-024", name: "GUMMADAVELLI SREE SAI RAGHAV" },
+  { pin: "26002-EC-038", name: "BANAVATH KIRAN" },
+  { pin: "26002-EC-023", name: "C.SAI KUMAR" },
+  { pin: "26002-EC-045", name: "DAIDA SATHVIK" },
+  { pin: "26002-EC-053", name: "GEETHIKA S" },
+  { pin: "26002-EC-029", name: "BANKA TEJASHWI" },
+  { pin: "26002-EC-044", name: "VADIYALA SAI ANVESH REDDY" },
+  { pin: "26002-EC-007", name: "KAPARAVENA LAXMI PRASANNA" },
+  { pin: "26002-EC-028", name: "U VAISHNAVI" },
+  { pin: "26002-EC-048", name: "PATANA LUCKY" },
+  { pin: "26002-EC-066", name: "SIRRA MADHUPRIYA" },
+  { pin: "26002-EC-057", name: "BATHULA LUCKY JAISEEL" },
+  { pin: "26002-EC-026", name: "KETHAVATH SRINU NAIK" },
+  { pin: "26002-EC-025", name: "SALLA KRISHIKA" },
+  { pin: "26002-EC-060", name: "KARNE SHARANYA" },
+  { pin: "26002-EC-036", name: "CHINTHAGALLA DIWIK MANIPRASAD" },
+  { pin: "26002-EC-009", name: "LINGANOLA VISHWANATH REDDY" },
+  { pin: "26002-EC-056", name: "MALLIPUDI ABHINASH" },
+  { pin: "26002-EC-016", name: "MUKKERA SPANDANA" },
+  { pin: "26002-EC-005", name: "PANDILLA VARSHITH" },
+  { pin: "26002-EC-035", name: "RATHOD SHIVA SHANKAR" },
+  { pin: "26002-EC-052", name: "TUPUDA SWETHA" },
+  { pin: "26002-EC-034", name: "RACHURI ARCHANA" },
+  { pin: "26002-EC-033", name: "DHEERAVATH PRATHIKA" },
+  { pin: "26002-EC-003", name: "GUGULOTH KAVERI" },
+  { pin: "26002-EC-032", name: "CHALIGANTI SUSHANTH" },
+  { pin: "26002-EC-030", name: "SHIRAMSHETTY SRIDATHU" },
+  { pin: "26002-EC-037", name: "GOKINI KIRANMAI" },
+  { pin: "26002-EC-027", name: "TOTTADI GOWTHAM" }
+];
+
+/* Exact Period Schedules */
 const SLOT_TIMES = [
   { start: "09:30", end: "10:20" },
   { start: "10:20", end: "11:10" },
   { start: "11:10", end: "12:00" },
   { start: "12:00", end: "12:50" },
-  { start: "12:50", end: "13:30" },
+  { start: "12:50", end: "13:30" }, // Lunch
   { start: "13:30", end: "14:20" },
   { start: "14:20", end: "15:10" },
   { start: "15:10", end: "16:00" },
@@ -60,6 +165,7 @@ const SUBJECT_CODES = {
   English: "ENG",
   BE: "BE",
   FCP: "FCP",
+  TUT: "TUT",
   Lunch: "—",
   "B S Lab": "BSL",
   "BE Lab": "BEL",
@@ -67,6 +173,7 @@ const SUBJECT_CODES = {
   "Engineering Drawing with CAD Lab": "CAD",
 };
 
+/* Timetable Schedule */
 const TIMETABLE = {
   Monday: [
     { s: "Chemistry", span: 2 },
@@ -89,23 +196,23 @@ const TIMETABLE = {
     { s: "FCP", span: 1 },
   ],
   Thursday: [
-    { s: "Maths", span: 1 },
-    { s: "FCP", span: 3 },
-    { s: "Lunch", span: 1 },
-    { s: "Physics", span: 2 },
+    { s: "Physics", span: 1 },
     { s: "BE", span: 1 },
+    { s: "FCP", span: 2 },
+    { s: "Lunch", span: 1 },
+    { s: "English", span: 2 },
+    { s: "TUT", span: 1 },
   ],
   Friday: [
-    { s: "English", span: 2 },
     { s: "BE", span: 2 },
+    { s: "FCP", span: 2 },
     { s: "Lunch", span: 1 },
     { s: "C & Python Lab", span: 3 },
   ],
   Saturday: [
-    { s: "English", span: 1 },
+    { s: "Maths", span: 1 },
     { s: "Chemistry", span: 1 },
-    { s: "Physics", span: 1 },
-    { s: "FCP", span: 1 },
+    { s: "Physics", span: 2 },
     { s: "Lunch", span: 1 },
     { s: "Engineering Drawing with CAD Lab", span: 3 },
   ],
@@ -128,29 +235,40 @@ function toMinutes(hhmm) {
   return h * 60 + m;
 }
 
-const SUBJECTS = [
-  { key: "chem", name: "Engineering Chemistry", code: "CHEM" },
-  { key: "phy", name: "Engineering Physics", code: "PHY" },
-  { key: "math", name: "Mathematics I", code: "MATH" },
-  { key: "eng", name: "English", code: "ENG" },
-  { key: "be", name: "Basic Electronics", code: "BE" },
-  { key: "fcp", name: "FCP (C & Python)", code: "FCP" },
-  { key: "cad", name: "Engineering Drawing & CAD", code: "CAD" },
-];
-
-const CATEGORIES = ["Notes & Slides", "Lab Manuals & Diagrams", "Previous Year Papers"];
-
 function App() {
+  const [user, setUser] = useState(null);
   const [tab, setTab] = useState("timetable");
+
+  useEffect(() => {
+    const savedPin = localStorage.getItem("ece_student_pin");
+    if (savedPin) {
+      const match = CLASS_STUDENTS.find(s => s.pin.toUpperCase() === savedPin.toUpperCase());
+      if (match) setUser(match);
+    }
+  }, []);
+
+  const handleLogin = (studentObj) => {
+    localStorage.setItem("ece_student_pin", studentObj.pin);
+    setUser(studentObj);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("ece_student_pin");
+    setUser(null);
+  };
+
+  if (!user) {
+    return <LoginScreen onLogin={handleLogin} />;
+  }
 
   return (
     <div style={{ background: C.ink, color: C.text, minHeight: "100vh", display: "flex", justifyContent: "center" }}>
       <div style={{ width: "100%", maxWidth: 480, minHeight: "100vh", display: "flex", flexDirection: "column" }}>
-        <Header />
+        <Header user={user} onLogout={handleLogout} />
         <div style={{ flex: 1, overflowY: "auto", paddingBottom: 90 }}>
           {tab === "timetable" && <TimetablePage />}
-          {tab === "notes" && <NotesPage />}
-          {tab === "chat" && <ChatPage />}
+          {tab === "attendance" && <AttendancePage user={user} />}
+          {tab === "ai" && <AIChatPage />}
           {tab === "exams" && <ExamsPage />}
         </div>
         <BottomNav active={tab} onChange={setTab} />
@@ -159,7 +277,53 @@ function App() {
   );
 }
 
-function Header() {
+function LoginScreen({ onLogin }) {
+  const [pinInput, setPinInput] = useState("");
+  const [error, setError] = useState("");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const cleanPin = pinInput.trim().toUpperCase();
+    const student = CLASS_STUDENTS.find(
+      s => s.pin.toUpperCase() === cleanPin || s.pin.endsWith(`-${cleanPin}`)
+    );
+
+    if (student) {
+      onLogin(student);
+    } else {
+      setError("Invalid PIN number! Only JNGP ECE C-26 students are allowed.");
+    }
+  };
+
+  return (
+    <div style={{ background: C.ink, color: C.text, minHeight: "100vh", display: "flex", justifyContent: "center", alignItems: "center", padding: 20 }}>
+      <div style={{ width: "100%", maxWidth: 400, background: C.ink2, border: `1px solid ${C.line}`, borderRadius: 16, padding: 24, boxShadow: "0 10px 30px rgba(0,0,0,0.5)", textAlign: "center" }}>
+        <div style={{ marginBottom: 12 }}>
+          <JNGPLogo size={70} />
+        </div>
+        <div className="mono" style={{ fontSize: 11, color: C.copper, letterSpacing: 1.5 }}>002 · JNGP RAMANTHAPUR</div>
+        <div style={{ fontSize: 22, fontWeight: 700, marginTop: 4 }}>ECE C-26 Tracker</div>
+        <div style={{ fontSize: 12, color: C.muted, marginTop: 4, marginBottom: 20 }}>Enter your SBTET PIN number to access</div>
+
+        <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          <input
+            type="text"
+            placeholder="e.g. 26002-EC-051"
+            value={pinInput}
+            onChange={(e) => { setPinInput(e.target.value); setError(""); }}
+            style={{ background: C.ink, border: `1px solid ${C.line}`, borderRadius: 8, padding: "12px", color: C.text, fontSize: 14, textAlign: "center", fontFamily: "'IBM Plex Mono', monospace" }}
+          />
+          {error && <div style={{ fontSize: 11, color: "#FF6B6B" }}>{error}</div>}
+          <button type="submit" style={{ background: C.copper, border: "none", borderRadius: 8, padding: "12px", color: C.ink, fontWeight: 700, fontSize: 14, cursor: "pointer", marginTop: 4 }}>
+            Verify & Enter
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+function Header({ user, onLogout }) {
   const [now, setNow] = useState(new Date());
   useEffect(() => {
     const t = setInterval(() => setNow(new Date()), 1000);
@@ -167,19 +331,24 @@ function Header() {
   }, []);
 
   return (
-    <div style={{ padding: "18px 20px 14px", borderBottom: `1px solid ${C.line}`, background: `linear-gradient(180deg, ${C.ink2}, ${C.ink})` }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
-        <div>
-          <div className="mono" style={{ fontSize: 11, color: C.copper, letterSpacing: 1.5 }}>002 · JNGPT RAMANTHAPUR</div>
-          <div style={{ fontSize: 20, fontWeight: 700, marginTop: 2 }}>ECE — I Year</div>
-          <div style={{ fontSize: 12, color: C.muted, marginTop: 1 }}>Odd Semester · 2026–27</div>
+    <div style={{ padding: "16px 20px 14px", borderBottom: `1px solid ${C.line}`, background: `linear-gradient(180deg, ${C.ink2}, ${C.ink})` }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <JNGPLogo size={42} />
+          <div>
+            <div className="mono" style={{ fontSize: 10, color: C.copper, letterSpacing: 1.2 }}>002 · JNGP RAMANTHAPUR</div>
+            <div style={{ fontSize: 16, fontWeight: 700, marginTop: 1 }}>{user.name}</div>
+            <div className="mono" style={{ fontSize: 10, color: C.muted }}>
+              {user.pin} · <span onClick={onLogout} style={{ color: C.copper, cursor: "pointer", textDecoration: "underline" }}>Switch</span>
+            </div>
+          </div>
         </div>
         <div style={{ textAlign: "right" }}>
-          <div className="mono" style={{ fontSize: 18, fontWeight: 600 }}>
+          <div className="mono" style={{ fontSize: 15, fontWeight: 600 }}>
             {now.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: true })}
           </div>
-          <div style={{ fontSize: 11, color: C.muted }}>
-            {now.toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "short" })}
+          <div style={{ fontSize: 10, color: C.muted }}>
+            {now.toLocaleDateString("en-IN", { weekday: "short", day: "numeric", month: "short" })}
           </div>
         </div>
       </div>
@@ -190,8 +359,8 @@ function Header() {
 function BottomNav({ active, onChange }) {
   const navItems = [
     { id: "timetable", label: "Timetable", icon: "calendar" },
-    { id: "notes", label: "Notes", icon: "book-open" },
-    { id: "chat", label: "Chat", icon: "message-square" },
+    { id: "attendance", label: "Attendance", icon: "user-check" },
+    { id: "ai", label: "AI Helper", icon: "bot" },
     { id: "exams", label: "Exams", icon: "timer" },
   ];
 
@@ -212,204 +381,119 @@ function BottomNav({ active, onChange }) {
 
 function TimetablePage() {
   const [now, setNow] = useState(new Date());
+
   useEffect(() => {
-    const t = setInterval(() => setNow(new Date()), 15000);
+    const t = setInterval(() => setNow(new Date()), 1000); // Live tick every second
     return () => clearInterval(t);
   }, []);
 
-  const isTeachingDay = DAYS.includes(now.toLocaleDateString("en-US", { weekday: "long" }));
-  const currentDayName = now.toLocaleDateString("en-US", { weekday: "long" });
+  const todayName = now.toLocaleDateString("en-US", { weekday: "long" });
+  const isTeachingDay = DAYS.includes(todayName);
   const nowMin = now.getHours() * 60 + now.getMinutes();
 
-  const currentSlot = SLOT_TIMES.findIndex(
+  // Find currently active slot index (0 to 7)
+  const currentSlotIndex = SLOT_TIMES.findIndex(
     (s) => nowMin >= toMinutes(s.start) && nowMin < toMinutes(s.end)
   );
 
   const [selectedDay, setSelectedDay] = useState(
-    DAYS.includes(currentDayName) ? currentDayName : "Monday"
+    isTeachingDay ? todayName : "Monday"
   );
 
   const dayBlocks = expandDay(TIMETABLE[selectedDay]);
-  const isViewingToday = selectedDay === currentDayName && isTeachingDay;
+  const isViewingToday = selectedDay === todayName && isTeachingDay;
+
+  // Status message calculation
+  let statusText = "Classes haven't started yet for today";
+  if (!isTeachingDay) {
+    statusText = "Holiday / No classes today";
+  } else if (nowMin < toMinutes(SLOT_TIMES[0].start)) {
+    statusText = "Classes start at 09:30 AM";
+  } else if (nowMin >= toMinutes(SLOT_TIMES[SLOT_TIMES.length - 1].end)) {
+    statusText = "Classes ended for today";
+  } else if (currentSlotIndex >= 0) {
+    const slot = SLOT_TIMES[currentSlotIndex];
+    if (currentSlotIndex === 4) {
+      statusText = "● LUNCH BREAK IN PROGRESS";
+    } else {
+      statusText = `● LIVE PERIOD IN PROGRESS (${slot.start} - ${slot.end})`;
+    }
+  } else {
+    statusText = "Short break between periods";
+  }
 
   return (
     <div style={{ padding: "16px 16px 8px" }}>
+      {/* Days Tabs */}
       <div style={{ display: "flex", gap: 6, overflowX: "auto", paddingBottom: 4 }}>
         {DAYS.map((d) => {
           const active = d === selectedDay;
+          const isTodayTag = d === todayName;
           return (
-            <button key={d} onClick={() => setSelectedDay(d)} className="mono" style={{ flexShrink: 0, padding: "8px 12px", borderRadius: 8, border: `1px solid ${active ? C.copper : C.line}`, background: active ? C.copperSoft : "transparent", color: active ? C.copper : C.text, cursor: "pointer", position: "relative" }}>
+            <button
+              key={d}
+              onClick={() => setSelectedDay(d)}
+              className="mono"
+              style={{
+                flexShrink: 0,
+                padding: "8px 12px",
+                borderRadius: 8,
+                border: `1px solid ${active ? C.copper : C.line}`,
+                background: active ? C.copperSoft : "transparent",
+                color: active ? C.copper : C.text,
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                gap: 4
+              }}
+            >
               <span style={{ fontSize: 11, letterSpacing: 0.5 }}>{d.slice(0, 3).toUpperCase()}</span>
+              {isTodayTag && <span style={{ width: 6, height: 6, borderRadius: "50%", background: C.copper, display: "inline-block" }}></span>}
             </button>
           );
         })}
       </div>
 
-      {isViewingToday && (
-        <div style={{ fontSize: 11, color: C.muted, marginTop: 10, marginBottom: 2 }} className="mono">
-          {currentSlot >= 0 ? "● LIVE — period in progress" : nowMin < toMinutes(SLOT_TIMES[0].start) ? "Classes haven't started yet" : "Between periods"}
-        </div>
-      )}
+      {/* Real-time Status Alert */}
+      <div style={{ fontSize: 11, color: isViewingToday && currentSlotIndex >= 0 ? C.copper : C.muted, marginTop: 12, marginBottom: 4, fontWeight: 600 }} className="mono">
+        {statusText}
+      </div>
 
-      <div style={{ marginTop: 14, display: "flex", flexDirection: "column", gap: 8 }}>
+      {/* Timetable Cards */}
+      <div style={{ marginTop: 10, display: "flex", flexDirection: "column", gap: 8 }}>
         {dayBlocks.map((b, i) => {
           const isLunch = b.s === "Lunch";
-          const isLive = isViewingToday && currentSlot >= b.startSlot && currentSlot <= b.endSlot;
+          const isLive = isViewingToday && currentSlotIndex >= b.startSlot && currentSlotIndex <= b.endSlot;
           const startTime = SLOT_TIMES[b.startSlot].start;
           const endTime = SLOT_TIMES[b.endSlot].end;
+
           return (
-            <div key={i} style={{ display: "flex", border: `1px solid ${isLive ? C.copper : C.line}`, borderRadius: 10, overflow: "hidden", background: isLive ? C.copperSoft : C.ink2, opacity: isLunch ? 0.6 : 1 }}>
-              <div style={{ width: 4, background: isLive ? C.copper : isLunch ? "transparent" : C.ink3 }} />
+            <div
+              key={i}
+              className={isLive ? "live-card" : ""}
+              style={{
+                display: "flex",
+                border: `1px solid ${isLive ? C.copper : C.line}`,
+                borderRadius: 10,
+                overflow: "hidden",
+                background: isLive ? C.copperSoft : C.ink2,
+                opacity: isLunch && !isLive ? 0.6 : 1,
+                transition: "all 0.3s ease"
+              }}
+            >
+              <div style={{ width: 6, background: isLive ? C.copper : isLunch ? "transparent" : C.ink3 }} />
               <div style={{ flex: 1, padding: "12px 14px" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <div style={{ fontSize: 14, fontWeight: 600 }}>{isLunch ? "Lunch Break" : b.s}</div>
-                  <div className="mono" style={{ fontSize: 10, color: isLive ? C.copper : C.muted }}>{startTime} – {endTime}</div>
+                  <div style={{ fontSize: 15, fontWeight: isLive ? 700 : 600, color: isLive ? C.copper : C.text }}>
+                    {isLunch ? "Lunch Break" : b.s}
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                    {isLive && <span className="mono" style={{ fontSize: 9, background: C.copper, color: C.ink, padding: "2px 6px", borderRadius: 4, fontWeight: 700 }}>LIVE</span>}
+                    <div className="mono" style={{ fontSize: 11, color: isLive ? C.copper : C.muted, fontWeight: isLive ? 700 : 400 }}>
+                      {startTime} – {endTime}
+                    </div>
+                  </div>
                 </div>
                 {!isLunch && (
                   <div style={{ display: "flex", gap: 8, marginTop: 4 }}>
-                    <span className="mono" style={{ fontSize: 10, color: C.muted }}>{SUBJECT_CODES[b.s] || ""}</span>
-                    <span className="mono" style={{ fontSize: 10, color: C.muted }}>· {b.span} period{b.span > 1 ? "s" : ""}</span>
-                  </div>
-                )}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
-function NotesPage() {
-  const [open, setOpen] = useState(SUBJECTS[0].key);
-  const [resources, setResources] = useState({});
-  const [formKey, setFormKey] = useState(null);
-  const [title, setTitle] = useState("");
-  const [url, setUrl] = useState("");
-
-  function addResource(subjKey, cat) {
-    if (!title.trim() || !url.trim()) return;
-    const k = `${subjKey}::${cat}`;
-    setResources((r) => ({
-      ...r,
-      [k]: [...(r[k] || []), { title: title.trim(), url: url.trim() }],
-    }));
-    setTitle(""); setUrl(""); setFormKey(null);
-  }
-
-  return (
-    <div style={{ padding: "16px 16px 8px" }}>
-      <div style={{ fontSize: 12, color: C.muted, marginBottom: 12 }}>Organize Google Drive or resource links by subject.</div>
-      {SUBJECTS.map((subj) => {
-        const isOpen = open === subj.key;
-        return (
-          <div key={subj.key} style={{ border: `1px solid ${C.line}`, borderRadius: 10, marginBottom: 8, background: C.ink2, overflow: "hidden" }}>
-            <button onClick={() => setOpen(isOpen ? null : subj.key)} style={{ width: "100%", background: "transparent", border: "none", padding: "12px 14px", display: "flex", justifyContent: "space-between", alignItems: "center", cursor: "pointer", color: C.text }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                <div className="mono" style={{ fontSize: 10, color: C.copper, border: `1px solid ${C.copper}`, borderRadius: 5, padding: "2px 6px" }}>{subj.code}</div>
-                <span style={{ fontSize: 14, fontWeight: 600 }}>{subj.name}</span>
-              </div>
-            </button>
-            {isOpen && (
-              <div style={{ padding: "0 14px 14px", display: "flex", flexDirection: "column", gap: 10 }}>
-                {CATEGORIES.map((cat) => {
-                  const k = `${subj.key}::${cat}`;
-                  const items = resources[k] || [];
-                  const isFormOpen = formKey === k;
-                  return (
-                    <div key={cat} style={{ borderTop: `1px solid ${C.line}`, paddingTop: 10 }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                        <div style={{ fontSize: 12, color: C.muted }}>{cat}</div>
-                        <button onClick={() => setFormKey(isFormOpen ? null : k)} className="mono" style={{ background: "transparent", border: "none", color: C.trace, cursor: "pointer", fontSize: 10 }}>+ ADD</button>
-                      </div>
-                      {items.map((it, idx) => (
-                        <a key={idx} href={it.url} target="_blank" rel="noopener noreferrer" style={{ display: "block", padding: "6px 8px", background: C.ink, borderRadius: 6, border: `1px solid ${C.line}`, textDecoration: "none", color: C.text, fontSize: 12, marginTop: 4 }}>{it.title}</a>
-                      ))}
-                      {isFormOpen && (
-                        <div style={{ marginTop: 8, padding: 10, background: C.ink, borderRadius: 8, border: `1px solid ${C.line}`, display: "flex", flexDirection: "column", gap: 6 }}>
-                          <input type="text" placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)} style={{ background: C.ink2, border: `1px solid ${C.line}`, borderRadius: 6, padding: "6px", color: C.text, fontSize: 12 }} />
-                          <input type="text" placeholder="URL Link" value={url} onChange={(e) => setUrl(e.target.value)} style={{ background: C.ink2, border: `1px solid ${C.line}`, borderRadius: 6, padding: "6px", color: C.text, fontSize: 12 }} />
-                          <button onClick={() => addResource(subj.key, cat)} style={{ background: C.copper, border: "none", borderRadius: 6, padding: "6px", color: C.ink, fontWeight: 600, fontSize: 11, cursor: "pointer" }}>Save Link</button>
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
-function ChatPage() {
-  const [messages, setMessages] = useState([
-    { id: 1, sender: "System", text: "Welcome to ECE I Year class chat!", time: "09:00 AM" },
-  ]);
-  const [input, setInput] = useState("");
-  const [senderName, setSenderName] = useState("");
-
-  function sendMessage(e) {
-    e.preventDefault();
-    if (!input.trim()) return;
-    const timeStr = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-    setMessages((prev) => [...prev, { id: Date.now(), sender: senderName.trim() || "Student", text: input.trim(), time: timeStr }]);
-    setInput("");
-  }
-
-  return (
-    <div style={{ padding: "16px", display: "flex", flexDirection: "column" }}>
-      <input type="text" placeholder="Your Name" value={senderName} onChange={(e) => setSenderName(e.target.value)} style={{ background: C.ink2, border: `1px solid ${C.line}`, borderRadius: 8, padding: "8px", color: C.text, fontSize: 12, marginBottom: 10 }} />
-      <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 8, marginBottom: 12, maxHeight: "50vh", overflowY: "auto" }}>
-        {messages.map((m) => (
-          <div key={m.id} style={{ background: C.ink2, border: `1px solid ${C.line}`, borderRadius: 8, padding: "8px 10px" }}>
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <span className="mono" style={{ fontSize: 11, color: C.copper, fontWeight: 600 }}>{m.sender}</span>
-              <span className="mono" style={{ fontSize: 10, color: C.muted }}>{m.time}</span>
-            </div>
-            <div style={{ fontSize: 13, marginTop: 2 }}>{m.text}</div>
-          </div>
-        ))}
-      </div>
-      <form onSubmit={sendMessage} style={{ display: "flex", gap: 8 }}>
-        <input type="text" placeholder="Write a message..." value={input} onChange={(e) => setInput(e.target.value)} style={{ flex: 1, background: C.ink2, border: `1px solid ${C.line}`, borderRadius: 8, padding: "8px", color: C.text, fontSize: 13 }} />
-        <button type="submit" style={{ background: C.copper, border: "none", borderRadius: 8, padding: "0 16px", color: C.ink, fontWeight: 600 }}>Send</button>
-      </form>
-    </div>
-  );
-}
-
-function ExamsPage() {
-  const examSchedule = [
-    { name: "Unit Test – I (Mid-1)", date: "Oct 12, 2026 – Oct 14, 2026" },
-    { name: "Unit Test – II (Mid-2)", date: "Jan 21, 2027 – Jan 23, 2027" },
-    { name: "Board Practical Exams", date: "May 03, 2027 – May 07, 2027" },
-    { name: "Board Theory End Exams", date: "May 10, 2027 Onwards" },
-  ];
-
-  return (
-    <div style={{ padding: "16px" }}>
-      <div className="mono" style={{ fontSize: 13, fontWeight: 700, color: C.copper, marginBottom: 10 }}>EXAM SCHEDULE (2026–27)</div>
-      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-        {examSchedule.map((ex, idx) => (
-          <div key={idx} style={{ background: C.ink2, border: `1px solid ${C.line}`, borderRadius: 8, padding: "12px" }}>
-            <div style={{ fontSize: 14, fontWeight: 600 }}>{ex.name}</div>
-            <div className="mono" style={{ fontSize: 11, color: C.muted, marginTop: 2 }}>{ex.date}</div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(<App />);
-
-setTimeout(() => { if (window.lucide) lucide.createIcons(); }, 500);
-</script>
-
-</body>
-</html>
-
+                    <
