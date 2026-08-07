@@ -8,17 +8,23 @@
 <meta name="description" content="Official ECE Timetracker 2026-27 for JNGP Ramanthapur C-26 students." />
 <meta name="google-site-verification" content="55STJi9ytAiyID_DaIHX_9DXiMtMOxeTRe63lz3HbS4" />
 
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet"/>
 <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
 <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: #0F1826; color: #EAE5D6; font-family: 'Space Grotesk', sans-serif; min-height: 100vh; }
-  .mono { font-family: 'IBM Plex Mono', monospace; }
+  body { 
+    background: #0B0F19; 
+    color: #F3F4F6; 
+    font-family: 'Plus Jakarta Sans', sans-serif; 
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  .mono { font-family: 'JetBrains Mono', monospace; }
   ::-webkit-scrollbar { width: 6px; height: 6px; }
-  ::-webkit-scrollbar-thumb { background: #1C2B47; border-radius: 4px; }
+  ::-webkit-scrollbar-thumb { background: #374151; border-radius: 4px; }
 </style>
 </head>
 <body>
@@ -26,30 +32,39 @@
 <div id="root"></div>
 
 <script type="text/babel">
-const { useState, useEffect } = React;
+const { useState, useEffect, useRef } = React;
 
-/* UI Colors */
+/* Theme Palette */
 const C = {
-  ink: "#0F1826",
-  ink2: "#16223A",
-  ink3: "#1C2B47",
-  copper: "#C9814B",
-  copperSoft: "rgba(201,129,75,0.20)",
-  text: "#EAE5D6",
-  muted: "#8B93A8",
-  line: "rgba(234,229,214,0.10)",
+  bg: "#0B0F19",
+  card: "#111827",
+  cardBorder: "rgba(255, 255, 255, 0.08)",
+  primary: "#6366F1", // Vibrant Indigo
+  primaryGlow: "rgba(99, 102, 241, 0.35)",
+  accent: "#10B981", // Emerald Green
+  accentGlow: "rgba(16, 185, 129, 0.25)",
+  amber: "#F59E0B",
+  rose: "#F43F5E",
+  text: "#F9FAFB",
+  muted: "#9CA3AF",
+  gradientBg: "linear-gradient(135deg, #4F46E5 0%, #7C3AED 50%, #EC4899 100%)",
+  geminiGradient: "linear-gradient(135deg, #3B82F6 0%, #8B5CF6 50%, #EC4899 100%)"
 };
 
-/* Official JNGP Shield Badge Component */
+/* Official JNGP Shield Badge */
 function JNGPBadge({ size = 42 }) {
   return (
     <div style={{
-      width: size, height: size, borderRadius: 8, background: "#FCE8B2", border: "2px solid #1F226B",
-      display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-      boxShadow: "0 2px 8px rgba(0,0,0,0.3)"
+      width: size, height: size, borderRadius: 12, background: C.gradientBg, padding: 2,
+      display: "flex", alignItems: "center", justifyContent: "center", boxShadow: `0 4px 14px ${C.primaryGlow}`
     }}>
-      <span style={{ fontSize: 11, fontWeight: 900, color: "#005A2B", lineHeight: 1 }}>JNGP</span>
-      <span style={{ fontSize: 6, fontWeight: 700, color: "#1F226B", lineHeight: 1, marginTop: 2 }}>ECE</span>
+      <div style={{
+        width: "100%", height: "100%", background: "#0F172A", borderRadius: 10,
+        display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center"
+      }}>
+        <span style={{ fontSize: 11, fontWeight: 900, color: "#38BDF8", lineHeight: 1 }}>JNGP</span>
+        <span style={{ fontSize: 7, fontWeight: 800, color: "#A855F7", lineHeight: 1, marginTop: 2 }}>ECE</span>
+      </div>
     </div>
   );
 }
@@ -124,7 +139,7 @@ const CLASS_STUDENTS = [
   { pin: "26002-EC-027", name: "TOTTADI GOWTHAM" }
 ];
 
-/* Period Schedule */
+/* Slot Schedule */
 const SLOT_TIMES = [
   { start: "09:30", end: "10:20" },
   { start: "10:20", end: "11:10" },
@@ -136,11 +151,19 @@ const SLOT_TIMES = [
   { start: "15:10", end: "16:00" },
 ];
 
-const SUBJECT_CODES = {
-  Chemistry: "CHEM", Physics: "PHY", Maths: "MATH", English: "ENG",
-  BE: "BE", FCP: "FCP", TUT: "TUT", Lunch: "—",
-  "B S Lab": "BSL", "BE Lab": "BEL", "C & Python Lab": "CPL",
-  "Engineering Drawing with CAD Lab": "CAD"
+const SUBJECT_DETAILS = {
+  Chemistry: { code: "CHEM", icon: "🧪", color: "#EC4899" },
+  Physics: { code: "PHY", icon: "⚡", color: "#3B82F6" },
+  Maths: { code: "MATH", icon: "📐", color: "#8B5CF6" },
+  English: { code: "ENG", icon: "📚", color: "#10B981" },
+  BE: { code: "BE", icon: "🔌", color: "#F59E0B" },
+  FCP: { code: "FCP", icon: "💻", color: "#06B6D4" },
+  TUT: { code: "TUT", icon: "✏️", color: "#64748B" },
+  Lunch: { code: "—", icon: "🍱", color: "#6366F1" },
+  "B S Lab": { code: "BSL", icon: "🔬", color: "#F43F5E" },
+  "BE Lab": { code: "BEL", icon: "⚡", color: "#14B8A6" },
+  "C & Python Lab": { code: "CPL", icon: "🐍", color: "#84CC16" },
+  "Engineering Drawing with CAD Lab": { code: "CAD", icon: "🖥️", color: "#A855F7" }
 };
 
 const TIMETABLE = {
@@ -196,8 +219,8 @@ function App() {
   }
 
   return (
-    <div style={{ background: C.ink, color: C.text, minHeight: "100vh", display: "flex", justifyContent: "center" }}>
-      <div style={{ width: "100%", maxWidth: 480, minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+    <div style={{ background: C.bg, color: C.text, minHeight: "100vh", display: "flex", justifyContent: "center" }}>
+      <div style={{ width: "100%", maxWidth: 480, minHeight: "100vh", display: "flex", flexDirection: "column", borderLeft: `1px solid ${C.cardBorder}`, borderRight: `1px solid ${C.cardBorder}` }}>
         <Header user={user} onLogout={handleLogout} />
         <div style={{ flex: 1, overflowY: "auto", paddingBottom: 90 }}>
           {tab === "timetable" && <TimetablePage />}
@@ -225,31 +248,42 @@ function LoginScreen({ onLogin }) {
     if (student) {
       onLogin(student);
     } else {
-      setError("Invalid PIN number! Only JNGP ECE C-26 students are allowed.");
+      setError("PIN not found in ECE C-26 Roster! Try entering e.g. 051 or 26002-EC-051.");
     }
   };
 
   return (
-    <div style={{ background: C.ink, color: C.text, minHeight: "100vh", display: "flex", justifyContent: "center", alignItems: "center", padding: 20 }}>
-      <div style={{ width: "100%", maxWidth: 400, background: C.ink2, border: `1px solid ${C.line}`, borderRadius: 16, padding: 24, textAlign: "center" }}>
-        <div style={{ display: "flex", justifyContent: "center", marginBottom: 12 }}>
-          <JNGPBadge size={60} />
+    <div style={{ background: C.bg, color: C.text, minHeight: "100vh", display: "flex", justifyContent: "center", alignItems: "center", padding: 20 }}>
+      <div style={{
+        width: "100%", maxWidth: 380, background: C.card, border: `1px solid ${C.cardBorder}`, borderRadius: 24, padding: "32px 24px", textAlign: "center",
+        boxShadow: `0 20px 40px rgba(0,0,0,0.5), 0 0 40px ${C.primaryGlow}`
+      }}>
+        <div style={{ display: "flex", justifyContent: "center", marginBottom: 16 }}>
+          <JNGPBadge size={64} />
         </div>
-        <div className="mono" style={{ fontSize: 11, color: C.copper, letterSpacing: 1.5 }}>002 · JNGP RAMANTHAPUR</div>
-        <div style={{ fontSize: 22, fontWeight: 700, marginTop: 4 }}>ECE C-26 Tracker</div>
-        <div style={{ fontSize: 12, color: C.muted, marginTop: 4, marginBottom: 20 }}>Enter your SBTET PIN number to access</div>
+        <div className="mono" style={{ fontSize: 11, color: C.primary, letterSpacing: 1.5, fontWeight: 700 }}>002 · JNGP RAMANTHAPUR</div>
+        <div style={{ fontSize: 24, fontWeight: 800, marginTop: 4, background: C.gradientBg, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
+          ECE C-26 Tracker
+        </div>
+        <div style={{ fontSize: 13, color: C.muted, marginTop: 6, marginBottom: 24 }}>Enter your SBTET PIN to access your schedule</div>
 
-        <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+        <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
           <input
             type="text"
             placeholder="e.g. 26002-EC-051"
             value={pinInput}
             onChange={(e) => { setPinInput(e.target.value); setError(""); }}
-            style={{ background: C.ink, border: `1px solid ${C.line}`, borderRadius: 8, padding: "12px", color: C.text, fontSize: 14, textAlign: "center", fontFamily: "'IBM Plex Mono', monospace" }}
+            style={{
+              background: "#1F2937", border: `1px solid ${C.cardBorder}`, borderRadius: 12, padding: "14px", color: C.text, fontSize: 15,
+              textAlign: "center", fontFamily: "'JetBrains Mono', monospace", outline: "none", boxShadow: "inset 0 2px 4px rgba(0,0,0,0.3)"
+            }}
           />
-          {error && <div style={{ fontSize: 11, color: "#FF6B6B" }}>{error}</div>}
-          <button type="submit" style={{ background: C.copper, border: "none", borderRadius: 8, padding: "12px", color: C.ink, fontWeight: 700, fontSize: 14, cursor: "pointer", marginTop: 4 }}>
-            Verify & Enter
+          {error && <div style={{ fontSize: 12, color: C.rose, fontWeight: 500 }}>{error}</div>}
+          <button type="submit" style={{
+            background: C.gradientBg, border: "none", borderRadius: 12, padding: "14px", color: "#FFF", fontWeight: 700, fontSize: 15, cursor: "pointer",
+            boxShadow: `0 4px 15px ${C.primaryGlow}`, transition: "transform 0.2s"
+          }}>
+            Verify & Continue
           </button>
         </form>
       </div>
@@ -265,23 +299,25 @@ function Header({ user, onLogout }) {
   }, []);
 
   return (
-    <div style={{ padding: "16px 20px 14px", borderBottom: `1px solid ${C.line}`, background: `linear-gradient(180deg, ${C.ink2}, ${C.ink})` }}>
+    <div style={{ padding: "18px 20px", borderBottom: `1px solid ${C.cardBorder}`, background: "rgba(17, 24, 39, 0.8)", backdropFilter: "blur(12px)" }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <JNGPBadge size={40} />
+          <JNGPBadge size={44} />
           <div>
-            <div className="mono" style={{ fontSize: 10, color: C.copper, letterSpacing: 1.2 }}>002 · JNGP RAMANTHAPUR</div>
-            <div style={{ fontSize: 16, fontWeight: 700, marginTop: 1 }}>{user.name}</div>
-            <div className="mono" style={{ fontSize: 10, color: C.muted }}>
-              {user.pin} · <span onClick={onLogout} style={{ color: C.copper, cursor: "pointer", textDecoration: "underline" }}>Switch</span>
+            <div className="mono" style={{ fontSize: 10, color: C.primary, letterSpacing: 1, fontWeight: 700 }}>002 · JNGP RAMANTHAPUR</div>
+            <div style={{ fontSize: 16, fontWeight: 800, marginTop: 1 }}>{user.name}</div>
+            <div className="mono" style={{ fontSize: 11, color: C.muted, display: "flex", gap: 6, alignItems: "center" }}>
+              <span>{user.pin}</span>
+              <span>·</span>
+              <span onClick={onLogout} style={{ color: C.rose, cursor: "pointer", fontWeight: 600 }}>Switch</span>
             </div>
           </div>
         </div>
         <div style={{ textAlign: "right" }}>
-          <div className="mono" style={{ fontSize: 15, fontWeight: 600 }}>
+          <div className="mono" style={{ fontSize: 14, fontWeight: 700, color: C.accent }}>
             {now.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: true })}
           </div>
-          <div style={{ fontSize: 10, color: C.muted }}>
+          <div style={{ fontSize: 10, color: C.muted, fontWeight: 600, marginTop: 2 }}>
             {now.toLocaleDateString("en-IN", { weekday: "short", day: "numeric", month: "short" })}
           </div>
         </div>
@@ -294,18 +330,24 @@ function BottomNav({ active, onChange }) {
   const navItems = [
     { id: "timetable", label: "Timetable", icon: "📅" },
     { id: "attendance", label: "Attendance", icon: "📋" },
-    { id: "ai", label: "AI Helper", icon: "🤖" },
+    { id: "ai", label: "Gemini AI", icon: "✨" },
     { id: "exams", label: "Exams", icon: "⏱️" },
   ];
 
   return (
-    <div style={{ position: "fixed", bottom: 0, width: "100%", maxWidth: 480, display: "flex", borderTop: `1px solid ${C.line}`, background: C.ink2, boxShadow: "0 -8px 24px rgba(0,0,0,0.35)", zIndex: 100 }}>
+    <div style={{
+      position: "fixed", bottom: 0, width: "100%", maxWidth: 480, display: "flex", borderTop: `1px solid ${C.cardBorder}`,
+      background: "rgba(17, 24, 39, 0.95)", backdropFilter: "blur(16px)", zIndex: 100
+    }}>
       {navItems.map((t) => {
         const isActive = t.id === active;
         return (
-          <button key={t.id} onClick={() => onChange(t.id)} style={{ flex: 1, background: "transparent", border: "none", padding: "10px 4px 12px", display: "flex", flexDirection: "column", alignItems: "center", gap: 4, cursor: "pointer", color: isActive ? C.copper : C.muted }}>
-            <span style={{ fontSize: 18 }}>{t.icon}</span>
-            <span className="mono" style={{ fontSize: 10, letterSpacing: 0.4 }}>{t.label}</span>
+          <button key={t.id} onClick={() => onChange(t.id)} style={{
+            flex: 1, background: "transparent", border: "none", padding: "12px 4px 14px", display: "flex", flexDirection: "column",
+            alignItems: "center", gap: 4, cursor: "pointer", color: isActive ? C.text : C.muted, transition: "all 0.2s"
+          }}>
+            <span style={{ fontSize: 20, filter: isActive ? "drop-shadow(0 0 8px rgba(99,102,241,0.6))" : "grayscale(100%)" }}>{t.icon}</span>
+            <span className="mono" style={{ fontSize: 10, fontWeight: isActive ? 700 : 500, color: isActive ? C.primary : C.muted }}>{t.label}</span>
           </button>
         );
       })}
@@ -329,34 +371,31 @@ function TimetablePage() {
     (s) => nowMin >= toMinutes(s.start) && nowMin < toMinutes(s.end)
   );
 
-  const [selectedDay, setSelectedDay] = useState(
-    isTeachingDay ? todayName : "Monday"
-  );
-
+  const [selectedDay, setSelectedDay] = useState(isTeachingDay ? todayName : "Monday");
   const dayBlocks = expandDay(TIMETABLE[selectedDay]);
   const isViewingToday = selectedDay === todayName && isTeachingDay;
 
-  let statusText = "Classes haven't started yet for today";
+  let statusText = "Classes haven't started yet today";
   if (!isTeachingDay) {
-    statusText = "Holiday / No classes today";
+    statusText = "Holiday / No classes scheduled today";
   } else if (nowMin < toMinutes(SLOT_TIMES[0].start)) {
     statusText = "Classes start at 09:30 AM";
   } else if (nowMin >= toMinutes(SLOT_TIMES[SLOT_TIMES.length - 1].end)) {
-    statusText = "Classes ended for today";
+    statusText = "Classes finished for today";
   } else if (currentSlotIndex >= 0) {
     const slot = SLOT_TIMES[currentSlotIndex];
     if (currentSlotIndex === 4) {
-      statusText = "● LUNCH BREAK IN PROGRESS";
+      statusText = "🍱 LUNCH BREAK IN PROGRESS";
     } else {
-      statusText = `● LIVE PERIOD IN PROGRESS (${slot.start} - ${slot.end})`;
+      statusText = `⚡ LIVE PERIOD IN PROGRESS (${slot.start} - ${slot.end})`;
     }
   } else {
-    statusText = "Short break between periods";
+    statusText = "Short break between classes";
   }
 
   return (
-    <div style={{ padding: "16px 16px 8px" }}>
-      <div style={{ display: "flex", gap: 6, overflowX: "auto", paddingBottom: 4 }}>
+    <div style={{ padding: "16px" }}>
+      <div style={{ display: "flex", gap: 8, overflowX: "auto", paddingBottom: 6 }}>
         {DAYS.map((d) => {
           const active = d === selectedDay;
           const isTodayTag = d === todayName;
@@ -366,27 +405,28 @@ function TimetablePage() {
               onClick={() => setSelectedDay(d)}
               className="mono"
               style={{
-                flexShrink: 0, padding: "8px 12px", borderRadius: 8,
-                border: `1px solid ${active ? C.copper : C.line}`,
-                background: active ? C.copperSoft : "transparent",
-                color: active ? C.copper : C.text, cursor: "pointer",
-                display: "flex", alignItems: "center", gap: 4
+                flexShrink: 0, padding: "10px 14px", borderRadius: 12,
+                border: `1px solid ${active ? C.primary : C.cardBorder}`,
+                background: active ? C.gradientBg : C.card,
+                color: "#FFF", cursor: "pointer", fontWeight: 700, fontSize: 11,
+                display: "flex", alignItems: "center", gap: 6, boxShadow: active ? `0 4px 12px ${C.primaryGlow}` : "none"
               }}
             >
-              <span style={{ fontSize: 11, letterSpacing: 0.5 }}>{d.slice(0, 3).toUpperCase()}</span>
-              {isTodayTag && <span style={{ width: 6, height: 6, borderRadius: "50%", background: C.copper, display: "inline-block" }}></span>}
+              <span>{d.slice(0, 3).toUpperCase()}</span>
+              {isTodayTag && <span style={{ width: 6, height: 6, borderRadius: "50%", background: C.accent }}></span>}
             </button>
           );
         })}
       </div>
 
-      <div style={{ fontSize: 11, color: isViewingToday && currentSlotIndex >= 0 ? C.copper : C.muted, marginTop: 12, marginBottom: 4, fontWeight: 600 }} className="mono">
+      <div className="mono" style={{ fontSize: 12, color: isViewingToday && currentSlotIndex >= 0 ? C.accent : C.muted, marginTop: 14, marginBottom: 10, fontWeight: 700, display: "flex", alignItems: "center", gap: 6 }}>
         {statusText}
       </div>
 
-      <div style={{ marginTop: 10, display: "flex", flexDirection: "column", gap: 8 }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
         {dayBlocks.map((b, i) => {
           const isLunch = b.s === "Lunch";
+          const details = SUBJECT_DETAILS[b.s] || { code: "SUB", icon: "📖", color: C.primary };
           const isLive = isViewingToday && currentSlotIndex >= b.startSlot && currentSlotIndex <= b.endSlot;
           const startTime = SLOT_TIMES[b.startSlot].start;
           const endTime = SLOT_TIMES[b.endSlot].end;
@@ -395,28 +435,36 @@ function TimetablePage() {
             <div
               key={i}
               style={{
-                display: "flex", border: `1px solid ${isLive ? C.copper : C.line}`, borderRadius: 10,
-                overflow: "hidden", background: isLive ? C.copperSoft : C.ink2, opacity: isLunch && !isLive ? 0.6 : 1,
-                boxShadow: isLive ? `0 0 12px ${C.copperSoft}` : "none", transition: "all 0.3s ease"
+                display: "flex", alignItems: "center", padding: "14px 16px", borderRadius: 16,
+                background: isLive ? "rgba(99, 102, 241, 0.15)" : C.card,
+                border: `1px solid ${isLive ? C.primary : C.cardBorder}`,
+                boxShadow: isLive ? `0 0 20px ${C.primaryGlow}` : "0 4px 6px rgba(0,0,0,0.1)"
               }}
             >
-              <div style={{ width: 6, background: isLive ? C.copper : isLunch ? "transparent" : C.ink3 }} />
-              <div style={{ flex: 1, padding: "12px 14px" }}>
+              <div style={{
+                width: 44, height: 44, borderRadius: 12, background: "rgba(255,255,255,0.05)",
+                display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, marginRight: 14
+              }}>
+                {details.icon}
+              </div>
+              <div style={{ flex: 1 }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <div style={{ fontSize: 15, fontWeight: isLive ? 700 : 600, color: isLive ? C.copper : C.text }}>
-                    {isLunch ? "Lunch Break" : b.s}
+                  <div style={{ fontSize: 15, fontWeight: 700, color: isLive ? C.primary : C.text }}>
+                    {b.s}
                   </div>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                    {isLive && <span className="mono" style={{ fontSize: 9, background: C.copper, color: C.ink, padding: "2px 6px", borderRadius: 4, fontWeight: 700 }}>LIVE</span>}
-                    <div className="mono" style={{ fontSize: 11, color: isLive ? C.copper : C.muted, fontWeight: isLive ? 700 : 400 }}>
-                      {startTime} – {endTime}
-                    </div>
+                  <div className="mono" style={{ fontSize: 11, color: isLive ? C.accent : C.muted, fontWeight: 700 }}>
+                    {startTime} – {endTime}
                   </div>
                 </div>
                 {!isLunch && (
-                  <div style={{ display: "flex", gap: 8, marginTop: 4 }}>
-                    <span className="mono" style={{ fontSize: 11, color: isLive ? C.copper : C.muted, fontWeight: 600 }}>{SUBJECT_CODES[b.s] || ""}</span>
-                    <span className="mono" style={{ fontSize: 11, color: C.muted }}>· {b.span} period{b.span > 1 ? "s" : ""}</span>
+                  <div style={{ display: "flex", gap: 8, marginTop: 4, alignItems: "center" }}>
+                    <span className="mono" style={{ fontSize: 10, background: "rgba(255,255,255,0.08)", padding: "2px 6px", borderRadius: 4, color: details.color, fontWeight: 700 }}>
+                      {details.code}
+                    </span>
+                    <span className="mono" style={{ fontSize: 11, color: C.muted }}>
+                      {b.span} Period{b.span > 1 ? "s" : ""}
+                    </span>
+                    {isLive && <span className="mono" style={{ fontSize: 9, background: C.accent, color: "#000", padding: "2px 6px", borderRadius: 4, fontWeight: 800 }}>LIVE NOW</span>}
                   </div>
                 )}
               </div>
@@ -432,24 +480,28 @@ function AttendancePage({ user }) {
   const handleOpenPortal = () => {
     if (navigator.clipboard) {
       navigator.clipboard.writeText(user.pin);
-      alert(`PIN ${user.pin} copied to clipboard! Redirecting to SBTET Connect...`);
+      alert(`PIN ${user.pin} copied to clipboard! Opening SBTET Connect...`);
     }
     window.open("https://sbtetconnect.app", "_blank");
   };
 
   return (
     <div style={{ padding: "16px" }}>
-      <div style={{ background: C.ink2, border: `1px solid ${C.line}`, borderRadius: 12, padding: 18, textAlign: "center" }}>
-        <div className="mono" style={{ fontSize: 11, color: C.copper, letterSpacing: 1 }}>SBTET CONNECT PORTAL</div>
-        <div style={{ fontSize: 18, fontWeight: 700, marginTop: 4 }}>Live Attendance Tracker</div>
-        <div style={{ fontSize: 12, color: C.muted, marginTop: 6, lineHeight: "1.4" }}>
-          Click below to copy your PIN (<span className="mono" style={{ color: C.text }}>{user.pin}</span>) and open the official Telangana SBTET Connect portal.
+      <div style={{ background: C.card, border: `1px solid ${C.cardBorder}`, borderRadius: 20, padding: 24, textAlign: "center", boxShadow: "0 10px 25px rgba(0,0,0,0.3)" }}>
+        <div style={{ fontSize: 40, marginBottom: 12 }}>📋</div>
+        <div className="mono" style={{ fontSize: 11, color: C.accent, letterSpacing: 1, fontWeight: 700 }}>TELANGANA SBTET CONNECT</div>
+        <div style={{ fontSize: 20, fontWeight: 800, marginTop: 4 }}>Attendance Portal</div>
+        <div style={{ fontSize: 13, color: C.muted, marginTop: 8, lineHeight: "1.5" }}>
+          Copy your official PIN (<span className="mono" style={{ color: C.text, fontWeight: 700 }}>{user.pin}</span>) and open the SBTET portal to view live subject-wise attendance percentages.
         </div>
         <button
           onClick={handleOpenPortal}
-          style={{ marginTop: 16, width: "100%", padding: "12px", background: C.copper, color: C.ink, border: "none", borderRadius: 8, fontWeight: 700, fontSize: 14, cursor: "pointer" }}
+          style={{
+            marginTop: 20, width: "100%", padding: "14px", background: C.accent, color: "#000", border: "none",
+            borderRadius: 12, fontWeight: 800, fontSize: 14, cursor: "pointer", boxShadow: `0 4px 14px ${C.accentGlow}`
+          }}
         >
-          Check Attendance on SBTET Connect →
+          Check Live Attendance →
         </button>
       </div>
     </div>
@@ -458,77 +510,24 @@ function AttendancePage({ user }) {
 
 function AIChatPage() {
   const [messages, setMessages] = useState([
-    { id: 1, sender: "AI Assistant", text: "Hello ECE Student! I'm your JNGP AI Study Buddy. Ask me any doubt regarding Chemistry, Physics, Maths, BE, or FCP!", time: "Just now" }
+    { id: 1, sender: "Gemini", text: "Hello! I am your ECE C-26 Gemini AI Assistant. Ask me anything about Basic Electronics (BE), Physics, Chemistry, Maths, or Python (FCP)!", time: "Just now" }
   ]);
   const [input, setInput] = useState("");
+  const chatEndRef = useRef(null);
 
-  const handleSend = (text) => {
-    const queryText = text || input;
-    if (!queryText.trim()) return;
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
-    const timeStr = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-    const userMsg = { id: Date.now(), sender: "You", text: queryText, time: timeStr };
-    setMessages((prev) => [...prev, userMsg]);
-    setInput("");
-
-    setTimeout(() => {
-      let aiReply = "That's a great question regarding ECE I-Year! Please check your recommended textbook or consult your faculty for detailed diagrams.";
-      const q = queryText.toLowerCase();
-      if (q.includes("ohm")) aiReply = "Ohm's Law states V = I * R. Voltage equals Current multiplied by Resistance.";
-      else if (q.includes("kirchhoff") || q.includes("kcl")) aiReply = "KCL: Sum of currents entering a node equals currents leaving. KVL: Sum of voltage drops in a loop equals zero.";
-      else if (q.includes("python") || q.includes("fcp")) aiReply = "FCP covers C & Python fundamentals like loops, functions, and standard data structures.";
-
-      setMessages((prev) => [...prev, { id: Date.now() + 1, sender: "AI Assistant", text: aiReply, time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) }]);
-    }, 600);
-  };
-
-  return (
-    <div style={{ padding: "16px", display: "flex", flexDirection: "column", height: "calc(100vh - 160px)" }}>
-      <div style={{ flex: 1, overflowY: "auto", display: "flex", flexDirection: "column", gap: 10, paddingRight: 2 }}>
-        {messages.map((m) => (
-          <div key={m.id} style={{ alignSelf: m.sender === "You" ? "flex-end" : "flex-start", maxWidth: "85%", background: m.sender === "You" ? C.copper : C.ink2, color: m.sender === "You" ? C.ink : C.text, border: `1px solid ${C.line}`, borderRadius: 10, padding: "10px 12px" }}>
-            <div style={{ display: "flex", justifyContent: "space-between", gap: 8, marginBottom: 2 }}>
-              <span style={{ fontSize: 11, fontWeight: 700 }}>{m.sender}</span>
-              <span style={{ fontSize: 9, opacity: 0.7 }}>{m.time}</span>
-            </div>
-            <div style={{ fontSize: 13, lineHeight: "1.4" }}>{m.text}</div>
-          </div>
-        ))}
-      </div>
-      <form onSubmit={(e) => { e.preventDefault(); handleSend(); }} style={{ display: "flex", gap: 8, marginTop: 10 }}>
-        <input type="text" placeholder="Ask an ECE doubt..." value={input} onChange={(e) => setInput(e.target.value)} style={{ flex: 1, background: C.ink2, border: `1px solid ${C.line}`, borderRadius: 8, padding: "10px", color: C.text, fontSize: 13 }} />
-        <button type="submit" style={{ background: C.copper, border: "none", borderRadius: 8, padding: "0 16px", color: C.ink, fontWeight: 700, cursor: "pointer" }}>Ask</button>
-      </form>
-    </div>
-  );
-}
-
-function ExamsPage() {
-  const examSchedule = [
-    { name: "Unit Test – I (Mid-1)", date: "Oct 12, 2026 – Oct 14, 2026" },
-    { name: "Unit Test – II (Mid-2)", date: "Jan 21, 2027 – Jan 23, 2027" },
-    { name: "Board Practical Exams", date: "May 03, 2027 – May 07, 2027" },
-    { name: "Board Theory End Exams", date: "May 10, 2027 Onwards" },
-  ];
-
-  return (
-    <div style={{ padding: "16px" }}>
-      <div className="mono" style={{ fontSize: 13, fontWeight: 700, color: C.copper, marginBottom: 10 }}>EXAM SCHEDULE (2026–27)</div>
-      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-        {examSchedule.map((ex, idx) => (
-          <div key={idx} style={{ background: C.ink2, border: `1px solid ${C.line}`, borderRadius: 8, padding: "12px" }}>
-            <div style={{ fontSize: 14, fontWeight: 600 }}>{ex.name}</div>
-            <div className="mono" style={{ fontSize: 11, color: C.muted, marginTop: 2 }}>{ex.date}</div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(<App />);
-</script>
-
-</body>
-</html>
+  const generateGeminiAnswer = (query) => {
+    const q = query.toLowerCase();
+    
+    if (q.includes("ohm")) {
+      return "⚡ **Ohm's Law:** States that voltage across a conductor is directly proportional to current flowing through it at constant temperature.\n\nFormula: V = I × R\n- V = Voltage (Volts)\n- I = Current (Amperes)\n- R = Resistance (Ohms Ω)";
+    } else if (q.includes("kirchhoff") || q.includes("kcl") || q.includes("kvl")) {
+      return "🔌 **Kirchhoff's Laws:**\n1. **KCL (Current Law):** Sum of entering currents at any node equals sum of leaving currents (Conservation of Charge).\n2. **KVL (Voltage Law):** Algebraic sum of all potential differences in any closed loop equals zero (Conservation of Energy).";
+    } else if (q.includes("pn") || q.includes("diode") || q.includes("junction")) {
+      return "🔬 **P-N Junction Diode:** Formed by joining P-type and N-type semiconductors. It allows current in forward bias and blocks current in reverse bias, working as a unidirectional switch or rectifier.";
+    } else if (q.includes("python") || q.includes("loop") || q.includes("fcp")) {
+      return "💻 **FCP (Fundamentals of C & Python):**\n- Loops: `for` and `while` iterate over sequences.\n- Example Python code:\n
+http://googleusercontent.com/immersive_entry_chip/0
