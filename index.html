@@ -5,529 +5,317 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>ECE Timetracker 26-27 – JNGP Ramanthapur</title>
 
-<meta name="description" content="Official ECE Timetracker 2026-27 for JNGP Ramanthapur C-26 students." />
-<meta name="google-site-verification" content="55STJi9ytAiyID_DaIHX_9DXiMtMOxeTRe63lz3HbS4" />
-
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet"/>
-<script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
-<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { 
-    background: #0B0F19; 
-    color: #F3F4F6; 
-    font-family: 'Plus Jakarta Sans', sans-serif; 
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+  body { background: #0B0F19; color: #F3F4F6; min-height: 100vh; display: flex; justify-content: center; }
   .mono { font-family: 'JetBrains Mono', monospace; }
-  ::-webkit-scrollbar { width: 6px; height: 6px; }
-  ::-webkit-scrollbar-thumb { background: #374151; border-radius: 4px; }
+  
+  /* App Container */
+  #app { width: 100%; max-width: 480px; min-height: 100vh; display: flex; flex-direction: column; background: #0B0F19; border-left: 1px solid rgba(255,255,255,0.08); border-right: 1px solid rgba(255,255,255,0.08); position: relative; }
+  
+  /* Screen Wrappers */
+  .screen { display: none; flex-direction: column; flex: 1; padding-bottom: 80px; }
+  .screen.active { display: flex; }
+  
+  /* Buttons & Cards */
+  .card { background: #111827; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; padding: 16px; margin-bottom: 12px; }
+  .gradient-btn { background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 50%, #EC4899 100%); border: none; color: #FFF; font-weight: 700; border-radius: 12px; padding: 14px; cursor: pointer; text-align: center; width: 100%; }
+  
+  /* Navigation */
+  .bottom-nav { position: fixed; bottom: 0; width: 100%; max-width: 480px; display: flex; background: rgba(17, 24, 39, 0.95); backdrop-filter: blur(16px); border-top: 1px solid rgba(255, 255, 255, 0.08); z-index: 100; }
+  .nav-item { flex: 1; background: transparent; border: none; padding: 12px 4px; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; color: #9CA3AF; }
+  .nav-item.active { color: #818CF8; }
+  .nav-item.active .icon { filter: drop-shadow(0 0 8px rgba(99,102,241,0.6)); }
+  
+  /* Chat Bubble */
+  .chat-msg { max-width: 88%; border-radius: 16px; padding: 12px 16px; margin-bottom: 10px; font-size: 13px; line-height: 1.5; white-space: pre-line; }
+  .chat-user { align-self: flex-end; background: linear-gradient(135deg, #4F46E5, #7C3AED); color: #FFF; }
+  .chat-ai { align-self: flex-start; background: #111827; border: 1px solid rgba(255,255,255,0.08); color: #F3F4F6; }
 </style>
 </head>
 <body>
 
-<div id="root"></div>
-
-<script type="text/babel">
-const { useState, useEffect, useRef } = React;
-
-/* Theme Palette */
-const C = {
-  bg: "#0B0F19",
-  card: "#111827",
-  cardBorder: "rgba(255, 255, 255, 0.08)",
-  primary: "#6366F1", // Vibrant Indigo
-  primaryGlow: "rgba(99, 102, 241, 0.35)",
-  accent: "#10B981", // Emerald Green
-  accentGlow: "rgba(16, 185, 129, 0.25)",
-  amber: "#F59E0B",
-  rose: "#F43F5E",
-  text: "#F9FAFB",
-  muted: "#9CA3AF",
-  gradientBg: "linear-gradient(135deg, #4F46E5 0%, #7C3AED 50%, #EC4899 100%)",
-  geminiGradient: "linear-gradient(135deg, #3B82F6 0%, #8B5CF6 50%, #EC4899 100%)"
-};
-
-/* Official JNGP Shield Badge */
-function JNGPBadge({ size = 42 }) {
-  return (
-    <div style={{
-      width: size, height: size, borderRadius: 12, background: C.gradientBg, padding: 2,
-      display: "flex", alignItems: "center", justifyContent: "center", boxShadow: `0 4px 14px ${C.primaryGlow}`
-    }}>
-      <div style={{
-        width: "100%", height: "100%", background: "#0F172A", borderRadius: 10,
-        display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center"
-      }}>
-        <span style={{ fontSize: 11, fontWeight: 900, color: "#38BDF8", lineHeight: 1 }}>JNGP</span>
-        <span style={{ fontSize: 7, fontWeight: 800, color: "#A855F7", lineHeight: 1, marginTop: 2 }}>ECE</span>
-      </div>
+<div id="app">
+  <div id="loginScreen" style="display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; padding: 20px;">
+    <div style="width: 100%; max-width: 380px; background: #111827; border: 1px solid rgba(255,255,255,0.08); border-radius: 24px; padding: 32px 24px; text-align: center;">
+      <div style="width: 60px; height: 60px; margin: 0 auto 16px; background: linear-gradient(135deg, #4F46E5, #EC4899); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-weight: 900; color: #FFF; font-size: 18px;">JNGP</div>
+      <div class="mono" style="font-size: 11px; color: #818CF8; letter-spacing: 1.5px; font-weight: 700;">002 · JNGP RAMANTHAPUR</div>
+      <h2 style="font-size: 22px; margin: 6px 0 16px; font-weight: 800;">ECE C-26 Tracker</h2>
+      <input type="text" id="pinInput" placeholder="Enter PIN (e.g. 051 or 26002-EC-051)" class="mono" style="width: 100%; background: #1F2937; border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 14px; color: #FFF; text-align: center; margin-bottom: 12px; outline: none;" />
+      <div id="loginError" style="color: #F43F5E; font-size: 12px; margin-bottom: 12px; display: none;"></div>
+      <button onclick="handleLogin()" class="gradient-btn">Verify & Enter</button>
     </div>
-  );
-}
+  </div>
 
-/* Class Roster (66 Students) */
-const CLASS_STUDENTS = [
-  { pin: "26002-EC-039", name: "PULI RIYON PRATHIK" },
-  { pin: "26002-EC-010", name: "MAMIDIMADA PAVAN" },
-  { pin: "26002-EC-001", name: "KARRI SRAVANI" },
-  { pin: "26002-EC-061", name: "BASHETTY VARSHITH KUMAR" },
-  { pin: "26002-EC-051", name: "GANTA SREEJITH REDDY" },
-  { pin: "26002-EC-021", name: "KOLANUPAKA NITHYA SRI" },
-  { pin: "26002-EC-022", name: "KURELLA SANJANA" },
-  { pin: "26002-EC-020", name: "BALLA SAHITHI" },
-  { pin: "26002-EC-063", name: "VASAM JASHWANTH" },
-  { pin: "26002-EC-059", name: "ARAMALLA AKANKSH" },
-  { pin: "26002-EC-004", name: "JELLA VISHAL" },
-  { pin: "26002-EC-055", name: "MACHA SATHWIK" },
-  { pin: "26002-EC-054", name: "ERRA INDRAJA" },
-  { pin: "26002-EC-041", name: "GURRAM DAIVIKA" },
-  { pin: "26002-EC-018", name: "KASINA CHAKRI" },
-  { pin: "26002-EC-064", name: "PALAKURA SHIVA SHANKER" },
-  { pin: "26002-EC-043", name: "SHAFIA SULTANA" },
-  { pin: "26002-EC-047", name: "JORREGALA KARTHIK" },
-  { pin: "26002-EC-062", name: "KOMPALLY SRI SANJANA" },
-  { pin: "26002-EC-042", name: "JATOTH NANDEESHWAR" },
-  { pin: "26002-EC-017", name: "GANDHAMALA HARSHAVARDHAN" },
-  { pin: "26002-EC-014", name: "KONDALA YUGENDER YADAV" },
-  { pin: "26002-EC-002", name: "SHAIK SHARFUDDIN" },
-  { pin: "26002-EC-008", name: "TEPPA SUPRITHA" },
-  { pin: "26002-EC-031", name: "DEEPIKA SHIVAJI MANTHEN" },
-  { pin: "26002-EC-046", name: "CHALAMALASHETTY DHIRAJ SAI SATHWIK" },
-  { pin: "26002-EC-006", name: "NIMMAKANTI VISHNU TEJA" },
-  { pin: "26002-EC-065", name: "REBBANAMONI GANESH" },
-  { pin: "26002-EC-013", name: "BALNE JAHNAVI" },
-  { pin: "26002-EC-011", name: "NAGULA ASHVITHA" },
-  { pin: "26002-EC-040", name: "PADIGELA LASYAPRIYA" },
-  { pin: "26002-EC-012", name: "GOUNIKADI LAVANYA" },
-  { pin: "26002-EC-049", name: "CHILUKA KARTHIK" },
-  { pin: "26002-EC-015", name: "GUNTUKA SAHASRA" },
-  { pin: "26002-EC-050", name: "MD ABRAR PASHA" },
-  { pin: "26002-EC-019", name: "VIGNESHWAR MISKIN" },
-  { pin: "26002-EC-058", name: "V.TILAK KUMAR REDDY" },
-  { pin: "26002-EC-024", name: "GUMMADAVELLI SREE SAI RAGHAV" },
-  { pin: "26002-EC-038", name: "BANAVATH KIRAN" },
-  { pin: "26002-EC-023", name: "C.SAI KUMAR" },
-  { pin: "26002-EC-045", name: "DAIDA SATHVIK" },
-  { pin: "26002-EC-053", name: "GEETHIKA S" },
-  { pin: "26002-EC-029", name: "BANKA TEJASHWI" },
-  { pin: "26002-EC-044", name: "VADIYALA SAI ANVESH REDDY" },
-  { pin: "26002-EC-007", name: "KAPARAVENA LAXMI PRASANNA" },
-  { pin: "26002-EC-028", name: "U VAISHNAVI" },
-  { pin: "26002-EC-048", name: "PATANA LUCKY" },
-  { pin: "26002-EC-066", name: "SIRRA MADHUPRIYA" },
-  { pin: "26002-EC-057", name: "BATHULA LUCKY JAISEEL" },
-  { pin: "26002-EC-026", name: "KETHAVATH SRINU NAIK" },
-  { pin: "26002-EC-025", name: "SALLA KRISHIKA" },
-  { pin: "26002-EC-060", name: "KARNE SHARANYA" },
-  { pin: "26002-EC-036", name: "CHINTHAGALLA DIWIK MANIPRASAD" },
-  { pin: "26002-EC-009", name: "LINGANOLA VISHWANATH REDDY" },
-  { pin: "26002-EC-056", name: "MALLIPUDI ABHINASH" },
-  { pin: "26002-EC-016", name: "MUKKERA SPANDANA" },
-  { pin: "26002-EC-005", name: "PANDILLA VARSHITH" },
-  { pin: "26002-EC-035", name: "RATHOD SHIVA SHANKAR" },
-  { pin: "26002-EC-052", name: "TUPUDA SWETHA" },
-  { pin: "26002-EC-034", name: "RACHURI ARCHANA" },
-  { pin: "26002-EC-033", name: "DHEERAVATH PRATHIKA" },
-  { pin: "26002-EC-003", name: "GUGULOTH KAVERI" },
-  { pin: "26002-EC-032", name: "CHALIGANTI SUSHANTH" },
-  { pin: "26002-EC-030", name: "SHIRAMSHETTY SRIDATHU" },
-  { pin: "26002-EC-037", name: "GOKINI KIRANMAI" },
-  { pin: "26002-EC-027", name: "TOTTADI GOWTHAM" }
-];
-
-/* Slot Schedule */
-const SLOT_TIMES = [
-  { start: "09:30", end: "10:20" },
-  { start: "10:20", end: "11:10" },
-  { start: "11:10", end: "12:00" },
-  { start: "12:00", end: "12:50" },
-  { start: "12:50", end: "13:30" }, // Lunch
-  { start: "13:30", end: "14:20" },
-  { start: "14:20", end: "15:10" },
-  { start: "15:10", end: "16:00" },
-];
-
-const SUBJECT_DETAILS = {
-  Chemistry: { code: "CHEM", icon: "🧪", color: "#EC4899" },
-  Physics: { code: "PHY", icon: "⚡", color: "#3B82F6" },
-  Maths: { code: "MATH", icon: "📐", color: "#8B5CF6" },
-  English: { code: "ENG", icon: "📚", color: "#10B981" },
-  BE: { code: "BE", icon: "🔌", color: "#F59E0B" },
-  FCP: { code: "FCP", icon: "💻", color: "#06B6D4" },
-  TUT: { code: "TUT", icon: "✏️", color: "#64748B" },
-  Lunch: { code: "—", icon: "🍱", color: "#6366F1" },
-  "B S Lab": { code: "BSL", icon: "🔬", color: "#F43F5E" },
-  "BE Lab": { code: "BEL", icon: "⚡", color: "#14B8A6" },
-  "C & Python Lab": { code: "CPL", icon: "🐍", color: "#84CC16" },
-  "Engineering Drawing with CAD Lab": { code: "CAD", icon: "🖥️", color: "#A855F7" }
-};
-
-const TIMETABLE = {
-  Monday: [ { s: "Chemistry", span: 2 }, { s: "Physics", span: 2 }, { s: "Lunch", span: 1 }, { s: "Maths", span: 2 }, { s: "BE", span: 1 } ],
-  Tuesday: [ { s: "BE", span: 1 }, { s: "B S Lab", span: 3 }, { s: "Lunch", span: 1 }, { s: "BE Lab", span: 3 } ],
-  Wednesday: [ { s: "Maths", span: 2 }, { s: "Chemistry", span: 2 }, { s: "Lunch", span: 1 }, { s: "English", span: 2 }, { s: "FCP", span: 1 } ],
-  Thursday: [ { s: "Physics", span: 1 }, { s: "BE", span: 1 }, { s: "FCP", span: 2 }, { s: "Lunch", span: 1 }, { s: "English", span: 2 }, { s: "TUT", span: 1 } ],
-  Friday: [ { s: "BE", span: 2 }, { s: "FCP", span: 2 }, { s: "Lunch", span: 1 }, { s: "C & Python Lab", span: 3 } ],
-  Saturday: [ { s: "Maths", span: 1 }, { s: "Chemistry", span: 1 }, { s: "Physics", span: 2 }, { s: "Lunch", span: 1 }, { s: "Engineering Drawing with CAD Lab", span: 3 } ]
-};
-
-const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-
-function expandDay(dayBlocks) {
-  const out = [];
-  let slot = 0;
-  for (const b of dayBlocks) {
-    out.push({ ...b, startSlot: slot, endSlot: slot + b.span - 1 });
-    slot += b.span;
-  }
-  return out;
-}
-
-function toMinutes(hhmm) {
-  const [h, m] = hhmm.split(":").map(Number);
-  return h * 60 + m;
-}
-
-function App() {
-  const [user, setUser] = useState(null);
-  const [tab, setTab] = useState("timetable");
-
-  useEffect(() => {
-    const savedPin = localStorage.getItem("ece_student_pin");
-    if (savedPin) {
-      const match = CLASS_STUDENTS.find(s => s.pin.toUpperCase() === savedPin.toUpperCase());
-      if (match) setUser(match);
-    }
-  }, []);
-
-  const handleLogin = (studentObj) => {
-    localStorage.setItem("ece_student_pin", studentObj.pin);
-    setUser(studentObj);
-  };
-
-  const handleLogout = () => {
-    localStorage.removeItem("ece_student_pin");
-    setUser(null);
-  };
-
-  if (!user) {
-    return <LoginScreen onLogin={handleLogin} />;
-  }
-
-  return (
-    <div style={{ background: C.bg, color: C.text, minHeight: "100vh", display: "flex", justifyContent: "center" }}>
-      <div style={{ width: "100%", maxWidth: 480, minHeight: "100vh", display: "flex", flexDirection: "column", borderLeft: `1px solid ${C.cardBorder}`, borderRight: `1px solid ${C.cardBorder}` }}>
-        <Header user={user} onLogout={handleLogout} />
-        <div style={{ flex: 1, overflowY: "auto", paddingBottom: 90 }}>
-          {tab === "timetable" && <TimetablePage />}
-          {tab === "attendance" && <AttendancePage user={user} />}
-          {tab === "ai" && <AIChatPage />}
-          {tab === "exams" && <ExamsPage />}
-        </div>
-        <BottomNav active={tab} onChange={setTab} />
-      </div>
-    </div>
-  );
-}
-
-function LoginScreen({ onLogin }) {
-  const [pinInput, setPinInput] = useState("");
-  const [error, setError] = useState("");
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const cleanPin = pinInput.trim().toUpperCase();
-    const student = CLASS_STUDENTS.find(
-      s => s.pin.toUpperCase() === cleanPin || s.pin.endsWith(`-${cleanPin}`)
-    );
-
-    if (student) {
-      onLogin(student);
-    } else {
-      setError("PIN not found in ECE C-26 Roster! Try entering e.g. 051 or 26002-EC-051.");
-    }
-  };
-
-  return (
-    <div style={{ background: C.bg, color: C.text, minHeight: "100vh", display: "flex", justifyContent: "center", alignItems: "center", padding: 20 }}>
-      <div style={{
-        width: "100%", maxWidth: 380, background: C.card, border: `1px solid ${C.cardBorder}`, borderRadius: 24, padding: "32px 24px", textAlign: "center",
-        boxShadow: `0 20px 40px rgba(0,0,0,0.5), 0 0 40px ${C.primaryGlow}`
-      }}>
-        <div style={{ display: "flex", justifyContent: "center", marginBottom: 16 }}>
-          <JNGPBadge size={64} />
-        </div>
-        <div className="mono" style={{ fontSize: 11, color: C.primary, letterSpacing: 1.5, fontWeight: 700 }}>002 · JNGP RAMANTHAPUR</div>
-        <div style={{ fontSize: 24, fontWeight: 800, marginTop: 4, background: C.gradientBg, WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-          ECE C-26 Tracker
-        </div>
-        <div style={{ fontSize: 13, color: C.muted, marginTop: 6, marginBottom: 24 }}>Enter your SBTET PIN to access your schedule</div>
-
-        <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-          <input
-            type="text"
-            placeholder="e.g. 26002-EC-051"
-            value={pinInput}
-            onChange={(e) => { setPinInput(e.target.value); setError(""); }}
-            style={{
-              background: "#1F2937", border: `1px solid ${C.cardBorder}`, borderRadius: 12, padding: "14px", color: C.text, fontSize: 15,
-              textAlign: "center", fontFamily: "'JetBrains Mono', monospace", outline: "none", boxShadow: "inset 0 2px 4px rgba(0,0,0,0.3)"
-            }}
-          />
-          {error && <div style={{ fontSize: 12, color: C.rose, fontWeight: 500 }}>{error}</div>}
-          <button type="submit" style={{
-            background: C.gradientBg, border: "none", borderRadius: 12, padding: "14px", color: "#FFF", fontWeight: 700, fontSize: 15, cursor: "pointer",
-            boxShadow: `0 4px 15px ${C.primaryGlow}`, transition: "transform 0.2s"
-          }}>
-            Verify & Continue
-          </button>
-        </form>
-      </div>
-    </div>
-  );
-}
-
-function Header({ user, onLogout }) {
-  const [now, setNow] = useState(new Date());
-  useEffect(() => {
-    const t = setInterval(() => setNow(new Date()), 1000);
-    return () => clearInterval(t);
-  }, []);
-
-  return (
-    <div style={{ padding: "18px 20px", borderBottom: `1px solid ${C.cardBorder}`, background: "rgba(17, 24, 39, 0.8)", backdropFilter: "blur(12px)" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-          <JNGPBadge size={44} />
-          <div>
-            <div className="mono" style={{ fontSize: 10, color: C.primary, letterSpacing: 1, fontWeight: 700 }}>002 · JNGP RAMANTHAPUR</div>
-            <div style={{ fontSize: 16, fontWeight: 800, marginTop: 1 }}>{user.name}</div>
-            <div className="mono" style={{ fontSize: 11, color: C.muted, display: "flex", gap: 6, alignItems: "center" }}>
-              <span>{user.pin}</span>
-              <span>·</span>
-              <span onClick={onLogout} style={{ color: C.rose, cursor: "pointer", fontWeight: 600 }}>Switch</span>
-            </div>
-          </div>
-        </div>
-        <div style={{ textAlign: "right" }}>
-          <div className="mono" style={{ fontSize: 14, fontWeight: 700, color: C.accent }}>
-            {now.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: true })}
-          </div>
-          <div style={{ fontSize: 10, color: C.muted, fontWeight: 600, marginTop: 2 }}>
-            {now.toLocaleDateString("en-IN", { weekday: "short", day: "numeric", month: "short" })}
-          </div>
+  <div id="mainApp" style="display: none; flex-direction: column; flex: 1;">
+    <div style="padding: 16px 20px; background: rgba(17, 24, 39, 0.9); border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; align-items: center;">
+      <div>
+        <div class="mono" style="font-size: 10px; color: #818CF8; font-weight: 700;">002 · JNGP RAMANTHAPUR</div>
+        <div id="userName" style="font-size: 16px; font-weight: 800; margin-top: 2px;">Student</div>
+        <div class="mono" style="font-size: 11px; color: #9CA3AF;">
+          <span id="userPin">26002-EC-051</span> · <span onclick="handleLogout()" style="color: #F43F5E; cursor: pointer;">Logout</span>
         </div>
       </div>
-    </div>
-  );
-}
-
-function BottomNav({ active, onChange }) {
-  const navItems = [
-    { id: "timetable", label: "Timetable", icon: "📅" },
-    { id: "attendance", label: "Attendance", icon: "📋" },
-    { id: "ai", label: "Gemini AI", icon: "✨" },
-    { id: "exams", label: "Exams", icon: "⏱️" },
-  ];
-
-  return (
-    <div style={{
-      position: "fixed", bottom: 0, width: "100%", maxWidth: 480, display: "flex", borderTop: `1px solid ${C.cardBorder}`,
-      background: "rgba(17, 24, 39, 0.95)", backdropFilter: "blur(16px)", zIndex: 100
-    }}>
-      {navItems.map((t) => {
-        const isActive = t.id === active;
-        return (
-          <button key={t.id} onClick={() => onChange(t.id)} style={{
-            flex: 1, background: "transparent", border: "none", padding: "12px 4px 14px", display: "flex", flexDirection: "column",
-            alignItems: "center", gap: 4, cursor: "pointer", color: isActive ? C.text : C.muted, transition: "all 0.2s"
-          }}>
-            <span style={{ fontSize: 20, filter: isActive ? "drop-shadow(0 0 8px rgba(99,102,241,0.6))" : "grayscale(100%)" }}>{t.icon}</span>
-            <span className="mono" style={{ fontSize: 10, fontWeight: isActive ? 700 : 500, color: isActive ? C.primary : C.muted }}>{t.label}</span>
-          </button>
-        );
-      })}
-    </div>
-  );
-}
-
-function TimetablePage() {
-  const [now, setNow] = useState(new Date());
-
-  useEffect(() => {
-    const t = setInterval(() => setNow(new Date()), 1000);
-    return () => clearInterval(t);
-  }, []);
-
-  const todayName = now.toLocaleDateString("en-US", { weekday: "long" });
-  const isTeachingDay = DAYS.includes(todayName);
-  const nowMin = now.getHours() * 60 + now.getMinutes();
-
-  const currentSlotIndex = SLOT_TIMES.findIndex(
-    (s) => nowMin >= toMinutes(s.start) && nowMin < toMinutes(s.end)
-  );
-
-  const [selectedDay, setSelectedDay] = useState(isTeachingDay ? todayName : "Monday");
-  const dayBlocks = expandDay(TIMETABLE[selectedDay]);
-  const isViewingToday = selectedDay === todayName && isTeachingDay;
-
-  let statusText = "Classes haven't started yet today";
-  if (!isTeachingDay) {
-    statusText = "Holiday / No classes scheduled today";
-  } else if (nowMin < toMinutes(SLOT_TIMES[0].start)) {
-    statusText = "Classes start at 09:30 AM";
-  } else if (nowMin >= toMinutes(SLOT_TIMES[SLOT_TIMES.length - 1].end)) {
-    statusText = "Classes finished for today";
-  } else if (currentSlotIndex >= 0) {
-    const slot = SLOT_TIMES[currentSlotIndex];
-    if (currentSlotIndex === 4) {
-      statusText = "🍱 LUNCH BREAK IN PROGRESS";
-    } else {
-      statusText = `⚡ LIVE PERIOD IN PROGRESS (${slot.start} - ${slot.end})`;
-    }
-  } else {
-    statusText = "Short break between classes";
-  }
-
-  return (
-    <div style={{ padding: "16px" }}>
-      <div style={{ display: "flex", gap: 8, overflowX: "auto", paddingBottom: 6 }}>
-        {DAYS.map((d) => {
-          const active = d === selectedDay;
-          const isTodayTag = d === todayName;
-          return (
-            <button
-              key={d}
-              onClick={() => setSelectedDay(d)}
-              className="mono"
-              style={{
-                flexShrink: 0, padding: "10px 14px", borderRadius: 12,
-                border: `1px solid ${active ? C.primary : C.cardBorder}`,
-                background: active ? C.gradientBg : C.card,
-                color: "#FFF", cursor: "pointer", fontWeight: 700, fontSize: 11,
-                display: "flex", alignItems: "center", gap: 6, boxShadow: active ? `0 4px 12px ${C.primaryGlow}` : "none"
-              }}
-            >
-              <span>{d.slice(0, 3).toUpperCase()}</span>
-              {isTodayTag && <span style={{ width: 6, height: 6, borderRadius: "50%", background: C.accent }}></span>}
-            </button>
-          );
-        })}
-      </div>
-
-      <div className="mono" style={{ fontSize: 12, color: isViewingToday && currentSlotIndex >= 0 ? C.accent : C.muted, marginTop: 14, marginBottom: 10, fontWeight: 700, display: "flex", alignItems: "center", gap: 6 }}>
-        {statusText}
-      </div>
-
-      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-        {dayBlocks.map((b, i) => {
-          const isLunch = b.s === "Lunch";
-          const details = SUBJECT_DETAILS[b.s] || { code: "SUB", icon: "📖", color: C.primary };
-          const isLive = isViewingToday && currentSlotIndex >= b.startSlot && currentSlotIndex <= b.endSlot;
-          const startTime = SLOT_TIMES[b.startSlot].start;
-          const endTime = SLOT_TIMES[b.endSlot].end;
-
-          return (
-            <div
-              key={i}
-              style={{
-                display: "flex", alignItems: "center", padding: "14px 16px", borderRadius: 16,
-                background: isLive ? "rgba(99, 102, 241, 0.15)" : C.card,
-                border: `1px solid ${isLive ? C.primary : C.cardBorder}`,
-                boxShadow: isLive ? `0 0 20px ${C.primaryGlow}` : "0 4px 6px rgba(0,0,0,0.1)"
-              }}
-            >
-              <div style={{
-                width: 44, height: 44, borderRadius: 12, background: "rgba(255,255,255,0.05)",
-                display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, marginRight: 14
-              }}>
-                {details.icon}
-              </div>
-              <div style={{ flex: 1 }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <div style={{ fontSize: 15, fontWeight: 700, color: isLive ? C.primary : C.text }}>
-                    {b.s}
-                  </div>
-                  <div className="mono" style={{ fontSize: 11, color: isLive ? C.accent : C.muted, fontWeight: 700 }}>
-                    {startTime} – {endTime}
-                  </div>
-                </div>
-                {!isLunch && (
-                  <div style={{ display: "flex", gap: 8, marginTop: 4, alignItems: "center" }}>
-                    <span className="mono" style={{ fontSize: 10, background: "rgba(255,255,255,0.08)", padding: "2px 6px", borderRadius: 4, color: details.color, fontWeight: 700 }}>
-                      {details.code}
-                    </span>
-                    <span className="mono" style={{ fontSize: 11, color: C.muted }}>
-                      {b.span} Period{b.span > 1 ? "s" : ""}
-                    </span>
-                    {isLive && <span className="mono" style={{ fontSize: 9, background: C.accent, color: "#000", padding: "2px 6px", borderRadius: 4, fontWeight: 800 }}>LIVE NOW</span>}
-                  </div>
-                )}
-              </div>
-            </div>
-          );
-        })}
+      <div style="text-align: right;">
+        <div id="clock" class="mono" style="font-size: 14px; font-weight: 700; color: #10B981;">00:00 AM</div>
+        <div id="date" style="font-size: 10px; color: #9CA3AF; margin-top: 2px;">Today</div>
       </div>
     </div>
-  );
-}
 
-function AttendancePage({ user }) {
-  const handleOpenPortal = () => {
-    if (navigator.clipboard) {
-      navigator.clipboard.writeText(user.pin);
-      alert(`PIN ${user.pin} copied to clipboard! Opening SBTET Connect...`);
-    }
-    window.open("https://sbtetconnect.app", "_blank");
-  };
+    <div id="tabTimetable" class="screen active" style="padding: 16px;">
+      <div id="daySelector" style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 12px;"></div>
+      <div id="statusText" class="mono" style="font-size: 12px; color: #10B981; font-weight: 700; margin-bottom: 12px;"></div>
+      <div id="scheduleContainer"></div>
+    </div>
 
-  return (
-    <div style={{ padding: "16px" }}>
-      <div style={{ background: C.card, border: `1px solid ${C.cardBorder}`, borderRadius: 20, padding: 24, textAlign: "center", boxShadow: "0 10px 25px rgba(0,0,0,0.3)" }}>
-        <div style={{ fontSize: 40, marginBottom: 12 }}>📋</div>
-        <div className="mono" style={{ fontSize: 11, color: C.accent, letterSpacing: 1, fontWeight: 700 }}>TELANGANA SBTET CONNECT</div>
-        <div style={{ fontSize: 20, fontWeight: 800, marginTop: 4 }}>Attendance Portal</div>
-        <div style={{ fontSize: 13, color: C.muted, marginTop: 8, lineHeight: "1.5" }}>
-          Copy your official PIN (<span className="mono" style={{ color: C.text, fontWeight: 700 }}>{user.pin}</span>) and open the SBTET portal to view live subject-wise attendance percentages.
-        </div>
-        <button
-          onClick={handleOpenPortal}
-          style={{
-            marginTop: 20, width: "100%", padding: "14px", background: C.accent, color: "#000", border: "none",
-            borderRadius: 12, fontWeight: 800, fontSize: 14, cursor: "pointer", boxShadow: `0 4px 14px ${C.accentGlow}`
-          }}
-        >
+    <div id="tabAttendance" class="screen" style="padding: 16px;">
+      <div class="card" style="text-align: center; padding: 24px;">
+        <div style="font-size: 40px; margin-bottom: 12px;">📋</div>
+        <div class="mono" style="font-size: 11px; color: #10B981; font-weight: 700;">SBTET CONNECT PORTAL</div>
+        <h3 style="font-size: 20px; margin: 4px 0 8px;">Attendance Tracker</h3>
+        <p style="font-size: 13px; color: #9CA3AF; margin-bottom: 20px;">Click below to copy your PIN and check live attendance percentages.</p>
+        <button onclick="openSBTET()" style="background: #10B981; color: #000; border: none; font-weight: 800; padding: 14px; border-radius: 12px; width: 100%; cursor: pointer;">
           Check Live Attendance →
         </button>
       </div>
     </div>
-  );
+
+    <div id="tabAI" class="screen" style="padding: 16px; height: calc(100vh - 150px);">
+      <div id="chatContainer" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; padding-right: 4px;"></div>
+      <div style="display: flex; gap: 8px; margin-top: 12px;">
+        <input type="text" id="aiInput" placeholder="Ask Gemini AI any question..." style="flex: 1; background: #111827; border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 12px 16px; color: #FFF; outline: none;" />
+        <button onclick="sendAIMessage()" class="gradient-btn" style="width: auto; padding: 0 20px;">Ask</button>
+      </div>
+    </div>
+
+    <div id="tabExams" class="screen" style="padding: 16px;">
+      <div class="mono" style="font-size: 12px; font-weight: 800; color: #818CF8; margin-bottom: 12px;">EXAM SCHEDULE (2026–27)</div>
+      <div class="card">
+        <div style="font-weight: 700;">Unit Test – I (Mid-1)</div>
+        <div class="mono" style="font-size: 12px; color: #9CA3AF; margin-top: 4px;">📅 Oct 12, 2026 – Oct 14, 2026</div>
+      </div>
+      <div class="card">
+        <div style="font-weight: 700;">Unit Test – II (Mid-2)</div>
+        <div class="mono" style="font-size: 12px; color: #9CA3AF; margin-top: 4px;">📅 Jan 21, 2027 – Jan 23, 2027</div>
+      </div>
+      <div class="card">
+        <div style="font-weight: 700;">Board Practical Exams</div>
+        <div class="mono" style="font-size: 12px; color: #9CA3AF; margin-top: 4px;">📅 May 03, 2027 – May 07, 2027</div>
+      </div>
+      <div class="card">
+        <div style="font-weight: 700;">Board Theory End Exams</div>
+        <div class="mono" style="font-size: 12px; color: #9CA3AF; margin-top: 4px;">📅 May 10, 2027 Onwards</div>
+      </div>
+    </div>
+
+    <div class="bottom-nav">
+      <button class="nav-item active" onclick="switchTab('timetable', this)"><span class="icon">📅</span><span class="mono" style="font-size: 10px;">Timetable</span></button>
+      <button class="nav-item" onclick="switchTab('attendance', this)"><span class="icon">📋</span><span class="mono" style="font-size: 10px;">Attendance</span></button>
+      <button class="nav-item" onclick="switchTab('ai', this)"><span class="icon">✨</span><span class="mono" style="font-size: 10px;">Gemini AI</span></button>
+      <button class="nav-item" onclick="switchTab('exams', this)"><span class="icon">⏱️</span><span class="mono" style="font-size: 10px;">Exams</span></button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* CLASS ROSTER (ALL 66 STUDENTS) */
+const STUDENTS = [
+  { pin: "26002-EC-001", name: "KARRI SRAVANI" },
+  { pin: "26002-EC-002", name: "SHAIK SHARFUDDIN" },
+  { pin: "26002-EC-003", name: "GUGULOTH KAVERI" },
+  { pin: "26002-EC-004", name: "JELLA VISHAL" },
+  { pin: "26002-EC-005", name: "PANDILLA VARSHITH" },
+  { pin: "26002-EC-006", name: "NIMMAKANTI VISHNU TEJA" },
+  { pin: "26002-EC-007", name: "KAPARAVENA LAXMI PRASANNA" },
+  { pin: "26002-EC-008", name: "TEPPA SUPRITHA" },
+  { pin: "26002-EC-009", name: "LINGANOLA VISHWANATH REDDY" },
+  { pin: "26002-EC-010", name: "MAMIDIMADA PAVAN" },
+  { pin: "26002-EC-011", name: "NAGULA ASHVITHA" },
+  { pin: "26002-EC-012", name: "GOUNIKADI LAVANYA" },
+  { pin: "26002-EC-013", name: "BALNE JAHNAVI" },
+  { pin: "26002-EC-014", name: "KONDALA YUGENDER YADAV" },
+  { pin: "26002-EC-015", name: "GUNTUKA SAHASRA" },
+  { pin: "26002-EC-016", name: "MUKKERA SPANDANA" },
+  { pin: "26002-EC-017", name: "GANDHAMALA HARSHAVARDHAN" },
+  { pin: "26002-EC-018", name: "KASINA CHAKRI" },
+  { pin: "26002-EC-019", name: "VIGNESHWAR MISKIN" },
+  { pin: "26002-EC-020", name: "BALLA SAHITHI" },
+  { pin: "26002-EC-021", name: "KOLANUPAKA NITHYA SRI" },
+  { pin: "26002-EC-022", name: "KURELLA SANJANA" },
+  { pin: "26002-EC-023", name: "C.SAI KUMAR" },
+  { pin: "26002-EC-024", name: "GUMMADAVELLI SREE SAI RAGHAV" },
+  { pin: "26002-EC-025", name: "SALLA KRISHIKA" },
+  { pin: "26002-EC-026", name: "KETHAVATH SRINU NAIK" },
+  { pin: "26002-EC-027", name: "TOTTADI GOWTHAM" },
+  { pin: "26002-EC-028", name: "U VAISHNAVI" },
+  { pin: "26002-EC-029", name: "BANKA TEJASHWI" },
+  { pin: "26002-EC-030", name: "SHIRAMSHETTY SRIDATHU" },
+  { pin: "26002-EC-031", name: "DEEPIKA SHIVAJI MANTHEN" },
+  { pin: "26002-EC-032", name: "CHALIGANTI SUSHANTH" },
+  { pin: "26002-EC-033", name: "DHEERAVATH PRATHIKA" },
+  { pin: "26002-EC-034", name: "RACHURI ARCHANA" },
+  { pin: "26002-EC-035", name: "RATHOD SHIVA SHANKAR" },
+  { pin: "26002-EC-036", name: "CHINTHAGALLA DIWIK MANIPRASAD" },
+  { pin: "26002-EC-037", name: "GOKINI KIRANMAI" },
+  { pin: "26002-EC-038", name: "BANAVATH KIRAN" },
+  { pin: "26002-EC-039", name: "PULI RIYON PRATHIK" },
+  { pin: "26002-EC-040", name: "PADIGELA LASYAPRIYA" },
+  { pin: "26002-EC-041", name: "GURRAM DAIVIKA" },
+  { pin: "26002-EC-042", name: "JATOTH NANDEESHWAR" },
+  { pin: "26002-EC-043", name: "SHAFIA SULTANA" },
+  { pin: "26002-EC-044", name: "VADIYALA SAI ANVESH REDDY" },
+  { pin: "26002-EC-045", name: "DAIDA SATHVIK" },
+  { pin: "26002-EC-046", name: "CHALAMALASHETTY DHIRAJ SAI SATHWIK" },
+  { pin: "26002-EC-047", name: "JORREGALA KARTHIK" },
+  { pin: "26002-EC-048", name: "PATANA LUCKY" },
+  { pin: "26002-EC-049", name: "CHILUKA KARTHIK" },
+  { pin: "26002-EC-050", name: "MD ABRAR PASHA" },
+  { pin: "26002-EC-051", name: "GANTA SREEJITH REDDY" },
+  { pin: "26002-EC-052", name: "TUPUDA SWETHA" },
+  { pin: "26002-EC-053", name: "GEETHIKA S" },
+  { pin: "26002-EC-054", name: "ERRA INDRAJA" },
+  { pin: "26002-EC-055", name: "MACHA SATHWIK" },
+  { pin: "26002-EC-056", name: "MALLIPUDI ABHINASH" },
+  { pin: "26002-EC-057", name: "BATHULA LUCKY JAISEEL" },
+  { pin: "26002-EC-058", name: "V.TILAK KUMAR REDDY" },
+  { pin: "26002-EC-059", name: "ARAMALLA AKANKSH" },
+  { pin: "26002-EC-060", name: "KARNE SHARANYA" },
+  { pin: "26002-EC-061", name: "BASHETTY VARSHITH KUMAR" },
+  { pin: "26002-EC-062", name: "KOMPALLY SRI SANJANA" },
+  { pin: "26002-EC-063", name: "VASAM JASHWANTH" },
+  { pin: "26002-EC-064", name: "PALAKURA SHIVA SHANKER" },
+  { pin: "26002-EC-065", name: "REBBANAMONI GANESH" },
+  { pin: "26002-EC-066", name: "SIRRA MADHUPRIYA" }
+];
+
+/* SCHEDULE DATA */
+const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+const TIMETABLE = {
+  Monday: [{s:"Chemistry",p:2},{s:"Physics",p:2},{s:"Lunch",p:1},{s:"Maths",p:2},{s:"BE",p:1}],
+  Tuesday: [{s:"BE",p:1},{s:"B S Lab",p:3},{s:"Lunch",p:1},{s:"BE Lab",p:3}],
+  Wednesday: [{s:"Maths",p:2},{s:"Chemistry",p:2},{s:"Lunch",p:1},{s:"English",p:2},{s:"FCP",p:1}],
+  Thursday: [{s:"Physics",p:1},{s:"BE",p:1},{s:"FCP",p:2},{s:"Lunch",p:1},{s:"English",p:2},{s:"TUT",p:1}],
+  Friday: [{s:"BE",p:2},{s:"FCP",p:2},{s:"Lunch",p:1},{s:"C & Python Lab",p:3}],
+  Saturday: [{s:"Maths",p:1},{s:"Chemistry",p:1},{s:"Physics",p:2},{s:"Lunch",p:1},{s:"Engineering Drawing with CAD Lab",p:3}]
+};
+
+let currentUser = null;
+let selectedDay = "Monday";
+
+function init() {
+  const saved = localStorage.getItem("ece_user");
+  if(saved) {
+    currentUser = JSON.parse(saved);
+    showApp();
+  }
+  updateClock();
+  setInterval(updateClock, 1000);
 }
 
-function AIChatPage() {
-  const [messages, setMessages] = useState([
-    { id: 1, sender: "Gemini", text: "Hello! I am your ECE C-26 Gemini AI Assistant. Ask me anything about Basic Electronics (BE), Physics, Chemistry, Maths, or Python (FCP)!", time: "Just now" }
-  ]);
-  const [input, setInput] = useState("");
-  const chatEndRef = useRef(null);
+function handleLogin() {
+  const val = document.getElementById("pinInput").value.trim().toUpperCase();
+  if(!val) return;
+  
+  const found = STUDENTS.find(s => s.pin.toUpperCase().includes(val) || val.includes(s.pin.split('-').pop()));
+  if(found) {
+    currentUser = found;
+    localStorage.setItem("ece_user", JSON.stringify(currentUser));
+    showApp();
+  } else {
+    document.getElementById("loginError").innerText = "Invalid PIN! Please check and try again.";
+    document.getElementById("loginError").style.display = "block";
+  }
+}
 
-  useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+function handleLogout() {
+  localStorage.removeItem("ece_user");
+  location.reload();
+}
 
-  const generateGeminiAnswer = (query) => {
-    const q = query.toLowerCase();
+function showApp() {
+  document.getElementById("loginScreen").style.display = "none";
+  document.getElementById("mainApp").style.display = "flex";
+  document.getElementById("userName").innerText = currentUser.name;
+  document.getElementById("userPin").innerText = currentUser.pin;
+  renderDayButtons();
+  renderSchedule();
+  initAIChat();
+}
+
+function updateClock() {
+  const now = new Date();
+  document.getElementById("clock").innerText = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
+  document.getElementById("date").innerText = now.toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short' });
+}
+
+function switchTab(tabId, btn) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab' + tabId.charAt(0).toUpperCase() + tabId.slice(1)).classList.add('active');
+  btn.classList.add('active');
+}
+
+function renderDayButtons() {
+  const container = document.getElementById("daySelector");
+  container.innerHTML = DAYS.map(d => `
+    <button onclick="selectDay('${d}')" class="mono" style="padding: 8px 14px; border-radius: 10px; border: 1px solid ${d === selectedDay ? '#818CF8' : 'rgba(255,255,255,0.1)'}; background: ${d === selectedDay ? 'linear-gradient(135deg, #4F46E5, #7C3AED)' : '#111827'}; color: #FFF; font-weight: 700; font-size: 11px; cursor: pointer;">
+      ${d.slice(0,3).toUpperCase()}
+    </button>
+  `).join('');
+}
+
+function selectDay(d) { selectedDay = d; renderDayButtons(); renderSchedule(); }
+
+function renderSchedule() {
+  const list = TIMETABLE[selectedDay] || [];
+  document.getElementById("scheduleContainer").innerHTML = list.map(item => `
+    <div class="card" style="display: flex; justify-content: space-between; align-items: center;">
+      <div>
+        <div style="font-weight: 700; font-size: 15px;">${item.s}</div>
+        <div class="mono" style="font-size: 11px; color: #9CA3AF; margin-top: 2px;">${item.p} Period(s)</div>
+      </div>
+      <div style="font-size: 20px;">${item.s === 'Lunch' ? '🍱' : '📖'}</div>
+    </div>
+  `).join('');
+}
+
+function openSBTET() {
+  navigator.clipboard.writeText(currentUser.pin);
+  alert("PIN copied to clipboard! Opening SBTET Connect...");
+  window.open("https://sbtetconnect.app", "_blank");
+}
+
+function initAIChat() {
+  const c = document.getElementById("chatContainer");
+  c.innerHTML = `<div class="chat-msg chat-ai">✨ <b>Gemini AI:</b> Hello! Ask me any doubt regarding BE, Physics, Chemistry, Maths, or Python!</div>`;
+}
+
+async function sendAIMessage() {
+  const input = document.getElementById("aiInput");
+  const text = input.value.trim();
+  if(!text) return;
+  
+  const c = document.getElementById("chatContainer");
+  c.innerHTML += `<div class="chat-msg chat-user">👤 ${text}</div>`;
+  input.value = "";
+  c.scrollTop = c.scrollHeight;
+
+  setTimeout(() => {
+    let reply = "";
+    const q = text.toLowerCase();
+    if(q.includes("ohm")) reply = "⚡ <b>Ohm's Law:</b> V = I × R. Voltage equals Current multiplied by Resistance.";
+    else if(q.includes("kcl") || q.includes("kvl") || q.includes("kirchhoff")) reply = "🔌 <b>KCL:</b> Sum of currents entering a junction equals sum leaving. <b>KVL:</b> Total voltage drops in a closed loop equal zero.";
+    else if(q.includes("python")) reply = "💻 <b>Python Loop Example:</b><br><code>for i in range(5): print('ECE C-26:', i)</code>";
+    else reply = `✨ <b>Gemini AI Answer:</b> Regarding "${text}", check your C-26 unit notes or ask your faculty!`;
     
-    if (q.includes("ohm")) {
-      return "⚡ **Ohm's Law:** States that voltage across a conductor is directly proportional to current flowing through it at constant temperature.\n\nFormula: V = I × R\n- V = Voltage (Volts)\n- I = Current (Amperes)\n- R = Resistance (Ohms Ω)";
-    } else if (q.includes("kirchhoff") || q.includes("kcl") || q.includes("kvl")) {
-      return "🔌 **Kirchhoff's Laws:**\n1. **KCL (Current Law):** Sum of entering currents at any node equals sum of leaving currents (Conservation of Charge).\n2. **KVL (Voltage Law):** Algebraic sum of all potential differences in any closed loop equals zero (Conservation of Energy).";
-    } else if (q.includes("pn") || q.includes("diode") || q.includes("junction")) {
-      return "🔬 **P-N Junction Diode:** Formed by joining P-type and N-type semiconductors. It allows current in forward bias and blocks current in reverse bias, working as a unidirectional switch or rectifier.";
-    } else if (q.includes("python") || q.includes("loop") || q.includes("fcp")) {
-      return "💻 **FCP (Fundamentals of C & Python):**\n- Loops: `for` and `while` iterate over sequences.\n- Example Python code:\n
-http://googleusercontent.com/immersive_entry_chip/0
+    c.innerHTML += `<div class="chat-msg chat-ai">${reply}</div>`;
+    c.scrollTop = c.scrollHeight;
+  }, 400);
+}
+
+window.onload = init;
+</script>
+</body>
+</html>
