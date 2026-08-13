@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
@@ -332,8 +332,6 @@ function updateClock() {
   const now = new Date();
   document.getElementById("clock").innerText = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
   document.getElementById("date").innerText = now.toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short' });
-  
-  // Refresh schedule periodically for smooth real-time highlight transitions
   renderSchedule();
 }
 
@@ -370,4 +368,91 @@ function getCurrentPeriodId() {
   const currentMinutes = now.getHours() * 60 + now.getMinutes();
 
   for (let slot of PERIOD_SLOTS) {
-    const [sHours, sMins] = slot.start.split(":").map(Numb
+    const [sHours, sMins] = slot.start.split(":").map(Number);
+    const [eHours, eMins] = slot.end.split(":").map(Number);
+    const startTotal = sHours * 60 + sMins;
+    const endTotal = eHours * 60 + eMins;
+
+    if (currentMinutes >= startTotal && currentMinutes < endTotal) {
+      return slot.id;
+    }
+  }
+  return null;
+}
+
+function renderSchedule() {
+  const activePeriodId = getCurrentPeriodId();
+  const list = TIMETABLE[selectedDay] || [];
+  const statusEl = document.getElementById("statusText");
+
+  const activeSlot = PERIOD_SLOTS.find(s => s.id === activePeriodId);
+  const activeSubject = list.find(item => item.periodId === activePeriodId);
+
+  if (activeSlot && activeSubject) {
+    statusEl.innerHTML = `🟢 CURRENTLY ONGOING: <span style="color:#FFF;">${activeSubject.subject}</span> (${activeSlot.label})`;
+  } else {
+    statusEl.innerHTML = `⏳ NO ACTIVE CLASS AT THIS TIME`;
+  }
+
+  document.getElementById("scheduleContainer").innerHTML = list.map(item => {
+    const slot = PERIOD_SLOTS.find(s => s.id === item.periodId);
+    const isActive = item.periodId === activePeriodId;
+
+    return `
+      <div class="card ${isActive ? 'active-period' : ''}" style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <div style="font-weight: 800; font-size: 15px; color: ${isActive ? '#818CF8' : '#FFF'};">${item.subject}</div>
+            ${isActive ? '<span class="badge badge-live">LIVE NOW</span>' : ''}
+          </div>
+          <div class="mono" style="font-size: 11px; color: #9CA3AF; margin-top: 4px;">
+            ⏰ ${slot.label}
+          </div>
+        </div>
+        <div style="text-align: right;">
+          <div style="font-size: 20px;">${item.subject === 'LUNCH' ? '🍱' : item.subject.includes('LAB') ? '💻' : '📖'}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function openSBTET() {
+  navigator.clipboard.writeText(currentUser.pin);
+  alert("PIN copied to clipboard! Opening SBTET Connect...");
+  window.open("https://sbtetconnect.app", "_blank");
+}
+
+function initAIChat() {
+  const c = document.getElementById("chatContainer");
+  c.innerHTML = `<div class="chat-msg chat-ai">✨ <b>Gemini AI:</b> Hello! Ask me any doubt regarding BE, Physics, Chemistry, Maths, or Python!</div>`;
+}
+
+async function sendAIMessage() {
+  const input = document.getElementById("aiInput");
+  const text = input.value.trim();
+  if(!text) return;
+  
+  const c = document.getElementById("chatContainer");
+  c.innerHTML += `<div class="chat-msg chat-user">👤 ${text}</div>`;
+  input.value = "";
+  c.scrollTop = c.scrollHeight;
+
+  setTimeout(() => {
+    let reply = "";
+    const q = text.toLowerCase();
+    if(q.includes("ohm")) reply = "⚡ <b>Ohm's Law:</b> V = I × R. Voltage equals Current multiplied by Resistance.";
+    else if(q.includes("kcl") || q.includes("kvl") || q.includes("kirchhoff")) reply = "🔌 <b>KCL:</b> Sum of currents entering a junction equals sum leaving. <b>KVL:</b> Total voltage drops in a closed loop equal zero.";
+    else if(q.includes("python")) reply = "💻 <b>Python Loop Example:</b><br><code>for i in range(5): print('ECE C-26:', i)</code>";
+    else reply = `✨ <b>Gemini AI Answer:</b> Regarding "${text}", check your C-26 unit notes or ask your faculty!`;
+    
+    c.innerHTML += `<div class="chat-msg chat-ai">${reply}</div>`;
+    c.scrollTop = c.scrollHeight;
+  }, 400);
+}
+
+window.onload = init;
+</script>
+</body>
+</html>
+                                                    
