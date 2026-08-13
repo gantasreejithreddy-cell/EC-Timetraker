@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>ECE Timetracker 26-27 – JNGP Ramanthapur</title>
+<title>ECE Time Tracker 26-27 – JNGP Ramanthapur</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet"/>
 
@@ -19,9 +19,19 @@
   .screen { display: none; flex-direction: column; flex: 1; padding-bottom: 80px; }
   .screen.active { display: flex; }
   
-  /* Buttons & Cards */
-  .card { background: #111827; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; padding: 16px; margin-bottom: 12px; }
+  /* Cards & Active Highlight */
+  .card { background: #111827; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; padding: 16px; margin-bottom: 12px; transition: all 0.3s ease; }
+  .card.active-period {
+    background: linear-gradient(135deg, rgba(79, 70, 229, 0.25), rgba(236, 72, 153, 0.25));
+    border: 1px solid #818CF8;
+    box-shadow: 0 0 16px rgba(129, 140, 248, 0.3);
+  }
   .gradient-btn { background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 50%, #EC4899 100%); border: none; color: #FFF; font-weight: 700; border-radius: 12px; padding: 14px; cursor: pointer; text-align: center; width: 100%; }
+  
+  /* Badge UI */
+  .badge { display: inline-block; padding: 4px 10px; border-radius: 8px; font-size: 10px; font-weight: 700; }
+  .badge-live { background: #10B981; color: #000; }
+  .badge-upcoming { background: rgba(255, 255, 255, 0.1); color: #9CA3AF; }
   
   /* Navigation */
   .bottom-nav { position: fixed; bottom: 0; width: 100%; max-width: 480px; display: flex; background: rgba(17, 24, 39, 0.95); backdrop-filter: blur(16px); border-top: 1px solid rgba(255, 255, 255, 0.08); z-index: 100; }
@@ -40,9 +50,9 @@
 <div id="app">
   <div id="loginScreen" style="display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; padding: 20px;">
     <div style="width: 100%; max-width: 380px; background: #111827; border: 1px solid rgba(255,255,255,0.08); border-radius: 24px; padding: 32px 24px; text-align: center;">
-      <div style="width: 60px; height: 60px; margin: 0 auto 16px; background: linear-gradient(135deg, #4F46E5, #EC4899); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-weight: 900; color: #FFF; font-size: 18px;">JNGP</div>
+      <div style="width: 60px; height: 60px; margin: 0 auto 16px; background: linear-gradient(135deg, #4F46E5, #EC4899); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-weight: 900; color: #FFF; font-size: 18px;">ECE</div>
       <div class="mono" style="font-size: 11px; color: #818CF8; letter-spacing: 1.5px; font-weight: 700;">002 · JNGP RAMANTHAPUR</div>
-      <h2 style="font-size: 22px; margin: 6px 0 16px; font-weight: 800;">ECE C-26 Tracker</h2>
+      <h2 style="font-size: 22px; margin: 6px 0 16px; font-weight: 800;">ECE Time Tracker</h2>
       <input type="text" id="pinInput" placeholder="Enter PIN (e.g. 051 or 26002-EC-051)" class="mono" style="width: 100%; background: #1F2937; border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 14px; color: #FFF; text-align: center; margin-bottom: 12px; outline: none;" />
       <div id="loginError" style="color: #F43F5E; font-size: 12px; margin-bottom: 12px; display: none;"></div>
       <button onclick="handleLogin()" class="gradient-btn">Verify & Enter</button>
@@ -66,7 +76,7 @@
 
     <div id="tabTimetable" class="screen active" style="padding: 16px;">
       <div id="daySelector" style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 12px;"></div>
-      <div id="statusText" class="mono" style="font-size: 12px; color: #10B981; font-weight: 700; margin-bottom: 12px;"></div>
+      <div id="statusText" class="mono" style="font-size: 12px; color: #10B981; font-weight: 700; margin-bottom: 12px; padding: 10px; background: rgba(16, 185, 129, 0.1); border-radius: 10px; border: 1px solid rgba(16, 185, 129, 0.2);"></div>
       <div id="scheduleContainer"></div>
     </div>
 
@@ -120,7 +130,7 @@
 </div>
 
 <script>
-/* CLASS ROSTER (ALL 66 STUDENTS) */
+/* CLASS ROSTER (66 STUDENTS) */
 const STUDENTS = [
   { pin: "26002-EC-001", name: "KARRI SRAVANI" },
   { pin: "26002-EC-002", name: "SHAIK SHARFUDDIN" },
@@ -190,21 +200,95 @@ const STUDENTS = [
   { pin: "26002-EC-066", name: "SIRRA MADHUPRIYA" }
 ];
 
-/* SCHEDULE DATA */
-const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+/* PERIOD SLOTS CONFIGURATION */
+const PERIOD_SLOTS = [
+  { id: 1, start: "09:30", end: "10:20", label: "09:30 AM – 10:20 AM" },
+  { id: 2, start: "10:20", end: "11:10", label: "10:20 AM – 11:10 AM" },
+  { id: 3, start: "11:10", end: "12:00", label: "11:10 AM – 12:00 PM" },
+  { id: 4, start: "12:00", end: "12:50", label: "12:00 PM – 12:50 PM" },
+  { id: 5, start: "12:50", end: "13:30", label: "12:50 PM – 01:30 PM", isLunch: true },
+  { id: 6, start: "13:30", end: "14:20", label: "01:30 PM – 02:20 PM" },
+  { id: 7, start: "14:20", end: "15:10", label: "02:20 PM – 03:10 PM" },
+  { id: 8, start: "15:10", end: "16:00", label: "03:10 PM – 04:00 PM" }
+];
+
+/* EXACT TIMETABLE DATA FROM JNGP C-26 SHEET */
 const TIMETABLE = {
-  Monday: [{s:"Chemistry",p:2},{s:"Physics",p:2},{s:"Lunch",p:1},{s:"Maths",p:2},{s:"BE",p:1}],
-  Tuesday: [{s:"BE",p:1},{s:"B S Lab",p:3},{s:"Lunch",p:1},{s:"BE Lab",p:3}],
-  Wednesday: [{s:"Maths",p:2},{s:"Chemistry",p:2},{s:"Lunch",p:1},{s:"English",p:2},{s:"FCP",p:1}],
-  Thursday: [{s:"Physics",p:1},{s:"BE",p:1},{s:"FCP",p:2},{s:"Lunch",p:1},{s:"English",p:2},{s:"TUT",p:1}],
-  Friday: [{s:"BE",p:2},{s:"FCP",p:2},{s:"Lunch",p:1},{s:"C & Python Lab",p:3}],
-  Saturday: [{s:"Maths",p:1},{s:"Chemistry",p:1},{s:"Physics",p:2},{s:"Lunch",p:1},{s:"Engineering Drawing with CAD Lab",p:3}]
+  Monday: [
+    { periodId: 1, subject: "CHEMISTRY", duration: "1 Period" },
+    { periodId: 2, subject: "CHEMISTRY", duration: "1 Period" },
+    { periodId: 3, subject: "PHYSICS", duration: "1 Period" },
+    { periodId: 4, subject: "PHYSICS", duration: "1 Period" },
+    { periodId: 5, subject: "LUNCH", duration: "40 Mins" },
+    { periodId: 6, subject: "MATHS", duration: "1 Period" },
+    { periodId: 7, subject: "MATHS", duration: "1 Period" },
+    { periodId: 8, subject: "BE", duration: "1 Period" }
+  ],
+  Tuesday: [
+    { periodId: 1, subject: "BE", duration: "1 Period" },
+    { periodId: 2, subject: "B S LAB", duration: "Lab Period" },
+    { periodId: 3, subject: "B S LAB", duration: "Lab Period" },
+    { periodId: 4, subject: "B S LAB", duration: "Lab Period" },
+    { periodId: 5, subject: "LUNCH", duration: "40 Mins" },
+    { periodId: 6, subject: "BE LAB", duration: "Lab Period" },
+    { periodId: 7, subject: "BE LAB", duration: "Lab Period" },
+    { periodId: 8, subject: "BE LAB", duration: "Lab Period" }
+  ],
+  Wednesday: [
+    { periodId: 1, subject: "MATHS", duration: "1 Period" },
+    { periodId: 2, subject: "MATHS", duration: "1 Period" },
+    { periodId: 3, subject: "CHEMISTRY", duration: "1 Period" },
+    { periodId: 4, subject: "CHEMISTRY", duration: "1 Period" },
+    { periodId: 5, subject: "LUNCH", duration: "40 Mins" },
+    { periodId: 6, subject: "ENGLISH", duration: "1 Period" },
+    { periodId: 7, subject: "ENGLISH", duration: "1 Period" },
+    { periodId: 8, subject: "FCP", duration: "1 Period" }
+  ],
+  Thursday: [
+    { periodId: 1, subject: "PHYSICS", duration: "1 Period" },
+    { periodId: 2, subject: "BE", duration: "1 Period" },
+    { periodId: 3, subject: "FCP", duration: "1 Period" },
+    { periodId: 4, subject: "FCP", duration: "1 Period" },
+    { periodId: 5, subject: "LUNCH", duration: "40 Mins" },
+    { periodId: 6, subject: "ENGLISH", duration: "1 Period" },
+    { periodId: 7, subject: "ENGLISH", duration: "1 Period" },
+    { periodId: 8, subject: "TUT", duration: "1 Period" }
+  ],
+  Friday: [
+    { periodId: 1, subject: "BE", duration: "1 Period" },
+    { periodId: 2, subject: "BE", duration: "1 Period" },
+    { periodId: 3, subject: "FCP", duration: "1 Period" },
+    { periodId: 4, subject: "FCP", duration: "1 Period" },
+    { periodId: 5, subject: "LUNCH", duration: "40 Mins" },
+    { periodId: 6, subject: "C & PYTHON LAB", duration: "Lab Period" },
+    { periodId: 7, subject: "C & PYTHON LAB", duration: "Lab Period" },
+    { periodId: 8, subject: "C & PYTHON LAB", duration: "Lab Period" }
+  ],
+  Saturday: [
+    { periodId: 1, subject: "MATHS", duration: "1 Period" },
+    { periodId: 2, subject: "CHEMISTRY", duration: "1 Period" },
+    { periodId: 3, subject: "PHYSICS", duration: "1 Period" },
+    { periodId: 4, subject: "PHYSICS", duration: "1 Period" },
+    { periodId: 5, subject: "LUNCH", duration: "40 Mins" },
+    { periodId: 6, subject: "ENGINEERING DRAWING WITH CAD LAB", duration: "Lab Period" },
+    { periodId: 7, subject: "ENGINEERING DRAWING WITH CAD LAB", duration: "Lab Period" },
+    { periodId: 8, subject: "ENGINEERING DRAWING WITH CAD LAB", duration: "Lab Period" }
+  ]
 };
 
+const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 let currentUser = null;
 let selectedDay = "Monday";
 
 function init() {
+  const now = new Date();
+  const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  const currentDayName = dayNames[now.getDay()];
+  
+  if (DAYS.includes(currentDayName)) {
+    selectedDay = currentDayName;
+  }
+
   const saved = localStorage.getItem("ece_user");
   if(saved) {
     currentUser = JSON.parse(saved);
@@ -248,6 +332,9 @@ function updateClock() {
   const now = new Date();
   document.getElementById("clock").innerText = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
   document.getElementById("date").innerText = now.toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short' });
+  
+  // Refresh schedule periodically for smooth real-time highlight transitions
+  renderSchedule();
 }
 
 function switchTab(tabId, btn) {
@@ -260,62 +347,27 @@ function switchTab(tabId, btn) {
 function renderDayButtons() {
   const container = document.getElementById("daySelector");
   container.innerHTML = DAYS.map(d => `
-    <button onclick="selectDay('${d}')" class="mono" style="padding: 8px 14px; border-radius: 10px; border: 1px solid ${d === selectedDay ? '#818CF8' : 'rgba(255,255,255,0.1)'}; background: ${d === selectedDay ? 'linear-gradient(135deg, #4F46E5, #7C3AED)' : '#111827'}; color: #FFF; font-weight: 700; font-size: 11px; cursor: pointer;">
+    <button onclick="selectDay('${d}')" class="mono" style="padding: 8px 14px; border-radius: 10px; border: 1px solid ${d === selectedDay ? '#818CF8' : 'rgba(255,255,255,0.1)'}; background: ${d === selectedDay ? 'linear-gradient(135deg, #4F46E5, #7C3AED)' : '#111827'}; color: #FFF; font-weight: 700; font-size: 11px; cursor: pointer; flex-shrink: 0;">
       ${d.slice(0,3).toUpperCase()}
     </button>
   `).join('');
 }
 
-function selectDay(d) { selectedDay = d; renderDayButtons(); renderSchedule(); }
-
-function renderSchedule() {
-  const list = TIMETABLE[selectedDay] || [];
-  document.getElementById("scheduleContainer").innerHTML = list.map(item => `
-    <div class="card" style="display: flex; justify-content: space-between; align-items: center;">
-      <div>
-        <div style="font-weight: 700; font-size: 15px;">${item.s}</div>
-        <div class="mono" style="font-size: 11px; color: #9CA3AF; margin-top: 2px;">${item.p} Period(s)</div>
-      </div>
-      <div style="font-size: 20px;">${item.s === 'Lunch' ? '🍱' : '📖'}</div>
-    </div>
-  `).join('');
+function selectDay(d) { 
+  selectedDay = d; 
+  renderDayButtons(); 
+  renderSchedule(); 
 }
 
-function openSBTET() {
-  navigator.clipboard.writeText(currentUser.pin);
-  alert("PIN copied to clipboard! Opening SBTET Connect...");
-  window.open("https://sbtetconnect.app", "_blank");
-}
+/* REAL-TIME TIME COMPARISON HELPER */
+function getCurrentPeriodId() {
+  const now = new Date();
+  const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  const todayName = dayNames[now.getDay()];
 
-function initAIChat() {
-  const c = document.getElementById("chatContainer");
-  c.innerHTML = `<div class="chat-msg chat-ai">✨ <b>Gemini AI:</b> Hello! Ask me any doubt regarding BE, Physics, Chemistry, Maths, or Python!</div>`;
-}
+  if (selectedDay !== todayName) return null;
 
-async function sendAIMessage() {
-  const input = document.getElementById("aiInput");
-  const text = input.value.trim();
-  if(!text) return;
-  
-  const c = document.getElementById("chatContainer");
-  c.innerHTML += `<div class="chat-msg chat-user">👤 ${text}</div>`;
-  input.value = "";
-  c.scrollTop = c.scrollHeight;
+  const currentMinutes = now.getHours() * 60 + now.getMinutes();
 
-  setTimeout(() => {
-    let reply = "";
-    const q = text.toLowerCase();
-    if(q.includes("ohm")) reply = "⚡ <b>Ohm's Law:</b> V = I × R. Voltage equals Current multiplied by Resistance.";
-    else if(q.includes("kcl") || q.includes("kvl") || q.includes("kirchhoff")) reply = "🔌 <b>KCL:</b> Sum of currents entering a junction equals sum leaving. <b>KVL:</b> Total voltage drops in a closed loop equal zero.";
-    else if(q.includes("python")) reply = "💻 <b>Python Loop Example:</b><br><code>for i in range(5): print('ECE C-26:', i)</code>";
-    else reply = `✨ <b>Gemini AI Answer:</b> Regarding "${text}", check your C-26 unit notes or ask your faculty!`;
-    
-    c.innerHTML += `<div class="chat-msg chat-ai">${reply}</div>`;
-    c.scrollTop = c.scrollHeight;
-  }, 400);
-}
-
-window.onload = init;
-</script>
-</body>
-</html>
+  for (let slot of PERIOD_SLOTS) {
+    const [sHours, sMins] = slot.start.split(":").map(Numb
