@@ -2,27 +2,27 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 <title>ECE Time Tracker 26-27 – JNGP Ramanthapur</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet"/>
 
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
-  html, body { height: 100vh; width: 100vw; overflow: hidden; background: #0B0F19; color: #F3F4F6; display: flex; justify-content: center; }
+  html, body { height: 100%; width: 100%; overflow: hidden; background: #0B0F19; color: #F3F4F6; display: flex; justify-content: center; }
   .mono { font-family: 'JetBrains Mono', monospace; }
   
-  /* App Outer Frame */
-  #app { width: 100%; max-width: 480px; height: 100vh; display: flex; flex-direction: column; background: #0B0F19; border-left: 1px solid rgba(255,255,255,0.08); border-right: 1px solid rgba(255,255,255,0.08); position: relative; overflow: hidden; }
+  /* App Outer Frame Locked to 100% Screen Height */
+  #app { width: 100%; max-width: 480px; height: 100vh; height: 100dvh; display: flex; flex-direction: column; background: #0B0F19; border-left: 1px solid rgba(255,255,255,0.08); border-right: 1px solid rgba(255,255,255,0.08); position: relative; overflow: hidden; }
   
   /* Main Container */
-  #mainApp { display: none; flex-direction: column; flex: 1; height: 100vh; overflow: hidden; }
+  #mainApp { display: none; flex-direction: column; height: 100%; width: 100%; overflow: hidden; }
 
-  /* Screens */
+  /* Tab Screens Container (Independent Internal Scroll) */
   .screen { display: none; flex-direction: column; flex: 1; min-height: 0; padding: 16px; overflow-y: auto; }
   .screen.active { display: flex !important; }
   
-  /* UI Components */
+  /* Cards & Active Highlight */
   .card { background: #111827; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; padding: 16px; margin-bottom: 12px; transition: all 0.3s ease; }
   .card.active-period {
     background: linear-gradient(135deg, rgba(79, 70, 229, 0.25), rgba(236, 72, 153, 0.25));
@@ -34,8 +34,8 @@
   .badge { display: inline-block; padding: 4px 10px; border-radius: 8px; font-size: 10px; font-weight: 700; }
   .badge-live { background: #10B981; color: #000; }
   
-  /* Bottom Navigation Layout */
-  .bottom-nav { height: 60px; flex-shrink: 0; display: flex; background: rgba(17, 24, 39, 0.98); border-top: 1px solid rgba(255, 255, 255, 0.08); z-index: 10; }
+  /* Fixed Bottom Navigation */
+  .bottom-nav { height: 65px; flex-shrink: 0; display: flex; background: #111827; border-top: 1px solid rgba(255, 255, 255, 0.08); z-index: 50; }
   .nav-item { flex: 1; background: transparent; border: none; padding: 8px 4px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; cursor: pointer; color: #9CA3AF; }
   .nav-item.active { color: #818CF8; }
   .nav-item.active .icon { filter: drop-shadow(0 0 8px rgba(99,102,241,0.6)); }
@@ -50,7 +50,7 @@
 
 <div id="app">
   <!-- Login Screen -->
-  <div id="loginScreen" style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; padding: 20px;">
+  <div id="loginScreen" style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; padding: 20px;">
     <div style="width: 100%; max-width: 380px; background: #111827; border: 1px solid rgba(255,255,255,0.08); border-radius: 24px; padding: 32px 24px; text-align: center;">
       <div style="width: 60px; height: 60px; margin: 0 auto 16px; background: linear-gradient(135deg, #4F46E5, #EC4899); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-weight: 900; color: #FFF; font-size: 18px;">ECE</div>
       <div class="mono" style="font-size: 11px; color: #818CF8; letter-spacing: 1.5px; font-weight: 700;">002 · JNGP RAMANTHAPUR</div>
@@ -63,7 +63,7 @@
 
   <!-- Main Application -->
   <div id="mainApp">
-    <!-- Top Header -->
+    <!-- Top Header (Fixed Top) -->
     <div style="padding: 12px 16px; background: rgba(17, 24, 39, 0.95); border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;">
       <div>
         <div class="mono" style="font-size: 10px; color: #818CF8; font-weight: 700;">002 · JNGP RAMANTHAPUR</div>
@@ -128,7 +128,7 @@
       </div>
     </div>
 
-    <!-- Bottom Navigation Bar -->
+    <!-- Fixed Bottom Navigation Bar -->
     <div class="bottom-nav">
       <button class="nav-item active" onclick="switchTab('timetable', this)"><span class="icon">📅</span><span class="mono" style="font-size: 10px;">Timetable</span></button>
       <button class="nav-item" onclick="switchTab('attendance', this)"><span class="icon">📋</span><span class="mono" style="font-size: 10px;">Attendance</span></button>
@@ -498,3 +498,4 @@ window.onload = init;
 </script>
 </body>
 </html>
+        
