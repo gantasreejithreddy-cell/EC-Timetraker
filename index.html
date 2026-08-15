@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 <title>ECE Time Tracker 26-27 – JNGP Ramanthapur</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet"/>
 
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
@@ -18,21 +18,68 @@
   /* Main Container */
   #mainApp { display: none; flex-direction: column; height: 100%; width: 100%; overflow: hidden; }
 
-  /* Tab Screens Container (Independent Internal Scroll) */
+  /* Tab Screens Container */
   .screen { display: none; flex-direction: column; flex: 1; min-height: 0; padding: 16px; overflow-y: auto; }
   .screen.active { display: flex !important; }
   
-  /* Cards & Active Highlight */
-  .card { background: #111827; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; padding: 16px; margin-bottom: 12px; transition: all 0.3s ease; }
-  .card.active-period {
-    background: linear-gradient(135deg, rgba(79, 70, 229, 0.25), rgba(236, 72, 153, 0.25));
-    border: 1px solid #818CF8;
-    box-shadow: 0 0 16px rgba(129, 140, 248, 0.3);
+  /* ATTRACTIVE & COLORFUL USER NAME HIGHLIGHT */
+  .highlight-user-name {
+    font-size: 17px !important;
+    font-weight: 900 !important;
+    background: linear-gradient(90deg, #818CF8, #EC4899, #FF7E5F, #10B981);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: userGradientShift 4s linear infinite;
+    display: inline-block;
+    letter-spacing: 0.5px;
   }
+
+  @keyframes userGradientShift {
+    0% { background-position: 0% center; }
+    100% { background-position: 200% center; }
+  }
+
+  /* Cards UI */
+  .card { background: #111827; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; padding: 16px; margin-bottom: 12px; transition: all 0.3s ease; }
+  
+  /* ONGOING CLASS HIGHLIGHT */
+  @keyframes activePulse {
+    0% { box-shadow: 0 0 15px rgba(236, 72, 153, 0.4), 0 0 30px rgba(79, 70, 229, 0.3); border-color: #EC4899; }
+    50% { box-shadow: 0 0 25px rgba(16, 185, 129, 0.6), 0 0 40px rgba(124, 58, 237, 0.5); border-color: #10B981; }
+    100% { box-shadow: 0 0 15px rgba(236, 72, 153, 0.4), 0 0 30px rgba(79, 70, 229, 0.3); border-color: #EC4899; }
+  }
+
+  .card.active-period {
+    background: linear-gradient(135deg, rgba(236, 72, 153, 0.25) 0%, rgba(124, 58, 237, 0.3) 50%, rgba(16, 185, 129, 0.25) 100%);
+    border: 2px solid #EC4899;
+    border-radius: 20px;
+    padding: 22px;
+    margin-bottom: 16px;
+    transform: scale(1.02);
+    animation: activePulse 2.5s infinite ease-in-out;
+  }
+
+  .active-subject-title {
+    font-size: 21px !important;
+    font-weight: 900 !important;
+    background: linear-gradient(90deg, #FF7E5F, #FEB47B, #7C3AED, #10B981, #EC4899);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradientShift 3s linear infinite;
+    text-shadow: 0 0 12px rgba(255, 126, 95, 0.3);
+  }
+
+  @keyframes gradientShift {
+    0% { background-position: 0% center; }
+    100% { background-position: 200% center; }
+  }
+
   .gradient-btn { background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 50%, #EC4899 100%); border: none; color: #FFF; font-weight: 700; border-radius: 12px; padding: 14px; cursor: pointer; text-align: center; width: 100%; }
   
   .badge { display: inline-block; padding: 4px 10px; border-radius: 8px; font-size: 10px; font-weight: 700; }
-  .badge-live { background: #10B981; color: #000; }
+  .badge-live { background: linear-gradient(90deg, #10B981, #059669); color: #FFF; font-weight: 800; box-shadow: 0 0 10px rgba(16, 185, 129, 0.5); }
   
   /* Fixed Bottom Navigation */
   .bottom-nav { height: 65px; flex-shrink: 0; display: flex; background: #111827; border-top: 1px solid rgba(255, 255, 255, 0.08); z-index: 50; }
@@ -40,7 +87,7 @@
   .nav-item.active { color: #818CF8; }
   .nav-item.active .icon { filter: drop-shadow(0 0 8px rgba(99,102,241,0.6)); }
   
-  /* AI Chat UI */
+  /* Chat UI */
   .chat-msg { max-width: 88%; border-radius: 16px; padding: 12px 16px; margin-bottom: 10px; font-size: 13px; line-height: 1.5; white-space: pre-line; word-break: break-word; }
   .chat-user { align-self: flex-end; background: linear-gradient(135deg, #4F46E5, #7C3AED); color: #FFF; }
   .chat-ai { align-self: flex-start; background: #111827; border: 1px solid rgba(255,255,255,0.08); color: #F3F4F6; }
@@ -54,7 +101,8 @@
     <div style="width: 100%; max-width: 380px; background: #111827; border: 1px solid rgba(255,255,255,0.08); border-radius: 24px; padding: 32px 24px; text-align: center;">
       <div style="width: 60px; height: 60px; margin: 0 auto 16px; background: linear-gradient(135deg, #4F46E5, #EC4899); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-weight: 900; color: #FFF; font-size: 18px;">ECE</div>
       <div class="mono" style="font-size: 11px; color: #818CF8; letter-spacing: 1.5px; font-weight: 700;">002 · JNGP RAMANTHAPUR</div>
-      <h2 style="font-size: 22px; margin: 6px 0 16px; font-weight: 800;">ECE Time Tracker</h2>
+      <h2 style="font-size: 22px; margin: 6px 0 4px; font-weight: 800;">ECE Time Tracker</h2>
+      <div class="mono" style="font-size: 11px; color: #EC4899; font-weight: 700; margin-bottom: 16px;">DESIGNED BY SREEJITH</div>
       <input type="text" id="pinInput" placeholder="Enter PIN (e.g. 051 or 26002-EC-051)" class="mono" style="width: 100%; background: #1F2937; border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 14px; color: #FFF; text-align: center; margin-bottom: 12px; outline: none;" />
       <div id="loginError" style="color: #F43F5E; font-size: 12px; margin-bottom: 12px; display: none;"></div>
       <button onclick="handleLogin()" class="gradient-btn">Verify & Enter</button>
@@ -63,25 +111,32 @@
 
   <!-- Main Application -->
   <div id="mainApp">
-    <!-- Top Header (Fixed Top) -->
+    <!-- Top Header -->
     <div style="padding: 12px 16px; background: rgba(17, 24, 39, 0.95); border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;">
       <div>
         <div class="mono" style="font-size: 10px; color: #818CF8; font-weight: 700;">002 · JNGP RAMANTHAPUR</div>
-        <div id="userName" style="font-size: 15px; font-weight: 800; margin-top: 2px;">Student</div>
-        <div class="mono" style="font-size: 11px; color: #9CA3AF;">
+        <!-- Highlighted Colorful User Name -->
+        <div id="userName" class="highlight-user-name" style="margin-top: 2px;">Student</div>
+        <div class="mono" style="font-size: 11px; color: #9CA3AF; margin-top: 2px;">
           <span id="userPin">26002-EC-051</span> · <span onclick="handleLogout()" style="color: #F43F5E; cursor: pointer;">Logout</span>
         </div>
       </div>
       <div style="text-align: right;">
         <div id="clock" class="mono" style="font-size: 13px; font-weight: 700; color: #10B981;">00:00 AM</div>
-        <div id="date" style="font-size: 10px; color: #9CA3AF; margin-top: 2px;">Today</div>
+        <div class="mono" style="font-size: 10px; color: #EC4899; font-weight: 700; margin-top: 2px;">Designed by Sreejith</div>
       </div>
     </div>
 
     <!-- Timetable Tab -->
     <div id="tabTimetable" class="screen active">
+      <!-- Welcome Back Greeting Card -->
+      <div style="background: linear-gradient(135deg, rgba(79, 70, 229, 0.15), rgba(236, 72, 153, 0.15)); border: 1px solid rgba(129, 140, 248, 0.3); border-radius: 14px; padding: 12px 16px; margin-bottom: 12px;">
+        <div style="font-size: 15px; font-weight: 800;">Hi <span id="welcomeUserName" class="highlight-user-name">Student</span>, Welcome back! 👋</div>
+        <div class="mono" style="font-size: 11px; color: #9CA3AF; margin-top: 2px;">Here is your class schedule for today.</div>
+      </div>
+
       <div id="daySelector" style="display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 12px;"></div>
-      <div id="statusText" class="mono" style="font-size: 12px; color: #10B981; font-weight: 700; margin-bottom: 12px; padding: 10px; background: rgba(16, 185, 129, 0.1); border-radius: 10px; border: 1px solid rgba(16, 185, 129, 0.2);"></div>
+      <div id="statusText" class="mono" style="font-size: 12px; color: #10B981; font-weight: 700; margin-bottom: 12px; padding: 12px; background: rgba(16, 185, 129, 0.1); border-radius: 12px; border: 1px solid rgba(16, 185, 129, 0.3);"></div>
       <div id="scheduleContainer"></div>
     </div>
 
@@ -98,11 +153,11 @@
       </div>
     </div>
 
-    <!-- AI Tutor Tab -->
+    <!-- rock AI Tab -->
     <div id="tabAi" class="screen" style="overflow: hidden;">
       <div id="chatContainer" style="flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; padding-right: 4px; margin-bottom: 10px;"></div>
       <div style="display: flex; gap: 8px; background: #0B0F19; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.08); flex-shrink: 0;">
-        <input type="text" id="aiInput" placeholder="Ask AI Tutor any question..." style="flex: 1; background: #111827; border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 12px 16px; color: #FFF; outline: none;" onkeypress="if(event.key==='Enter') sendAIMessage()"/>
+        <input type="text" id="aiInput" placeholder="Ask rock any question..." style="flex: 1; background: #111827; border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 12px 16px; color: #FFF; outline: none;" onkeypress="if(event.key==='Enter') sendAIMessage()"/>
         <button onclick="sendAIMessage()" class="gradient-btn" style="width: auto; padding: 0 20px;">Ask</button>
       </div>
     </div>
@@ -132,7 +187,7 @@
     <div class="bottom-nav">
       <button class="nav-item active" onclick="switchTab('timetable', this)"><span class="icon">📅</span><span class="mono" style="font-size: 10px;">Timetable</span></button>
       <button class="nav-item" onclick="switchTab('attendance', this)"><span class="icon">📋</span><span class="mono" style="font-size: 10px;">Attendance</span></button>
-      <button class="nav-item" onclick="switchTab('ai', this)"><span class="icon">✨</span><span class="mono" style="font-size: 10px;">AI Tutor</span></button>
+      <button class="nav-item" onclick="switchTab('ai', this)"><span class="icon">🚀</span><span class="mono" style="font-size: 10px;">rock</span></button>
       <button class="nav-item" onclick="switchTab('exams', this)"><span class="icon">⏱️</span><span class="mono" style="font-size: 10px;">Exams</span></button>
     </div>
   </div>
@@ -330,8 +385,12 @@ function handleLogout() {
 function showApp() {
   document.getElementById("loginScreen").style.display = "none";
   document.getElementById("mainApp").style.display = "flex";
+  
+  // Set user name in header and welcome card
   document.getElementById("userName").innerText = currentUser.name;
+  document.getElementById("welcomeUserName").innerText = currentUser.name;
   document.getElementById("userPin").innerText = currentUser.pin;
+  
   renderDayButtons();
   renderSchedule();
   initAIChat();
@@ -340,7 +399,6 @@ function showApp() {
 function updateClock() {
   const now = new Date();
   document.getElementById("clock").innerText = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
-  document.getElementById("date").innerText = now.toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short' });
   renderSchedule();
 }
 
@@ -403,7 +461,7 @@ function renderSchedule() {
   const activeSubject = list.find(item => item.periodId === activePeriodId);
 
   if (activeSlot && activeSubject) {
-    statusEl.innerHTML = `🟢 CURRENTLY ONGOING: <span style="color:#FFF;">${activeSubject.subject}</span> (${activeSlot.label})`;
+    statusEl.innerHTML = `🔥 CURRENTLY ONGOING: <span style="color:#FFF; font-weight:900;">${activeSubject.subject}</span> (${activeSlot.label})`;
   } else {
     statusEl.innerHTML = `⏳ NO ACTIVE CLASS AT THIS TIME`;
   }
@@ -416,15 +474,17 @@ function renderSchedule() {
       <div class="card ${isActive ? 'active-period' : ''}" style="display: flex; justify-content: space-between; align-items: center;">
         <div>
           <div style="display: flex; align-items: center; gap: 8px;">
-            <div style="font-weight: 800; font-size: 15px; color: ${isActive ? '#818CF8' : '#FFF'};">${item.subject}</div>
+            <div class="${isActive ? 'active-subject-title' : ''}" style="font-weight: 800; font-size: 15px; color: #FFF;">
+              ${item.subject}
+            </div>
             ${isActive ? '<span class="badge badge-live">LIVE NOW</span>' : ''}
           </div>
-          <div class="mono" style="font-size: 11px; color: #9CA3AF; margin-top: 4px;">
+          <div class="mono" style="font-size: ${isActive ? '12px' : '11px'}; color: ${isActive ? '#F3F4F6' : '#9CA3AF'}; margin-top: 6px; font-weight: ${isActive ? '700' : '400'};">
             ⏰ ${slot.label}
           </div>
         </div>
         <div style="text-align: right;">
-          <div style="font-size: 20px;">${item.subject === 'LUNCH' ? '🍱' : item.subject.includes('LAB') ? '💻' : '📖'}</div>
+          <div style="font-size: ${isActive ? '28px' : '20px'};">${item.subject === 'LUNCH' ? '🍱' : item.subject.includes('LAB') ? '💻' : '📖'}</div>
         </div>
       </div>
     `;
@@ -440,11 +500,11 @@ function openSBTET() {
 function initAIChat() {
   const c = document.getElementById("chatContainer");
   if (c && c.children.length === 0) {
-    c.innerHTML = `<div class="chat-msg chat-ai">✨ <b>AI Tutor:</b> Hello! Ask me any doubt regarding BE, Physics, Chemistry, Maths, or Python!</div>`;
+    c.innerHTML = `<div class="chat-msg chat-ai">✨ <b>rock:</b> Hello! I'm rock, your AI assistant designed by Sreejith! Ask me any doubt regarding BE, Physics, Chemistry, Maths, or Python!</div>`;
   }
 }
 
-/* GROQ API INTEGRATION */
+/* GROQ API INTEGRATION FOR rock */
 const GROQ_API_KEY = "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";
 
 async function sendAIMessage() {
@@ -458,7 +518,7 @@ async function sendAIMessage() {
   c.scrollTop = c.scrollHeight;
 
   const loadingId = "loading-" + Date.now();
-  c.innerHTML += `<div id="${loadingId}" class="chat-msg chat-ai">✨ <i>AI is thinking...</i></div>`;
+  c.innerHTML += `<div id="${loadingId}" class="chat-msg chat-ai">✨ <i>rock is thinking...</i></div>`;
   c.scrollTop = c.scrollHeight;
 
   try {
@@ -473,7 +533,7 @@ async function sendAIMessage() {
         messages: [
           { 
             role: "system", 
-            content: "You are an expert AI tutor for ECE (Electronics & Communication Engineering) C-26 diploma students at JNGP Ramanthapur. Keep your answers clear, concise, accurate, and easy to understand." 
+            content: "You are 'rock', an expert AI tutor designed by Sreejith for ECE (Electronics & Communication Engineering) C-26 diploma students at JNGP Ramanthapur. If anyone asks who designed, built, or created this app or web page, always state clearly that it was designed by Sreejith. Keep your subject answers clear, concise, accurate, and easy to understand." 
           },
           { 
             role: "user", 
@@ -486,7 +546,7 @@ async function sendAIMessage() {
     const data = await response.json();
     const replyText = data.choices?.[0]?.message?.content || "Sorry, I couldn't process that. Please try again!";
     
-    document.getElementById(loadingId).outerHTML = `<div class="chat-msg chat-ai">✨ <b>AI Tutor:</b><br>${replyText.replace(/\n/g, "<br>")}</div>`;
+    document.getElementById(loadingId).outerHTML = `<div class="chat-msg chat-ai">✨ <b>rock:</b><br>${replyText.replace(/\n/g, "<br>")}</div>`;
   } catch (error) {
     document.getElementById(loadingId).outerHTML = `<div class="chat-msg chat-ai" style="color: #F43F5E;">⚠️ Error connecting to AI server. Please check your network connection!</div>`;
   }
@@ -498,4 +558,3 @@ window.onload = init;
 </script>
 </body>
 </html>
-        
