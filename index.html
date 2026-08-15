@@ -17,7 +17,7 @@
   
   /* Screen Wrappers */
   .screen { display: none; flex-direction: column; flex: 1; padding: 16px; padding-bottom: 90px; height: calc(100vh - 80px); overflow-y: auto; }
-  .screen.active { display: flex; }
+  .screen.active { display: flex !important; }
   
   /* Cards & Active Highlight */
   .card { background: #111827; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; padding: 16px; margin-bottom: 12px; transition: all 0.3s ease; }
@@ -96,8 +96,8 @@
       </div>
     </div>
 
-    <!-- AI Tutor Tab -->
-    <div id="tabAI" class="screen" style="overflow: hidden; padding-bottom: 90px;">
+    <!-- AI Tutor Tab (ID Fixed: tabAi) -->
+    <div id="tabAi" class="screen" style="overflow: hidden; padding-bottom: 90px; height: calc(100vh - 80px);">
       <div id="chatContainer" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; padding-right: 4px; margin-bottom: 12px;"></div>
       <div style="display: flex; gap: 8px; background: #0B0F19; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.08);">
         <input type="text" id="aiInput" placeholder="Ask AI Tutor any question..." style="flex: 1; background: #111827; border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 12px 16px; color: #FFF; outline: none;" onkeypress="if(event.key==='Enter') sendAIMessage()"/>
@@ -345,7 +345,14 @@ function updateClock() {
 function switchTab(tabId, btn) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
-  document.getElementById('tab' + tabId.charAt(0).toUpperCase() + tabId.slice(1)).classList.add('active');
+  
+  // Format tabId so 'ai' -> 'tabAi', 'timetable' -> 'tabTimetable'
+  const targetId = 'tab' + tabId.charAt(0).toUpperCase() + tabId.slice(1);
+  const targetScreen = document.getElementById(targetId);
+  
+  if (targetScreen) {
+    targetScreen.classList.add('active');
+  }
   btn.classList.add('active');
 }
 
@@ -431,7 +438,7 @@ function openSBTET() {
 
 function initAIChat() {
   const c = document.getElementById("chatContainer");
-  if (c.children.length === 0) {
+  if (c && c.children.length === 0) {
     c.innerHTML = `<div class="chat-msg chat-ai">✨ <b>AI Tutor:</b> Hello! Ask me any doubt regarding BE, Physics, Chemistry, Maths, or Python!</div>`;
   }
 }
