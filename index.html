@@ -9,17 +9,20 @@
 
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
-  body { background: #0B0F19; color: #F3F4F6; min-height: 100vh; display: flex; justify-content: center; overflow: hidden; }
+  html, body { height: 100vh; width: 100vw; overflow: hidden; background: #0B0F19; color: #F3F4F6; display: flex; justify-content: center; }
   .mono { font-family: 'JetBrains Mono', monospace; }
   
-  /* App Container */
-  #app { width: 100%; max-width: 480px; height: 100vh; display: flex; flex-direction: column; background: #0B0F19; border-left: 1px solid rgba(255,255,255,0.08); border-right: 1px solid rgba(255,255,255,0.08); position: relative; }
+  /* App Outer Frame */
+  #app { width: 100%; max-width: 480px; height: 100vh; display: flex; flex-direction: column; background: #0B0F19; border-left: 1px solid rgba(255,255,255,0.08); border-right: 1px solid rgba(255,255,255,0.08); position: relative; overflow: hidden; }
   
-  /* Screen Wrappers */
-  .screen { display: none; flex-direction: column; flex: 1; min-height: 0; padding: 16px; padding-bottom: 75px; overflow-y: auto; }
+  /* Main Container */
+  #mainApp { display: none; flex-direction: column; flex: 1; height: 100vh; overflow: hidden; }
+
+  /* Screens */
+  .screen { display: none; flex-direction: column; flex: 1; min-height: 0; padding: 16px; overflow-y: auto; }
   .screen.active { display: flex !important; }
   
-  /* Cards & Active Highlight */
+  /* UI Components */
   .card { background: #111827; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; padding: 16px; margin-bottom: 12px; transition: all 0.3s ease; }
   .card.active-period {
     background: linear-gradient(135deg, rgba(79, 70, 229, 0.25), rgba(236, 72, 153, 0.25));
@@ -28,17 +31,16 @@
   }
   .gradient-btn { background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 50%, #EC4899 100%); border: none; color: #FFF; font-weight: 700; border-radius: 12px; padding: 14px; cursor: pointer; text-align: center; width: 100%; }
   
-  /* Badge UI */
   .badge { display: inline-block; padding: 4px 10px; border-radius: 8px; font-size: 10px; font-weight: 700; }
   .badge-live { background: #10B981; color: #000; }
   
-  /* Navigation */
-  .bottom-nav { position: fixed; bottom: 0; width: 100%; max-width: 480px; display: flex; background: rgba(17, 24, 39, 0.95); backdrop-filter: blur(16px); border-top: 1px solid rgba(255, 255, 255, 0.08); z-index: 100; height: 60px; }
-  .nav-item { flex: 1; background: transparent; border: none; padding: 8px 4px; display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; color: #9CA3AF; }
+  /* Bottom Navigation Layout */
+  .bottom-nav { height: 60px; flex-shrink: 0; display: flex; background: rgba(17, 24, 39, 0.98); border-top: 1px solid rgba(255, 255, 255, 0.08); z-index: 10; }
+  .nav-item { flex: 1; background: transparent; border: none; padding: 8px 4px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; cursor: pointer; color: #9CA3AF; }
   .nav-item.active { color: #818CF8; }
   .nav-item.active .icon { filter: drop-shadow(0 0 8px rgba(99,102,241,0.6)); }
   
-  /* Chat Bubble */
+  /* AI Chat UI */
   .chat-msg { max-width: 88%; border-radius: 16px; padding: 12px 16px; margin-bottom: 10px; font-size: 13px; line-height: 1.5; white-space: pre-line; word-break: break-word; }
   .chat-user { align-self: flex-end; background: linear-gradient(135deg, #4F46E5, #7C3AED); color: #FFF; }
   .chat-ai { align-self: flex-start; background: #111827; border: 1px solid rgba(255,255,255,0.08); color: #F3F4F6; }
@@ -48,7 +50,7 @@
 
 <div id="app">
   <!-- Login Screen -->
-  <div id="loginScreen" style="display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 100vh; padding: 20px;">
+  <div id="loginScreen" style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; padding: 20px;">
     <div style="width: 100%; max-width: 380px; background: #111827; border: 1px solid rgba(255,255,255,0.08); border-radius: 24px; padding: 32px 24px; text-align: center;">
       <div style="width: 60px; height: 60px; margin: 0 auto 16px; background: linear-gradient(135deg, #4F46E5, #EC4899); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-weight: 900; color: #FFF; font-size: 18px;">ECE</div>
       <div class="mono" style="font-size: 11px; color: #818CF8; letter-spacing: 1.5px; font-weight: 700;">002 · JNGP RAMANTHAPUR</div>
@@ -60,18 +62,18 @@
   </div>
 
   <!-- Main Application -->
-  <div id="mainApp" style="display: none; flex-direction: column; flex: 1; min-height: 0;">
-    <!-- Header -->
-    <div style="padding: 16px 20px; background: rgba(17, 24, 39, 0.9); border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; z-index: 10;">
+  <div id="mainApp">
+    <!-- Top Header -->
+    <div style="padding: 12px 16px; background: rgba(17, 24, 39, 0.95); border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;">
       <div>
         <div class="mono" style="font-size: 10px; color: #818CF8; font-weight: 700;">002 · JNGP RAMANTHAPUR</div>
-        <div id="userName" style="font-size: 16px; font-weight: 800; margin-top: 2px;">Student</div>
+        <div id="userName" style="font-size: 15px; font-weight: 800; margin-top: 2px;">Student</div>
         <div class="mono" style="font-size: 11px; color: #9CA3AF;">
           <span id="userPin">26002-EC-051</span> · <span onclick="handleLogout()" style="color: #F43F5E; cursor: pointer;">Logout</span>
         </div>
       </div>
       <div style="text-align: right;">
-        <div id="clock" class="mono" style="font-size: 14px; font-weight: 700; color: #10B981;">00:00 AM</div>
+        <div id="clock" class="mono" style="font-size: 13px; font-weight: 700; color: #10B981;">00:00 AM</div>
         <div id="date" style="font-size: 10px; color: #9CA3AF; margin-top: 2px;">Today</div>
       </div>
     </div>
@@ -97,8 +99,8 @@
     </div>
 
     <!-- AI Tutor Tab -->
-    <div id="tabAi" class="screen" style="overflow: hidden; padding-bottom: 75px;">
-      <div id="chatContainer" style="flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; padding-right: 4px; margin-bottom: 8px;"></div>
+    <div id="tabAi" class="screen" style="overflow: hidden;">
+      <div id="chatContainer" style="flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; padding-right: 4px; margin-bottom: 10px;"></div>
       <div style="display: flex; gap: 8px; background: #0B0F19; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.08); flex-shrink: 0;">
         <input type="text" id="aiInput" placeholder="Ask AI Tutor any question..." style="flex: 1; background: #111827; border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 12px 16px; color: #FFF; outline: none;" onkeypress="if(event.key==='Enter') sendAIMessage()"/>
         <button onclick="sendAIMessage()" class="gradient-btn" style="width: auto; padding: 0 20px;">Ask</button>
@@ -126,7 +128,7 @@
       </div>
     </div>
 
-    <!-- Bottom Navigation -->
+    <!-- Bottom Navigation Bar -->
     <div class="bottom-nav">
       <button class="nav-item active" onclick="switchTab('timetable', this)"><span class="icon">📅</span><span class="mono" style="font-size: 10px;">Timetable</span></button>
       <button class="nav-item" onclick="switchTab('attendance', this)"><span class="icon">📋</span><span class="mono" style="font-size: 10px;">Attendance</span></button>
@@ -219,7 +221,7 @@ const PERIOD_SLOTS = [
   { id: 8, start: "15:10", end: "16:00", label: "03:10 PM – 04:00 PM" }
 ];
 
-/* EXACT TIMETABLE DATA FROM JNGP C-26 SHEET */
+/* TIMETABLE DATA */
 const TIMETABLE = {
   Monday: [
     { periodId: 1, subject: "CHEMISTRY", duration: "1 Period" },
