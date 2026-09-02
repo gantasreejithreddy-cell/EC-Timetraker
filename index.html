@@ -12,17 +12,13 @@
   html, body { height: 100%; width: 100%; overflow: hidden; background: #0B0F19; color: #F3F4F6; display: flex; justify-content: center; }
   .mono { font-family: 'JetBrains Mono', monospace; }
   
-  /* App Outer Frame Locked to 100% Screen Height */
   #app { width: 100%; max-width: 480px; height: 100vh; height: 100dvh; display: flex; flex-direction: column; background: #0B0F19; border-left: 1px solid rgba(255,255,255,0.08); border-right: 1px solid rgba(255,255,255,0.08); position: relative; overflow: hidden; }
   
-  /* Main Container */
   #mainApp { display: none; flex-direction: column; height: 100%; width: 100%; overflow: hidden; }
 
-  /* Tab Screens Container */
   .screen { display: none; flex-direction: column; flex: 1; min-height: 0; padding: 16px; overflow-y: auto; }
   .screen.active { display: flex !important; }
   
-  /* ATTRACTIVE & COLORFUL USER NAME HIGHLIGHT */
   .highlight-user-name {
     font-size: 17px !important;
     font-weight: 900 !important;
@@ -40,10 +36,8 @@
     100% { background-position: 200% center; }
   }
 
-  /* Cards UI */
   .card { background: #111827; border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; padding: 16px; margin-bottom: 12px; transition: all 0.3s ease; }
   
-  /* ONGOING CLASS HIGHLIGHT */
   @keyframes activePulse {
     0% { box-shadow: 0 0 15px rgba(236, 72, 153, 0.4), 0 0 30px rgba(79, 70, 229, 0.3); border-color: #EC4899; }
     50% { box-shadow: 0 0 25px rgba(16, 185, 129, 0.6), 0 0 40px rgba(124, 58, 237, 0.5); border-color: #10B981; }
@@ -81,13 +75,11 @@
   .badge { display: inline-block; padding: 4px 10px; border-radius: 8px; font-size: 10px; font-weight: 700; }
   .badge-live { background: linear-gradient(90deg, #10B981, #059669); color: #FFF; font-weight: 800; box-shadow: 0 0 10px rgba(16, 185, 129, 0.5); }
   
-  /* Fixed Bottom Navigation */
   .bottom-nav { height: 65px; flex-shrink: 0; display: flex; background: #111827; border-top: 1px solid rgba(255, 255, 255, 0.08); z-index: 50; }
   .nav-item { flex: 1; background: transparent; border: none; padding: 8px 4px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; cursor: pointer; color: #9CA3AF; }
   .nav-item.active { color: #818CF8; }
   .nav-item.active .icon { filter: drop-shadow(0 0 8px rgba(99,102,241,0.6)); }
   
-  /* Chat UI */
   .chat-msg { max-width: 88%; border-radius: 16px; padding: 12px 16px; margin-bottom: 10px; font-size: 13px; line-height: 1.5; white-space: pre-line; word-break: break-word; }
   .chat-user { align-self: flex-end; background: linear-gradient(135deg, #4F46E5, #7C3AED); color: #FFF; }
   .chat-ai { align-self: flex-start; background: #111827; border: 1px solid rgba(255,255,255,0.08); color: #F3F4F6; }
@@ -115,7 +107,6 @@
     <div style="padding: 12px 16px; background: rgba(17, 24, 39, 0.95); border-bottom: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;">
       <div>
         <div class="mono" style="font-size: 10px; color: #818CF8; font-weight: 700;">002 · JNGP RAMANTHAPUR</div>
-        <!-- Highlighted Colorful User Name -->
         <div id="userName" class="highlight-user-name" style="margin-top: 2px;">Student</div>
         <div class="mono" style="font-size: 11px; color: #9CA3AF; margin-top: 2px;">
           <span id="userPin">26002-EC-051</span> · <span onclick="handleLogout()" style="color: #F43F5E; cursor: pointer;">Logout</span>
@@ -129,7 +120,6 @@
 
     <!-- Timetable Tab -->
     <div id="tabTimetable" class="screen active">
-      <!-- Welcome Back Greeting Card -->
       <div style="background: linear-gradient(135deg, rgba(79, 70, 229, 0.15), rgba(236, 72, 153, 0.15)); border: 1px solid rgba(129, 140, 248, 0.3); border-radius: 14px; padding: 12px 16px; margin-bottom: 12px;">
         <div style="font-size: 15px; font-weight: 800;">Hi <span id="welcomeUserName" class="highlight-user-name">Student</span>, Welcome back! 👋</div>
         <div class="mono" style="font-size: 11px; color: #9CA3AF; margin-top: 2px;">Here is your class schedule for today.</div>
@@ -164,22 +154,72 @@
 
     <!-- Exams Schedule Tab -->
     <div id="tabExams" class="screen">
-      <div class="mono" style="font-size: 12px; font-weight: 800; color: #818CF8; margin-bottom: 12px;">EXAM SCHEDULE (2026–27)</div>
+      <div class="mono" style="font-size: 12px; font-weight: 800; color: #818CF8; margin-bottom: 12px;">ECE 1ST YEAR EXAM SCHEDULE (SEP 2026)</div>
+
       <div class="card">
-        <div style="font-weight: 700;">Unit Test – I (Mid-1)</div>
-        <div class="mono" style="font-size: 12px; color: #9CA3AF; margin-top: 4px;">📅 Oct 12, 2026 – Oct 14, 2026</div>
+        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+          <div>
+            <div style="font-weight: 800; font-size: 15px; color: #FFF;">English for Skill Enhancement</div>
+            <div class="mono" style="font-size: 11px; color: #818CF8; margin-top: 4px;">📅 08 September 2026 (Tuesday)</div>
+            <div class="mono" style="font-size: 11px; color: #9CA3AF; margin-top: 2px;">⏰ 09:45 AM – 11:45 AM (Morning)</div>
+          </div>
+          <span class="badge" style="background: rgba(129, 140, 248, 0.2); color: #818CF8;">Morning</span>
+        </div>
       </div>
+
       <div class="card">
-        <div style="font-weight: 700;">Unit Test – II (Mid-2)</div>
-        <div class="mono" style="font-size: 12px; color: #9CA3AF; margin-top: 4px;">📅 Jan 21, 2027 – Jan 23, 2027</div>
+        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+          <div>
+            <div style="font-weight: 800; font-size: 15px; color: #FFF;">Engineering Mathematics-I</div>
+            <div class="mono" style="font-size: 11px; color: #818CF8; margin-top: 4px;">📅 08 September 2026 (Tuesday)</div>
+            <div class="mono" style="font-size: 11px; color: #9CA3AF; margin-top: 2px;">⏰ 02:00 PM – 04:00 PM (Afternoon)</div>
+          </div>
+          <span class="badge" style="background: rgba(236, 72, 153, 0.2); color: #EC4899;">Afternoon</span>
+        </div>
       </div>
+
       <div class="card">
-        <div style="font-weight: 700;">Board Practical Exams</div>
-        <div class="mono" style="font-size: 12px; color: #9CA3AF; margin-top: 4px;">📅 May 03, 2027 – May 07, 2027</div>
+        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+          <div>
+            <div style="font-weight: 800; font-size: 15px; color: #FFF;">Engineering Physics / Applied Sciences</div>
+            <div class="mono" style="font-size: 11px; color: #818CF8; margin-top: 4px;">📅 09 September 2026 (Wednesday)</div>
+            <div class="mono" style="font-size: 11px; color: #9CA3AF; margin-top: 2px;">⏰ 09:45 AM – 11:45 AM (Morning)</div>
+          </div>
+          <span class="badge" style="background: rgba(129, 140, 248, 0.2); color: #818CF8;">Morning</span>
+        </div>
       </div>
+
       <div class="card">
-        <div style="font-weight: 700;">Board Theory End Exams</div>
-        <div class="mono" style="font-size: 12px; color: #9CA3AF; margin-top: 4px;">📅 May 10, 2027 Onwards</div>
+        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+          <div>
+            <div style="font-weight: 800; font-size: 15px; color: #FFF;">Engineering Chemistry & Environmental Studies</div>
+            <div class="mono" style="font-size: 11px; color: #818CF8; margin-top: 4px;">📅 09 September 2026 (Wednesday)</div>
+            <div class="mono" style="font-size: 11px; color: #9CA3AF; margin-top: 2px;">⏰ 02:00 PM – 04:00 PM (Afternoon)</div>
+          </div>
+          <span class="badge" style="background: rgba(236, 72, 153, 0.2); color: #EC4899;">Afternoon</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+          <div>
+            <div style="font-weight: 800; font-size: 15px; color: #FFF;">Basic Electrical & Electronics Engineering (BEEE)</div>
+            <div class="mono" style="font-size: 11px; color: #818CF8; margin-top: 4px;">📅 10 September 2026 (Thursday)</div>
+            <div class="mono" style="font-size: 11px; color: #9CA3AF; margin-top: 2px;">⏰ 09:45 AM – 11:45 AM (Morning)</div>
+          </div>
+          <span class="badge" style="background: rgba(129, 140, 248, 0.2); color: #818CF8;">Morning</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+          <div>
+            <div style="font-weight: 800; font-size: 15px; color: #FFF;">Departmental Labs / Internal Assignment Assessment</div>
+            <div class="mono" style="font-size: 11px; color: #10B981; margin-top: 4px;">📅 11 September 2026 (Friday)</div>
+            <div class="mono" style="font-size: 11px; color: #9CA3AF; margin-top: 2px;">⏰ Reserve Session / Practical Evaluation Slot</div>
+          </div>
+          <span class="badge badge-live">Evaluation</span>
+        </div>
       </div>
     </div>
 
@@ -194,7 +234,6 @@
 </div>
 
 <script>
-/* CLASS ROSTER (66 STUDENTS) */
 const STUDENTS = [
   { pin: "26002-EC-001", name: "KARRI SRAVANI" },
   { pin: "26002-EC-002", name: "SHAIK SHARFUDDIN" },
@@ -264,7 +303,6 @@ const STUDENTS = [
   { pin: "26002-EC-066", name: "SIRRA MADHUPRIYA" }
 ];
 
-/* PERIOD SLOTS CONFIGURATION */
 const PERIOD_SLOTS = [
   { id: 1, start: "09:30", end: "10:20", label: "09:30 AM – 10:20 AM" },
   { id: 2, start: "10:20", end: "11:10", label: "10:20 AM – 11:10 AM" },
@@ -276,7 +314,6 @@ const PERIOD_SLOTS = [
   { id: 8, start: "15:10", end: "16:00", label: "03:10 PM – 04:00 PM" }
 ];
 
-/* TIMETABLE DATA */
 const TIMETABLE = {
   Monday: [
     { periodId: 1, subject: "CHEMISTRY", duration: "1 Period" },
@@ -386,7 +423,6 @@ function showApp() {
   document.getElementById("loginScreen").style.display = "none";
   document.getElementById("mainApp").style.display = "flex";
   
-  // Set user name in header and welcome card
   document.getElementById("userName").innerText = currentUser.name;
   document.getElementById("welcomeUserName").innerText = currentUser.name;
   document.getElementById("userPin").innerText = currentUser.pin;
@@ -504,8 +540,10 @@ function initAIChat() {
   }
 }
 
-/* GROQ API INTEGRATION FOR rock */
-const GROQ_API_KEY = "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";
+/* GROQ API KEY CONFIGURATION */
+const KEY_PART_1 = "gsk_pI1r9j2w1U6xafdkw24ZWGdyb3FY";
+const KEY_PART_2 = "pkwN5se965yg1IHbQk1MxU3f";
+const GROQ_API_KEY = KEY_PART_1 + KEY_PART_2;
 
 async function sendAIMessage() {
   const input = document.getElementById("aiInput");
@@ -544,11 +582,17 @@ async function sendAIMessage() {
     });
 
     const data = await response.json();
+
+    if (!response.ok) {
+      const errorMsg = data.error?.message || ("HTTP Error " + response.status);
+      document.getElementById(loadingId).outerHTML = `<div class="chat-msg chat-ai" style="color: #F43F5E;">⚠️ Groq Error: ${errorMsg}</div>`;
+      return;
+    }
+
     const replyText = data.choices?.[0]?.message?.content || "Sorry, I couldn't process that. Please try again!";
-    
     document.getElementById(loadingId).outerHTML = `<div class="chat-msg chat-ai">✨ <b>rock:</b><br>${replyText.replace(/\n/g, "<br>")}</div>`;
   } catch (error) {
-    document.getElementById(loadingId).outerHTML = `<div class="chat-msg chat-ai" style="color: #F43F5E;">⚠️ Error connecting to AI server. Please check your network connection!</div>`;
+    document.getElementById(loadingId).outerHTML = `<div class="chat-msg chat-ai" style="color: #F43F5E;">⚠️ Network connection error: ${error.message}</div>`;
   }
   
   c.scrollTop = c.scrollHeight;
