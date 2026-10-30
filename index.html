@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-<title>ECE Time Tracker – JNGP Ramanthapur</title>
+<title>ECE Dashboard & Time Tracker – JNGP Ramanthapur</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700;800&display=swap" rel="stylesheet"/>
 
@@ -12,12 +12,14 @@
   
   :root {
     --bg: #070B13;
-    --card: rgba(15, 23, 42, 0.7);
+    --card: rgba(15, 23, 42, 0.75);
     --card-border: rgba(255, 255, 255, 0.08);
     --cyan: #06B6D4;
     --violet: #8B5CF6;
     --pink: #EC4899;
     --emerald: #10B981;
+    --amber: #F59E0B;
+    --rose: #F43F5E;
     --text-primary: #F8FAFC;
     --text-muted: #94A3B8;
   }
@@ -126,19 +128,55 @@
     100% { background-position: 200% center; }
   }
 
-  /* SBTET Attendance Top Bar */
-  .attendance-banner {
-    background: linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(6, 182, 212, 0.12));
-    border: 1px solid rgba(16, 185, 129, 0.3);
-    border-radius: 16px;
-    padding: 12px 16px;
+  /* DIRECT ON-PAGE ATTENDANCE TRACKER */
+  .attendance-main-card {
+    background: linear-gradient(135deg, rgba(6, 182, 212, 0.15) 0%, rgba(139, 92, 246, 0.15) 100%);
+    border: 2px solid rgba(6, 182, 212, 0.4);
+    border-radius: 22px;
+    padding: 18px;
+    box-shadow: 0 0 20px rgba(6, 182, 212, 0.2);
+  }
+
+  .attendance-stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 12px;
+  }
+
+  .percentage-display {
+    font-size: 38px;
+    font-weight: 900;
+    letter-spacing: -1px;
+    line-height: 1;
+  }
+
+  .progress-bar-bg {
+    width: 100%;
+    height: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 999px;
+    overflow: hidden;
+    margin-top: 12px;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    border-radius: 999px;
+    transition: width 0.5s ease-in-out;
+  }
+
+  .attendance-launch-banner {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
     display: flex;
     justify-content: space-between;
     align-items: center;
   }
 
-  .attendance-btn {
-    background: #10B981;
+  .launch-btn {
+    background: linear-gradient(135deg, #10B981, #06B6D4);
     color: #042F2E;
     font-weight: 800;
     font-size: 12px;
@@ -147,6 +185,39 @@
     padding: 8px 14px;
     cursor: pointer;
     box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+  }
+  .launch-btn:active { transform: scale(0.96); }
+
+  /* WORK & LAB RECORD TASK BOARD */
+  .work-board-card {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(236, 72, 153, 0.15) 100%);
+    border: 2px solid #F59E0B;
+    border-radius: 22px;
+    padding: 18px;
+    box-shadow: 0 0 20px rgba(245, 158, 11, 0.2);
+  }
+
+  .task-tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 3px 8px;
+    border-radius: 6px;
+    margin-right: 6px;
+  }
+  .tag-urgent { background: rgba(239, 68, 68, 0.2); color: #F87171; border: 1px solid rgba(239, 68, 68, 0.4); }
+  .tag-record { background: rgba(245, 158, 11, 0.2); color: #FBBF24; border: 1px solid rgba(245, 158, 11, 0.4); }
+  .tag-done { text-decoration: line-through; opacity: 0.5; }
+
+  .task-item {
+    background: rgba(15, 23, 42, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-top: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
 
   /* Ongoing Class Spotlight Hero */
@@ -192,7 +263,6 @@
     50% { opacity: 0.3; transform: scale(0.7); }
   }
 
-  /* Day Selector Pills */
   .day-carousel {
     display: flex;
     gap: 8px;
@@ -222,7 +292,6 @@
     box-shadow: 0 4px 14px rgba(6, 182, 212, 0.35);
   }
 
-  /* Timeline Period Item */
   .period-item {
     background: var(--card);
     border: 1px solid var(--card-border);
@@ -232,7 +301,6 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    transition: transform 0.2s ease;
   }
 
   .period-item.active-item {
@@ -264,12 +332,12 @@
     <div class="login-box">
       <div style="width: 58px; height: 58px; margin: 0 auto 14px; background: linear-gradient(135deg, #06B6D4, #8B5CF6); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-weight: 900; color: #FFF; font-size: 18px; box-shadow: 0 8px 20px rgba(6, 182, 212, 0.35);">ECE</div>
       <div class="mono" style="font-size: 11px; color: var(--cyan); font-weight: 700; letter-spacing: 1px;">002 · JNGP RAMANTHAPUR</div>
-      <h2 style="font-size: 22px; font-weight: 900; margin: 6px 0 4px;">Time Tracker</h2>
+      <h2 style="font-size: 22px; font-weight: 900; margin: 6px 0 4px;">ECE Work & Time Hub</h2>
       <div class="mono" style="font-size: 11px; color: var(--pink); font-weight: 800; margin-bottom: 20px;">DESIGNED BY SREEJITH</div>
       
       <input type="text" id="pinInput" placeholder="Enter PIN (e.g. 051 or 26002-EC-051)" class="mono" style="width: 100%; background: #0B1120; border: 1px solid rgba(255,255,255,0.12); border-radius: 12px; padding: 14px; color: #FFF; text-align: center; margin-bottom: 12px; outline: none; font-size: 14px;" />
       <div id="loginError" style="color: #F43F5E; font-size: 12px; margin-bottom: 12px; display: none;"></div>
-      <button onclick="handleLogin()" class="gradient-btn">Enter Dashboard →</button>
+      <button onclick="handleLogin()" class="gradient-btn">Access Dashboard →</button>
     </div>
   </div>
 
@@ -290,13 +358,55 @@
       </div>
     </div>
 
-    <!-- Attendance Action Banner -->
-    <div class="attendance-banner">
-      <div>
-        <div style="font-size: 13px; font-weight: 800; color: #FFF;">Check Live Attendance</div>
-        <div class="mono" style="font-size: 10px; color: var(--text-muted); margin-top: 1px;">Copy PIN & jump to SBTET portal</div>
+    <!-- DIRECT IN-PAGE ATTENDANCE PERCENTAGE CARD -->
+    <div class="attendance-main-card">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <span class="mono" style="font-size: 10px; font-weight: 800; color: var(--cyan); letter-spacing: 0.5px;">SBTET ATTENDANCE STATUS</span>
+          <div style="font-size: 14px; font-weight: 800; color: #FFF; margin-top: 2px;">Sem Attendance Meter</div>
+        </div>
+        <button onclick="editAttendancePrompt()" style="background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #FFF; border-radius: 8px; padding: 5px 10px; font-size: 11px; cursor: pointer; font-weight: 700;">✏️ Edit</button>
       </div>
-      <button onclick="openSBTET()" class="attendance-btn">Check SBTET →</button>
+
+      <div class="attendance-stat-row">
+        <div>
+          <div id="attPercentage" class="percentage-display mono" style="color: var(--emerald);">82.5%</div>
+          <div id="attStatusBadge" class="mono" style="font-size: 11px; font-weight: 800; color: var(--emerald); margin-top: 4px;">🟢 SAFE (≥75% SBTET Target)</div>
+        </div>
+        <div style="text-align: right;">
+          <div class="mono" style="font-size: 13px; font-weight: 700; color: #FFF;">
+            <span id="attAttended">165</span> / <span id="attTotal">200</span>
+          </div>
+          <div class="mono" style="font-size: 10px; color: var(--text-muted); margin-top: 2px;">Classes Attended</div>
+        </div>
+      </div>
+
+      <div class="progress-bar-bg">
+        <div id="attProgressBar" class="progress-bar-fill" style="width: 82.5%; background: linear-gradient(90deg, #10B981, #06B6D4);"></div>
+      </div>
+
+      <div id="attAdvice" class="mono" style="font-size: 11px; color: var(--text-muted); margin-top: 10px; line-height: 1.4;"></div>
+
+      <div class="attendance-launch-banner">
+        <div>
+          <div style="font-size: 12px; font-weight: 800; color: #FFF;">Need official report?</div>
+          <div class="mono" style="font-size: 10px; color: var(--text-muted);">Auto-copies PIN to clipboard</div>
+        </div>
+        <button onclick="openSBTETPortal()" class="launch-btn">Open SBTET Connect ↗</button>
+      </div>
+    </div>
+
+    <!-- HIGHLIGHTED LAB WORK & RECORD TO-DO SECTION -->
+    <div class="work-board-card">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <span class="live-pill" style="background: #F59E0B; color: #000; font-size: 9px;">🚨 PENDING TASKS</span>
+          <div style="font-size: 17px; font-weight: 900; color: #FFF; margin-top: 6px;">Lab Records & Assignments</div>
+        </div>
+        <button onclick="showAddTaskPrompt()" style="background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #FFF; border-radius: 8px; padding: 6px 10px; font-size: 11px; cursor: pointer; font-weight: 700;">+ Add Work</button>
+      </div>
+      
+      <div id="taskListContainer" style="margin-top: 10px;"></div>
     </div>
 
     <!-- Ongoing Class Spotlight Hero -->
@@ -462,9 +572,16 @@ const TIMETABLE = {
   ]
 };
 
+const DEFAULT_TASKS = [
+  { id: 1, title: "Basic Electronics (BE) Lab Record Submission", type: "record", due: "Next Lab Session", done: false },
+  { id: 2, title: "C & Python Programming Practice Programs", type: "urgent", due: "Friday Session", done: false },
+  { id: 3, title: "Engineering Drawing with CAD Sheet 3", type: "record", due: "Saturday", done: false }
+];
+
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 let currentUser = null;
 let selectedDay = "Monday";
+let userTasks = [];
 
 function init() {
   const now = new Date();
@@ -475,9 +592,12 @@ function init() {
     selectedDay = currentDayName;
   }
 
-  const saved = localStorage.getItem("ece_user");
-  if(saved) {
-    currentUser = JSON.parse(saved);
+  const savedTasks = localStorage.getItem("ece_tasks");
+  userTasks = savedTasks ? JSON.parse(savedTasks) : DEFAULT_TASKS;
+
+  const savedUser = localStorage.getItem("ece_user");
+  if(savedUser) {
+    currentUser = JSON.parse(savedUser);
     showApp();
   }
   updateClock();
@@ -511,6 +631,8 @@ function showApp() {
   document.getElementById("userName").innerText = currentUser.name;
   document.getElementById("userPin").innerText = currentUser.pin;
   
+  renderAttendanceCard();
+  renderTasks();
   renderDayButtons();
   renderDashboard();
 }
@@ -520,6 +642,123 @@ function updateClock() {
   document.getElementById("clock").innerText = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
   document.getElementById("date").innerText = now.toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short' });
   renderDashboard();
+}
+
+/* DIRECT ATTENDANCE ENGINE (CALCULATES IN-PAGE METRICS) */
+function getAttendanceData() {
+  const key = "att_" + (currentUser ? currentUser.pin : "default");
+  const data = localStorage.getItem(key);
+  if (data) return JSON.parse(data);
+  return { attended: 165, total: 200 };
+}
+
+function renderAttendanceCard() {
+  const data = getAttendanceData();
+  const attended = data.attended;
+  const total = data.total;
+  const percentage = total > 0 ? ((attended / total) * 100).toFixed(1) : "0.0";
+
+  document.getElementById("attAttended").innerText = attended;
+  document.getElementById("attTotal").innerText = total;
+  document.getElementById("attPercentage").innerText = percentage + "%";
+  
+  const bar = document.getElementById("attProgressBar");
+  bar.style.width = Math.min(100, Math.max(0, percentage)) + "%";
+
+  const badge = document.getElementById("attStatusBadge");
+  const advice = document.getElementById("attAdvice");
+
+  if (percentage >= 75) {
+    badge.innerText = "🟢 SAFE (≥75% SBTET Target)";
+    badge.style.color = "var(--emerald)";
+    document.getElementById("attPercentage").style.color = "var(--emerald)";
+    bar.style.background = "linear-gradient(90deg, #10B981, #06B6D4)";
+
+    const safeBunks = Math.floor((attended - (0.75 * total)) / 0.75);
+    advice.innerHTML = `✅ You can safely miss <b>${Math.max(0, safeBunks)} periods</b> and still maintain above 75%.`;
+  } else if (percentage >= 65) {
+    badge.innerText = "🟡 CONDONATION ZONE (65% – 74%)";
+    badge.style.color = "var(--amber)";
+    document.getElementById("attPercentage").style.color = "var(--amber)";
+    bar.style.background = "linear-gradient(90deg, #F59E0B, #EC4899)";
+
+    const needed = Math.ceil(((0.75 * total) - attended) / 0.25);
+    advice.innerHTML = `⚠️ Need to attend next <b>${needed} consecutive periods</b> without absence to reach 75%.`;
+  } else {
+    badge.innerText = "🔴 DETAINED ZONE (<65%)";
+    badge.style.color = "var(--rose)";
+    document.getElementById("attPercentage").style.color = "var(--rose)";
+    bar.style.background = "linear-gradient(90deg, #F43F5E, #EC4899)";
+
+    const needed = Math.ceil(((0.75 * total) - attended) / 0.25);
+    advice.innerHTML = `🚨 Urgent: Must attend next <b>${needed} periods</b> to qualify for semester exams.`;
+  }
+}
+
+function editAttendancePrompt() {
+  const current = getAttendanceData();
+  const newAtt = prompt("Enter total classes attended by you so far:", current.attended);
+  if (newAtt === null) return;
+
+  const newTot = prompt("Enter total classes conducted so far:", current.total);
+  if (newTot === null) return;
+
+  const attendedNum = parseInt(newAtt, 10);
+  const totalNum = parseInt(newTot, 10);
+
+  if (isNaN(attendedNum) || isNaN(totalNum) || totalNum <= 0 || attendedNum > totalNum) {
+    alert("Please enter valid numbers (Attended cannot exceed Total classes).");
+    return;
+  }
+
+  const key = "att_" + (currentUser ? currentUser.pin : "default");
+  localStorage.setItem(key, JSON.stringify({ attended: attendedNum, total: totalNum }));
+  renderAttendanceCard();
+}
+
+function openSBTETPortal() {
+  navigator.clipboard.writeText(currentUser.pin);
+  alert("PIN copied to clipboard: " + currentUser.pin + "\nOpening SBTET Connect...");
+  window.open("https://sbtetconnect.app/", "_blank");
+}
+
+/* TASKS & WORK TO DO LOGIC */
+function renderTasks() {
+  const container = document.getElementById("taskListContainer");
+  if (!container) return;
+
+  container.innerHTML = userTasks.map(t => `
+    <div class="task-item">
+      <div>
+        <span class="task-tag ${t.type === 'urgent' ? 'tag-urgent' : 'tag-record'}">${t.type.toUpperCase()}</span>
+        <span class="${t.done ? 'tag-done' : ''}" style="font-weight: 700; font-size: 13px; color: ${t.done ? '#94A3B8' : '#FFF'};">${t.title}</span>
+        <div class="mono" style="font-size: 10px; color: var(--text-muted); margin-top: 4px;">Due: ${t.due}</div>
+      </div>
+      <input type="checkbox" ${t.done ? 'checked' : ''} onchange="toggleTask(${t.id})" style="width: 18px; height: 18px; accent-color: #10B981; cursor: pointer;"/>
+    </div>
+  `).join('');
+}
+
+function toggleTask(id) {
+  userTasks = userTasks.map(t => t.id === id ? { ...t, done: !t.done } : t);
+  localStorage.setItem("ece_tasks", JSON.stringify(userTasks));
+  renderTasks();
+}
+
+function showAddTaskPrompt() {
+  const title = prompt("Enter Work/Record description (e.g. 'Maths Assignment 2'):");
+  if (!title) return;
+  const due = prompt("Enter due deadline (e.g. 'Tomorrow', 'Monday'):") || "Soon";
+  
+  userTasks.unshift({
+    id: Date.now(),
+    title: title,
+    type: "record",
+    due: due,
+    done: false
+  });
+  localStorage.setItem("ece_tasks", JSON.stringify(userTasks));
+  renderTasks();
 }
 
 function renderDayButtons() {
@@ -566,7 +805,6 @@ function renderDashboard() {
   const activeSlot = PERIOD_SLOTS.find(s => s.id === activePeriodId);
   const activeSubject = list.find(item => item.periodId === activePeriodId);
 
-  // Spotlight Section
   const spotlightEl = document.getElementById("spotlightContainer");
   if (activeSlot && activeSubject) {
     spotlightEl.innerHTML = `
@@ -589,7 +827,6 @@ function renderDashboard() {
     `;
   }
 
-  // Schedule Timeline List
   document.getElementById("scheduleContainer").innerHTML = list.map(item => {
     const slot = PERIOD_SLOTS.find(s => s.id === item.periodId);
     const isActive = item.periodId === activePeriodId;
@@ -611,12 +848,6 @@ function renderDashboard() {
       </div>
     `;
   }).join('');
-}
-
-function openSBTET() {
-  navigator.clipboard.writeText(currentUser.pin);
-  alert("PIN copied to clipboard! Opening SBTET Connect...");
-  window.open("https://sbtetconnect.app", "_blank");
 }
 
 window.onload = init;
