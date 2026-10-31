@@ -24,6 +24,8 @@
     --emerald: #10B981;
     --amber: #F59E0B;
     --rose: #F43F5E;
+    --whatsapp: #25D366;
+    --instagram: #E1306C;
     --text-primary: #F8FAFC;
     --text-muted: #94A3B8;
   }
@@ -158,7 +160,7 @@
     50% { box-shadow: 0 0 25px rgba(236, 72, 153, 0.6); }
   }
 
-  /* SBTET Connect Exact Match Card */
+  /* Attendance Card */
   .attendance-main-card {
     background: linear-gradient(135deg, rgba(6, 182, 212, 0.12) 0%, rgba(139, 92, 246, 0.12) 100%);
     border: 2px solid rgba(6, 182, 212, 0.4);
@@ -206,6 +208,32 @@
     transition: width 0.5s ease-in-out;
   }
 
+  .attendance-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 14px;
+  }
+
+  .live-check-btn {
+    flex: 1;
+    background: linear-gradient(135deg, #10B981, #06B6D4);
+    color: #042F2E;
+    font-weight: 800;
+    font-size: 12px;
+    border: none;
+    border-radius: 12px;
+    padding: 10px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+  }
+  .live-check-btn:active { transform: scale(0.97); }
+
   /* Tasks Board */
   .work-board-card {
     background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(236, 72, 153, 0.15) 100%);
@@ -251,17 +279,25 @@
   }
   .del-btn:active { transform: scale(0.95); }
 
-  /* Ongoing Class Hero */
+  /* Class Schedule Modern Redesign */
+  .schedule-wrapper {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 22px;
+    padding: 18px;
+  }
+
   .spotlight-card {
     background: linear-gradient(135deg, rgba(139, 92, 246, 0.25) 0%, rgba(236, 72, 153, 0.2) 100%);
     border: 2px solid #8B5CF6;
-    border-radius: 22px;
-    padding: 20px;
+    border-radius: 18px;
+    padding: 16px;
+    margin-bottom: 14px;
     box-shadow: 0 0 25px rgba(139, 92, 246, 0.35);
   }
 
   .spotlight-card.idle {
-    background: var(--card);
+    background: rgba(11, 15, 25, 0.6);
     border: 1px solid var(--card-border);
     box-shadow: none;
   }
@@ -296,17 +332,17 @@
     display: flex;
     gap: 8px;
     overflow-x: auto;
-    padding-bottom: 4px;
+    padding-bottom: 6px;
     scrollbar-width: none;
   }
   .day-carousel::-webkit-scrollbar { display: none; }
 
   .day-pill {
-    background: var(--card);
+    background: rgba(11, 15, 25, 0.8);
     border: 1px solid var(--card-border);
     border-radius: 12px;
-    padding: 10px 18px;
-    font-size: 12px;
+    padding: 8px 16px;
+    font-size: 11px;
     font-weight: 700;
     color: var(--text-muted);
     cursor: pointer;
@@ -322,28 +358,83 @@
   }
 
   .period-item {
-    background: var(--card);
+    background: rgba(11, 15, 25, 0.7);
     border: 1px solid var(--card-border);
-    border-radius: 16px;
-    padding: 14px 16px;
-    margin-bottom: 10px;
+    border-radius: 14px;
+    padding: 12px 14px;
+    margin-bottom: 8px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    position: relative;
+    overflow: hidden;
   }
+
+  .period-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: var(--violet);
+    opacity: 0.7;
+  }
+
+  .period-item.lab-period::before { background: var(--cyan); }
+  .period-item.lunch-period::before { background: var(--amber); }
 
   .period-item.active-item {
     border: 1px solid var(--cyan);
-    background: rgba(6, 182, 212, 0.1);
+    background: rgba(6, 182, 212, 0.12);
+  }
+  .period-item.active-item::before { background: var(--emerald); width: 6px; }
+
+  /* Host & Contact Card */
+  .footer-contact-card {
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(7, 11, 19, 0.95));
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 22px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
   }
 
-  .footer-tag {
-    text-align: center;
-    font-size: 11px;
-    color: var(--pink);
+  .contact-links-grid {
+    display: flex;
+    gap: 10px;
+    margin-top: 14px;
+  }
+
+  .contact-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px;
+    border-radius: 12px;
+    text-decoration: none;
     font-weight: 800;
-    letter-spacing: 0.5px;
-    padding: 8px 0 16px 0;
+    font-size: 13px;
+    color: #FFF;
+    transition: transform 0.2s ease;
+  }
+  .contact-btn:active { transform: scale(0.96); }
+
+  .btn-wa {
+    background: linear-gradient(135deg, #25D366, #128C7E);
+    box-shadow: 0 4px 14px rgba(37, 211, 102, 0.3);
+  }
+
+  .btn-ig {
+    background: linear-gradient(135deg, #E1306C, #C13584, #833AB4);
+    box-shadow: 0 4px 14px rgba(225, 48, 108, 0.3);
+  }
+
+  .btn-call {
+    background: linear-gradient(135deg, #06B6D4, #3B82F6);
+    box-shadow: 0 4px 14px rgba(6, 182, 212, 0.3);
   }
 </style>
 </head>
@@ -356,7 +447,7 @@
       <div style="width: 58px; height: 58px; margin: 0 auto 14px; background: linear-gradient(135deg, #06B6D4, #8B5CF6); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-weight: 900; color: #FFF; font-size: 18px; box-shadow: 0 8px 20px rgba(6, 182, 212, 0.35);">ECE</div>
       <div class="mono" style="font-size: 11px; color: var(--cyan); font-weight: 700; letter-spacing: 1px;">002 · JNGP RAMANTHAPUR</div>
       <h2 style="font-size: 22px; font-weight: 900; margin: 6px 0 4px;">ECE Work & Time Hub</h2>
-      <div class="mono" style="font-size: 11px; color: var(--pink); font-weight: 800; margin-bottom: 20px;">DESIGNED BY SREEJITH</div>
+      <div class="mono" style="font-size: 11px; color: var(--pink); font-weight: 800; margin-bottom: 20px;">DESIGNED BY SREEJITH REDDY</div>
       
       <input type="text" id="pinInput" placeholder="Enter PIN (e.g. 051 or 26002-EC-051)" class="mono" style="width: 100%; background: #0B1120; border: 1px solid rgba(255,255,255,0.12); border-radius: 12px; padding: 14px; color: #FFF; text-align: center; margin-bottom: 12px; outline: none; font-size: 14px;" />
       <div id="loginError" style="color: #F43F5E; font-size: 12px; margin-bottom: 12px; display: none;"></div>
@@ -449,6 +540,13 @@
           📅 <b>Annual Year (180 Days):</b> 69 days left (111 of 180 days)
         </div>
       </div>
+
+      <!-- Link to Official/Direct Live Attendance Web -->
+      <div class="attendance-actions">
+        <a href="https://share.google/czczsjo7wBtImJIzs" target="_blank" onclick="copyUserPinAuto()" class="live-check-btn">
+          ⚡ Check Live Attendance Online ↗
+        </a>
+      </div>
     </div>
 
     <!-- Work & Lab Record Board -->
@@ -464,22 +562,63 @@
       <div id="taskListContainer" style="margin-top: 10px;"></div>
     </div>
 
-    <!-- Ongoing Class Hero -->
-    <div id="spotlightContainer"></div>
+    <!-- Redesigned Class Schedule Section -->
+    <div class="schedule-wrapper">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <div>
+          <div class="mono" style="font-size: 10px; color: var(--cyan); font-weight: 800; letter-spacing: 0.5px;">ACADEMIC TIMETABLE</div>
+          <div style="font-size: 16px; font-weight: 900; color: #FFF;">ECE 1st Year Classes</div>
+        </div>
+        <span class="mono" style="font-size: 10px; background: rgba(139, 92, 246, 0.2); color: var(--violet); padding: 4px 8px; border-radius: 6px; font-weight: 800;">C-26 SYLLABUS</span>
+      </div>
 
-    <!-- Day Carousel -->
-    <div>
-      <div class="mono" style="font-size: 11px; color: var(--text-muted); font-weight: 800; margin-bottom: 8px;">SELECT DAY</div>
-      <div id="daySelector" class="day-carousel"></div>
-    </div>
+      <!-- Ongoing Class Hero -->
+      <div id="spotlightContainer"></div>
 
-    <!-- Full Schedule List -->
-    <div>
-      <div class="mono" style="font-size: 11px; color: var(--text-muted); font-weight: 800; margin-bottom: 8px;">SCHEDULE DETAILS</div>
+      <!-- Day Carousel -->
+      <div style="margin-bottom: 12px;">
+        <div id="daySelector" class="day-carousel"></div>
+      </div>
+
+      <!-- Schedule List -->
       <div id="scheduleContainer"></div>
     </div>
 
-    <div class="mono footer-tag">DESIGNED BY SREEJITH</div>
+    <!-- Web Host, About & Customer Service Contact Section -->
+    <div class="footer-contact-card">
+      <div style="width: 50px; height: 50px; margin: 0 auto 10px; background: linear-gradient(135deg, #06B6D4, #EC4899); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 22px; box-shadow: 0 4px 14px rgba(236, 72, 153, 0.3);">
+        👨‍💻
+      </div>
+      <div class="mono" style="font-size: 10px; color: var(--cyan); font-weight: 800; letter-spacing: 1px;">WEB HOST & DEVELOPER</div>
+      <div style="font-size: 18px; font-weight: 900; color: #FFF; margin-top: 2px;">Ganta Sreejith Reddy</div>
+      <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">
+        ECE 1st Year · <b>JNGP POLYTECHNIC COLLEGE</b>, Ramanthapur
+      </div>
+
+      <div style="border-top: 1px solid rgba(255,255,255,0.08); margin: 14px 0 12px; padding-top: 12px;">
+        <div class="mono" style="font-size: 11px; font-weight: 800; color: var(--pink);">CUSTOMER SERVICE & SUPPORT</div>
+        <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">
+          Facing any issue or timetable mismatch? Contact me directly!
+        </div>
+      </div>
+
+      <!-- Direct Contact Buttons -->
+      <div class="contact-links-grid">
+        <a href="https://wa.me/919063576302?text=Hi%20Sreejith,%20I%20have%20an%20issue%20with%20the%20ECE%20Time%20Tracker%20app" target="_blank" class="contact-btn btn-wa">
+          <span>💬</span> WhatsApp
+        </a>
+        <a href="https://instagram.com/sreejith.1037" target="_blank" class="contact-btn btn-ig">
+          <span>📸</span> Instagram
+        </a>
+        <a href="tel:9063576302" class="contact-btn btn-call">
+          <span>📞</span> Call
+        </a>
+      </div>
+      
+      <div class="mono" style="font-size: 10px; color: var(--text-muted); margin-top: 14px;">
+        Number: +91 9063576302 · IG: @sreejith.1037
+      </div>
+    </div>
   </div>
 </div>
 
@@ -566,64 +705,64 @@ const PERIOD_SLOTS = [
 
 const TIMETABLE = {
   Monday: [
-    { periodId: 1, subject: "CHEMISTRY" },
-    { periodId: 2, subject: "CHEMISTRY" },
-    { periodId: 3, subject: "PHYSICS" },
-    { periodId: 4, subject: "PHYSICS" },
-    { periodId: 5, subject: "LUNCH" },
-    { periodId: 6, subject: "MATHS" },
-    { periodId: 7, subject: "MATHS" },
-    { periodId: 8, subject: "BE" }
+    { periodId: 1, subject: "CHEMISTRY", type: "theory" },
+    { periodId: 2, subject: "CHEMISTRY", type: "theory" },
+    { periodId: 3, subject: "PHYSICS", type: "theory" },
+    { periodId: 4, subject: "PHYSICS", type: "theory" },
+    { periodId: 5, subject: "LUNCH", type: "lunch" },
+    { periodId: 6, subject: "MATHS", type: "theory" },
+    { periodId: 7, subject: "MATHS", type: "theory" },
+    { periodId: 8, subject: "BE", type: "theory" }
   ],
   Tuesday: [
-    { periodId: 1, subject: "BE" },
-    { periodId: 2, subject: "B S LAB" },
-    { periodId: 3, subject: "B S LAB" },
-    { periodId: 4, subject: "B S LAB" },
-    { periodId: 5, subject: "LUNCH" },
-    { periodId: 6, subject: "BE LAB" },
-    { periodId: 7, subject: "BE LAB" },
-    { periodId: 8, subject: "BE LAB" }
+    { periodId: 1, subject: "BE", type: "theory" },
+    { periodId: 2, subject: "B S LAB", type: "lab" },
+    { periodId: 3, subject: "B S LAB", type: "lab" },
+    { periodId: 4, subject: "B S LAB", type: "lab" },
+    { periodId: 5, subject: "LUNCH", type: "lunch" },
+    { periodId: 6, subject: "BE LAB", type: "lab" },
+    { periodId: 7, subject: "BE LAB", type: "lab" },
+    { periodId: 8, subject: "BE LAB", type: "lab" }
   ],
   Wednesday: [
-    { periodId: 1, subject: "MATHS" },
-    { periodId: 2, subject: "MATHS" },
-    { periodId: 3, subject: "CHEMISTRY" },
-    { periodId: 4, subject: "CHEMISTRY" },
-    { periodId: 5, subject: "LUNCH" },
-    { periodId: 6, subject: "ENGLISH" },
-    { periodId: 7, subject: "ENGLISH" },
-    { periodId: 8, subject: "FCP" }
+    { periodId: 1, subject: "MATHS", type: "theory" },
+    { periodId: 2, subject: "MATHS", type: "theory" },
+    { periodId: 3, subject: "CHEMISTRY", type: "theory" },
+    { periodId: 4, subject: "CHEMISTRY", type: "theory" },
+    { periodId: 5, subject: "LUNCH", type: "lunch" },
+    { periodId: 6, subject: "ENGLISH", type: "theory" },
+    { periodId: 7, subject: "ENGLISH", type: "theory" },
+    { periodId: 8, subject: "FCP", type: "theory" }
   ],
   Thursday: [
-    { periodId: 1, subject: "PHYSICS" },
-    { periodId: 2, subject: "BE" },
-    { periodId: 3, subject: "FCP" },
-    { periodId: 4, subject: "FCP" },
-    { periodId: 5, subject: "LUNCH" },
-    { periodId: 6, subject: "ENGLISH" },
-    { periodId: 7, subject: "ENGLISH" },
-    { periodId: 8, subject: "TUT" }
+    { periodId: 1, subject: "PHYSICS", type: "theory" },
+    { periodId: 2, subject: "BE", type: "theory" },
+    { periodId: 3, subject: "FCP", type: "theory" },
+    { periodId: 4, subject: "FCP", type: "theory" },
+    { periodId: 5, subject: "LUNCH", type: "lunch" },
+    { periodId: 6, subject: "ENGLISH", type: "theory" },
+    { periodId: 7, subject: "ENGLISH", type: "theory" },
+    { periodId: 8, subject: "TUT", type: "theory" }
   ],
   Friday: [
-    { periodId: 1, subject: "BE" },
-    { periodId: 2, subject: "BE" },
-    { periodId: 3, subject: "FCP" },
-    { periodId: 4, subject: "FCP" },
-    { periodId: 5, subject: "LUNCH" },
-    { periodId: 6, subject: "C & PYTHON LAB" },
-    { periodId: 7, subject: "C & PYTHON LAB" },
-    { periodId: 8, subject: "C & PYTHON LAB" }
+    { periodId: 1, subject: "BE", type: "theory" },
+    { periodId: 2, subject: "BE", type: "theory" },
+    { periodId: 3, subject: "FCP", type: "theory" },
+    { periodId: 4, subject: "FCP", type: "theory" },
+    { periodId: 5, subject: "LUNCH", type: "lunch" },
+    { periodId: 6, subject: "C & PYTHON LAB", type: "lab" },
+    { periodId: 7, subject: "C & PYTHON LAB", type: "lab" },
+    { periodId: 8, subject: "C & PYTHON LAB", type: "lab" }
   ],
   Saturday: [
-    { periodId: 1, subject: "MATHS" },
-    { periodId: 2, subject: "CHEMISTRY" },
-    { periodId: 3, subject: "PHYSICS" },
-    { periodId: 4, subject: "PHYSICS" },
-    { periodId: 5, subject: "LUNCH" },
-    { periodId: 6, subject: "ENGINEERING DRAWING WITH CAD LAB" },
-    { periodId: 7, subject: "ENGINEERING DRAWING WITH CAD LAB" },
-    { periodId: 8, subject: "ENGINEERING DRAWING WITH CAD LAB" }
+    { periodId: 1, subject: "MATHS", type: "theory" },
+    { periodId: 2, subject: "CHEMISTRY", type: "theory" },
+    { periodId: 3, subject: "PHYSICS", type: "theory" },
+    { periodId: 4, subject: "PHYSICS", type: "theory" },
+    { periodId: 5, subject: "LUNCH", type: "lunch" },
+    { periodId: 6, subject: "ENGINEERING DRAWING WITH CAD LAB", type: "lab" },
+    { periodId: 7, subject: "ENGINEERING DRAWING WITH CAD LAB", type: "lab" },
+    { periodId: 8, subject: "ENGINEERING DRAWING WITH CAD LAB", type: "lab" }
   ]
 };
 
@@ -716,6 +855,12 @@ function updateClock() {
   renderDashboard();
 }
 
+function copyUserPinAuto() {
+  if (currentUser && currentUser.pin) {
+    navigator.clipboard.writeText(currentUser.pin);
+  }
+}
+
 /* INITIAL SETUP: ASKS FOR DATA ONCE */
 function getAttendanceData() {
   const key = "att_" + (currentUser ? currentUser.pin : "default");
@@ -792,10 +937,7 @@ function renderAttendanceCard() {
   const absent = data.absent || 0;
   const errors = data.errors || 0;
 
-  // 1. Overall Attendance %
   const overallPercentage = ((present / working) * 100).toFixed(2);
-  
-  // 2. Exam Considered % (Present / Fixed 180 Annual Days)
   const examPercentage = ((present / TOTAL_ANNUAL_DAYS) * 100).toFixed(2);
 
   document.getElementById("attPercentage").innerText = overallPercentage + "%";
@@ -809,12 +951,10 @@ function renderAttendanceCard() {
   const bar = document.getElementById("attProgressBar");
   bar.style.width = Math.min(100, Math.max(0, overallPercentage)) + "%";
 
-  // Days left out of 180
   const daysLeft = Math.max(0, TOTAL_ANNUAL_DAYS - working);
   document.getElementById("daysLeftText").innerHTML = `📅 <b>Annual Year (180 Days):</b> ${daysLeft} days left (${working} of 180 days)`;
 
-  // Minimum required for 65% condonation out of 180 days = 117 days
-  const minRequiredFor65 = Math.ceil(0.65 * TOTAL_ANNUAL_DAYS); // 117
+  const minRequiredFor65 = Math.ceil(0.65 * TOTAL_ANNUAL_DAYS);
   const neededFor65 = Math.max(0, Math.ceil(minRequiredFor65 - present));
 
   document.getElementById("condonationTargetText").innerHTML = `⚠️ <b>Condonation Range:</b> Attend ${neededFor65} days (Min 65% for Fee)`;
@@ -950,16 +1090,15 @@ function renderDashboard() {
           <div class="live-pill"><span class="live-dot"></span> LIVE CLASS ONGOING</div>
           <span style="font-size: 24px;">${activeSubject.subject === 'LUNCH' ? '🍱' : activeSubject.subject.includes('LAB') ? '💻' : '⚡'}</span>
         </div>
-        <div style="font-size: 22px; font-weight: 900; color: #FFF; margin-bottom: 4px;">${activeSubject.subject}</div>
-        <div class="mono" style="font-size: 12px; color: #E0E7FF;">⏰ ${activeSlot.label}</div>
+        <div style="font-size: 20px; font-weight: 900; color: #FFF; margin-bottom: 4px;">${activeSubject.subject}</div>
+        <div class="mono" style="font-size: 11px; color: #E0E7FF;">⏰ ${activeSlot.label}</div>
       </div>
     `;
   } else {
     spotlightEl.innerHTML = `
       <div class="spotlight-card idle">
-        <div class="mono" style="font-size: 11px; color: var(--text-muted); font-weight: 700;">STATUS</div>
-        <div style="font-size: 16px; font-weight: 800; color: #FFF; margin-top: 4px;">No class currently ongoing</div>
-        <div class="mono" style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Check schedule below for the next period</div>
+        <div class="mono" style="font-size: 10px; color: var(--text-muted); font-weight: 700;">CURRENT PERIOD</div>
+        <div style="font-size: 15px; font-weight: 800; color: #FFF; margin-top: 2px;">No class currently ongoing</div>
       </div>
     `;
   }
@@ -967,20 +1106,23 @@ function renderDashboard() {
   document.getElementById("scheduleContainer").innerHTML = list.map(item => {
     const slot = PERIOD_SLOTS.find(s => s.id === item.periodId);
     const isActive = item.periodId === activePeriodId;
+    const isLab = item.type === 'lab';
+    const isLunch = item.type === 'lunch';
 
     return `
-      <div class="period-item ${isActive ? 'active-item' : ''}">
-        <div>
+      <div class="period-item ${isLab ? 'lab-period' : isLunch ? 'lunch-period' : ''} ${isActive ? 'active-item' : ''}">
+        <div style="padding-left: 6px;">
           <div style="display: flex; align-items: center; gap: 8px;">
-            <span style="font-size: 15px; font-weight: 800; color: ${isActive ? 'var(--cyan)' : '#FFF'};">${item.subject}</span>
+            <span style="font-size: 14px; font-weight: 800; color: ${isActive ? 'var(--cyan)' : '#FFF'};">${item.subject}</span>
             ${isActive ? '<span class="live-pill" style="font-size: 8px; padding: 2px 6px;">NOW</span>' : ''}
+            ${isLab ? '<span class="mono" style="font-size: 9px; color: var(--cyan); background: rgba(6,182,212,0.15); padding: 2px 5px; border-radius: 4px;">LAB</span>' : ''}
           </div>
-          <div class="mono" style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">
+          <div class="mono" style="font-size: 10px; color: var(--text-muted); margin-top: 3px;">
             ⏰ ${slot.label}
           </div>
         </div>
-        <div style="font-size: 20px;">
-          ${item.subject === 'LUNCH' ? '🍱' : item.subject.includes('LAB') ? '💻' : '📖'}
+        <div style="font-size: 18px;">
+          ${isLunch ? '🍱' : isLab ? '💻' : '📖'}
         </div>
       </div>
     `;
