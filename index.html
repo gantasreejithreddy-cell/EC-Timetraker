@@ -134,6 +134,36 @@
     100% { background-position: 200% center; }
   }
 
+  /* Top Direct Live Attendance Action Bar */
+  .top-attendance-bar {
+    background: linear-gradient(135deg, rgba(6, 182, 212, 0.2) 0%, rgba(16, 185, 129, 0.2) 100%);
+    border: 1.5px solid var(--cyan);
+    border-radius: 18px;
+    padding: 14px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 16px rgba(6, 182, 212, 0.2);
+  }
+
+  .live-check-btn {
+    background: linear-gradient(135deg, #10B981, #06B6D4);
+    color: #042F2E;
+    font-weight: 800;
+    font-size: 12px;
+    border: none;
+    border-radius: 12px;
+    padding: 10px 16px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+  }
+  .live-check-btn:active { transform: scale(0.97); }
+
   /* Install Banner */
   #installBanner {
     display: none;
@@ -145,141 +175,7 @@
     align-items: center;
   }
 
-  /* Daily Attendance Question Banner */
-  #dailyQuestionCard {
-    display: none;
-    background: linear-gradient(135deg, rgba(236, 72, 153, 0.2), rgba(139, 92, 246, 0.25));
-    border: 2px solid var(--pink);
-    border-radius: 20px;
-    padding: 16px;
-    animation: pulseBorder 2s infinite ease-in-out;
-  }
-
-  @keyframes pulseBorder {
-    0%, 100% { box-shadow: 0 0 15px rgba(236, 72, 153, 0.3); }
-    50% { box-shadow: 0 0 25px rgba(236, 72, 153, 0.6); }
-  }
-
-  /* Attendance Card */
-  .attendance-main-card {
-    background: linear-gradient(135deg, rgba(6, 182, 212, 0.12) 0%, rgba(139, 92, 246, 0.12) 100%);
-    border: 2px solid rgba(6, 182, 212, 0.4);
-    border-radius: 22px;
-    padding: 18px;
-    box-shadow: 0 0 20px rgba(6, 182, 212, 0.2);
-  }
-
-  .stat-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 8px;
-    margin-top: 14px;
-    background: rgba(11, 15, 25, 0.6);
-    padding: 12px 8px;
-    border-radius: 14px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    text-align: center;
-  }
-
-  .stat-grid-item-title {
-    font-size: 9px;
-    font-weight: 800;
-    letter-spacing: 0.5px;
-  }
-
-  .stat-grid-item-val {
-    font-size: 16px;
-    font-weight: 800;
-    margin-top: 4px;
-  }
-
-  .progress-bar-bg {
-    width: 100%;
-    height: 10px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 999px;
-    overflow: hidden;
-    margin-top: 12px;
-  }
-
-  .progress-bar-fill {
-    height: 100%;
-    border-radius: 999px;
-    transition: width 0.5s ease-in-out;
-  }
-
-  .attendance-actions {
-    display: flex;
-    gap: 8px;
-    margin-top: 14px;
-  }
-
-  .live-check-btn {
-    flex: 1;
-    background: linear-gradient(135deg, #10B981, #06B6D4);
-    color: #042F2E;
-    font-weight: 800;
-    font-size: 12px;
-    border: none;
-    border-radius: 12px;
-    padding: 10px;
-    cursor: pointer;
-    text-align: center;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-  }
-  .live-check-btn:active { transform: scale(0.97); }
-
-  /* Tasks Board */
-  .work-board-card {
-    background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(236, 72, 153, 0.15) 100%);
-    border: 2px solid #F59E0B;
-    border-radius: 22px;
-    padding: 18px;
-    box-shadow: 0 0 20px rgba(245, 158, 11, 0.2);
-  }
-
-  .task-tag {
-    display: inline-block;
-    font-size: 10px;
-    font-weight: 800;
-    padding: 3px 8px;
-    border-radius: 6px;
-    margin-right: 6px;
-  }
-  .tag-urgent { background: rgba(239, 68, 68, 0.2); color: #F87171; border: 1px solid rgba(239, 68, 68, 0.4); }
-  .tag-record { background: rgba(245, 158, 11, 0.2); color: #FBBF24; border: 1px solid rgba(245, 158, 11, 0.4); }
-  .tag-done { text-decoration: line-through; opacity: 0.5; }
-
-  .task-item {
-    background: rgba(15, 23, 42, 0.85);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 12px;
-    padding: 12px 14px;
-    margin-top: 8px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .del-btn {
-    background: rgba(244, 63, 94, 0.2);
-    border: 1px solid rgba(244, 63, 94, 0.4);
-    color: #F43F5E;
-    border-radius: 8px;
-    padding: 6px 10px;
-    font-size: 11px;
-    cursor: pointer;
-    font-weight: 700;
-  }
-  .del-btn:active { transform: scale(0.95); }
-
-  /* Class Schedule Modern Redesign */
+  /* Schedule Section */
   .schedule-wrapper {
     background: var(--card);
     border: 1px solid var(--card-border);
@@ -390,6 +286,127 @@
   }
   .period-item.active-item::before { background: var(--emerald); width: 6px; }
 
+  /* Tasks Board */
+  .work-board-card {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(236, 72, 153, 0.15) 100%);
+    border: 2px solid #F59E0B;
+    border-radius: 22px;
+    padding: 18px;
+    box-shadow: 0 0 20px rgba(245, 158, 11, 0.2);
+  }
+
+  .task-tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 3px 8px;
+    border-radius: 6px;
+    margin-right: 6px;
+  }
+  .tag-urgent { background: rgba(239, 68, 68, 0.2); color: #F87171; border: 1px solid rgba(239, 68, 68, 0.4); }
+  .tag-record { background: rgba(245, 158, 11, 0.2); color: #FBBF24; border: 1px solid rgba(245, 158, 11, 0.4); }
+  .tag-done { text-decoration: line-through; opacity: 0.5; }
+
+  .task-item {
+    background: rgba(15, 23, 42, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-top: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .del-btn {
+    background: rgba(244, 63, 94, 0.2);
+    border: 1px solid rgba(244, 63, 94, 0.4);
+    color: #F43F5E;
+    border-radius: 8px;
+    padding: 6px 10px;
+    font-size: 11px;
+    cursor: pointer;
+    font-weight: 700;
+  }
+  .del-btn:active { transform: scale(0.95); }
+
+  /* Attendance Card at Bottom */
+  .attendance-main-card {
+    background: linear-gradient(135deg, rgba(6, 182, 212, 0.12) 0%, rgba(139, 92, 246, 0.12) 100%);
+    border: 2px solid rgba(6, 182, 212, 0.4);
+    border-radius: 22px;
+    padding: 18px;
+    box-shadow: 0 0 20px rgba(6, 182, 212, 0.2);
+  }
+
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-top: 14px;
+    background: rgba(11, 15, 25, 0.6);
+    padding: 12px 8px;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    text-align: center;
+  }
+
+  .stat-grid-item-title {
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+  }
+
+  .stat-grid-item-val {
+    font-size: 16px;
+    font-weight: 800;
+    margin-top: 4px;
+  }
+
+  .progress-bar-bg {
+    width: 100%;
+    height: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 999px;
+    overflow: hidden;
+    margin-top: 12px;
+  }
+
+  .progress-bar-fill {
+    height: 100%;
+    border-radius: 999px;
+    transition: width 0.5s ease-in-out;
+  }
+
+  /* Manual Attendance Input Section at Bottom */
+  .attendance-input-box {
+    background: rgba(11, 15, 25, 0.7);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    padding: 14px;
+    margin-top: 14px;
+  }
+
+  .att-inputs-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 10px;
+  }
+
+  .att-input-field {
+    background: #0B1120;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 10px;
+    padding: 10px;
+    color: #FFF;
+    font-size: 13px;
+    text-align: center;
+    outline: none;
+    width: 100%;
+  }
+
   /* Host & Contact Card */
   .footer-contact-card {
     background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(7, 11, 19, 0.95));
@@ -472,6 +489,17 @@
       </div>
     </div>
 
+    <!-- 1. CHECK LIVE ATTENDANCE LINK (AT TOP) -->
+    <div class="top-attendance-bar">
+      <div>
+        <div style="font-size: 13px; font-weight: 900; color: #FFF;">Check Live Attendance</div>
+        <div class="mono" style="font-size: 10px; color: var(--text-muted);">Auto-copies PIN to clipboard</div>
+      </div>
+      <a href="https://sbtetconnect.app/attendance?hl=en-IN" target="_blank" onclick="copyUserPinAuto()" class="live-check-btn">
+        ⚡ Open SBTET Connect ↗
+      </a>
+    </div>
+
     <!-- PWA Install Banner -->
     <div id="installBanner">
       <div>
@@ -481,88 +509,7 @@
       <button onclick="installPWA()" style="background: var(--cyan); border: none; color: #042F2E; font-weight: 800; padding: 8px 14px; border-radius: 10px; cursor: pointer; font-size: 12px;">Install</button>
     </div>
 
-    <!-- Daily Attendance Confirmation Card -->
-    <div id="dailyQuestionCard">
-      <div class="mono" style="font-size: 10px; font-weight: 800; color: var(--pink);">📅 DAILY ATTENDANCE CHECK</div>
-      <div id="dailyQuestionText" style="font-size: 15px; font-weight: 800; color: #FFF; margin: 4px 0 12px;">Were you present today?</div>
-      <div style="display: flex; gap: 8px;">
-        <button onclick="recordDailyAttendance('present')" style="flex: 1; background: #10B981; border: none; color: #000; font-weight: 800; padding: 10px; border-radius: 10px; cursor: pointer; font-size: 12px;">✅ Present</button>
-        <button onclick="recordDailyAttendance('absent')" style="flex: 1; background: #F43F5E; border: none; color: #FFF; font-weight: 800; padding: 10px; border-radius: 10px; cursor: pointer; font-size: 12px;">❌ Absent</button>
-        <button onclick="recordDailyAttendance('error')" style="flex: 1; background: #F59E0B; border: none; color: #000; font-weight: 800; padding: 10px; border-radius: 10px; cursor: pointer; font-size: 12px;">⚠️ Error</button>
-      </div>
-    </div>
-
-    <!-- Exact SBTET Connect Attendance Meter -->
-    <div class="attendance-main-card">
-      <div style="display: flex; justify-content: space-between; align-items: center;">
-        <div>
-          <span class="mono" style="font-size: 10px; font-weight: 800; color: var(--cyan); letter-spacing: 0.5px;">OVERALL ATTENDANCE</span>
-          <div id="attPercentage" class="percentage-display mono" style="margin-top: 4px; font-size: 36px;">58.11%</div>
-        </div>
-        <button onclick="editAttendancePrompt()" style="background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2); color: #FFF; border-radius: 8px; padding: 5px 10px; font-size: 11px; cursor: pointer; font-weight: 700;">✏️ Edit</button>
-      </div>
-
-      <div class="progress-bar-bg">
-        <div id="attProgressBar" class="progress-bar-fill" style="width: 58.11%; background: #06B6D4;"></div>
-      </div>
-
-      <div style="margin-top: 14px;">
-        <div class="mono" style="font-size: 10px; color: var(--text-muted); font-weight: 800;">ATTENDANCE % TO BE CONSIDERED FOR EXAMINATION (OUT OF 180 DAYS)</div>
-        <div id="examPercentage" class="mono" style="font-size: 26px; font-weight: 900; color: #F43F5E; margin-top: 2px;">35.83%</div>
-      </div>
-
-      <!-- Stat Grid: Working, Present, Absent, Errors -->
-      <div class="stat-grid mono">
-        <div>
-          <div class="stat-grid-item-title" style="color: var(--text-muted);">WORKING</div>
-          <div id="statWorking" class="stat-grid-item-val" style="color: #FFF;">111</div>
-        </div>
-        <div>
-          <div class="stat-grid-item-title" style="color: var(--emerald);">PRESENT</div>
-          <div id="statPresent" class="stat-grid-item-val" style="color: var(--emerald);">64.5</div>
-        </div>
-        <div>
-          <div class="stat-grid-item-title" style="color: var(--rose);">ABSENT</div>
-          <div id="statAbsent" class="stat-grid-item-val" style="color: var(--rose);">36</div>
-        </div>
-        <div>
-          <div class="stat-grid-item-title" style="color: var(--amber);">ERRORS</div>
-          <div id="statErrors" class="stat-grid-item-val" style="color: var(--amber);">10</div>
-        </div>
-      </div>
-
-      <!-- SBTET 180 Days Target Rules -->
-      <div style="margin-top: 14px; display: flex; flex-direction: column; gap: 6px;">
-        <div id="condonationTargetText" class="mono" style="font-size: 11px; color: var(--amber); line-height: 1.4;">
-          ⚠️ <b>Condonation Range:</b> Attend 53 days (Min 65% for Fee)
-        </div>
-        <div id="daysLeftText" class="mono" style="font-size: 11px; color: var(--cyan); line-height: 1.4;">
-          📅 <b>Annual Year (180 Days):</b> 69 days left (111 of 180 days)
-        </div>
-      </div>
-
-      <!-- Link to Official/Direct Live Attendance Web -->
-      <div class="attendance-actions">
-        <a href="https://share.google/czczsjo7wBtImJIzs" target="_blank" onclick="copyUserPinAuto()" class="live-check-btn">
-          ⚡ Check Live Attendance Online ↗
-        </a>
-      </div>
-    </div>
-
-    <!-- Work & Lab Record Board -->
-    <div class="work-board-card">
-      <div style="display: flex; justify-content: space-between; align-items: center;">
-        <div>
-          <span class="live-pill" style="background: #F59E0B; color: #000; font-size: 9px;">🚨 PENDING WORK</span>
-          <div style="font-size: 17px; font-weight: 900; color: #FFF; margin-top: 6px;">Lab Records & Notes</div>
-        </div>
-        <button onclick="showAddTaskPrompt()" style="background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25); color: #FFF; border-radius: 8px; padding: 6px 12px; font-size: 11px; cursor: pointer; font-weight: 800;">+ Add Work</button>
-      </div>
-      
-      <div id="taskListContainer" style="margin-top: 10px;"></div>
-    </div>
-
-    <!-- Redesigned Class Schedule Section -->
+    <!-- 2. CLASS TIMETABLE FIRST -->
     <div class="schedule-wrapper">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
         <div>
@@ -584,7 +531,99 @@
       <div id="scheduleContainer"></div>
     </div>
 
-    <!-- Web Host, About & Customer Service Contact Section -->
+    <!-- 3. WORK & LAB RECORD BOARD -->
+    <div class="work-board-card">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <span class="live-pill" style="background: #F59E0B; color: #000; font-size: 9px;">🚨 PENDING WORK</span>
+          <div style="font-size: 17px; font-weight: 900; color: #FFF; margin-top: 6px;">Lab Records & Notes</div>
+        </div>
+        <button onclick="showAddTaskPrompt()" style="background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25); color: #FFF; border-radius: 8px; padding: 6px 12px; font-size: 11px; cursor: pointer; font-weight: 800;">+ Add Work</button>
+      </div>
+      
+      <div id="taskListContainer" style="margin-top: 10px;"></div>
+    </div>
+
+    <!-- 4. ATTENDANCE DASHBOARD AT BOTTOM (WITH CONSTANT 180 DAYS) -->
+    <div class="attendance-main-card">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <span class="mono" style="font-size: 10px; font-weight: 800; color: var(--cyan); letter-spacing: 0.5px;">OVERALL ATTENDANCE (FIXED 180 ANNUAL DAYS)</span>
+          <div id="attPercentage" class="percentage-display mono" style="margin-top: 4px; font-size: 36px;">58.11%</div>
+        </div>
+        <div class="mono" style="font-size: 11px; color: var(--emerald); font-weight: 800; background: rgba(16,185,129,0.15); padding: 4px 8px; border-radius: 8px;">
+          TOTAL: 180 DAYS
+        </div>
+      </div>
+
+      <div class="progress-bar-bg">
+        <div id="attProgressBar" class="progress-bar-fill" style="width: 58.11%; background: #06B6D4;"></div>
+      </div>
+
+      <div style="margin-top: 14px;">
+        <div class="mono" style="font-size: 10px; color: var(--text-muted); font-weight: 800;">ATTENDANCE % TO BE CONSIDERED FOR EXAMINATION (OUT OF 180 DAYS)</div>
+        <div id="examPercentage" class="mono" style="font-size: 26px; font-weight: 900; color: #F43F5E; margin-top: 2px;">35.83%</div>
+      </div>
+
+      <!-- Stat Grid -->
+      <div class="stat-grid mono">
+        <div>
+          <div class="stat-grid-item-title" style="color: var(--text-muted);">CONDUCTED</div>
+          <div id="statWorking" class="stat-grid-item-val" style="color: #FFF;">111</div>
+        </div>
+        <div>
+          <div class="stat-grid-item-title" style="color: var(--emerald);">PRESENT</div>
+          <div id="statPresent" class="stat-grid-item-val" style="color: var(--emerald);">64.5</div>
+        </div>
+        <div>
+          <div class="stat-grid-item-title" style="color: var(--rose);">ABSENT</div>
+          <div id="statAbsent" class="stat-grid-item-val" style="color: var(--rose);">36</div>
+        </div>
+        <div>
+          <div class="stat-grid-item-title" style="color: var(--amber);">ERRORS</div>
+          <div id="statErrors" class="stat-grid-item-val" style="color: var(--amber);">10</div>
+        </div>
+      </div>
+
+      <!-- 180 Days Targets & Rules -->
+      <div style="margin-top: 14px; display: flex; flex-direction: column; gap: 6px;">
+        <div id="condonationTargetText" class="mono" style="font-size: 11px; color: var(--amber); line-height: 1.4;">
+          ⚠️ <b>Condonation Range:</b> Attend 53 days (Min 65% for Fee)
+        </div>
+        <div id="daysLeftText" class="mono" style="font-size: 11px; color: var(--cyan); line-height: 1.4;">
+          📅 <b>Annual Year (180 Days):</b> 69 days left (111 of 180 days)
+        </div>
+      </div>
+
+      <!-- Type/Enter Present Attendance Details at Bottom -->
+      <div class="attendance-input-box">
+        <div class="mono" style="font-size: 11px; font-weight: 800; color: var(--cyan);">✏️ UPDATE YOUR ATTENDANCE DETAILS</div>
+        <div style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Type your current numbers below to recalculate:</div>
+        
+        <div class="att-inputs-grid mono">
+          <div>
+            <label style="font-size: 10px; color: var(--text-muted);">Conducted Days</label>
+            <input type="number" step="0.5" id="inputWorking" class="att-input-field" placeholder="111" />
+          </div>
+          <div>
+            <label style="font-size: 10px; color: var(--emerald);">Present Days</label>
+            <input type="number" step="0.5" id="inputPresent" class="att-input-field" placeholder="64.5" />
+          </div>
+          <div>
+            <label style="font-size: 10px; color: var(--rose);">Absent Days</label>
+            <input type="number" step="0.5" id="inputAbsent" class="att-input-field" placeholder="36" />
+          </div>
+          <div>
+            <label style="font-size: 10px; color: var(--amber);">Biometric Errors</label>
+            <input type="number" step="0.5" id="inputErrors" class="att-input-field" placeholder="10" />
+          </div>
+        </div>
+        
+        <button onclick="saveAttendanceInputs()" class="gradient-btn" style="margin-top: 12px; padding: 10px; font-size: 12px;">Save & Update Attendance</button>
+      </div>
+    </div>
+
+    <!-- 5. WEB HOST & CUSTOMER SERVICE CONTACT SECTION -->
     <div class="footer-contact-card">
       <div style="width: 50px; height: 50px; margin: 0 auto 10px; background: linear-gradient(135deg, #06B6D4, #EC4899); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 22px; box-shadow: 0 4px 14px rgba(236, 72, 153, 0.3);">
         👨‍💻
@@ -766,7 +805,7 @@ const TIMETABLE = {
   ]
 };
 
-const TOTAL_ANNUAL_DAYS = 180;
+const TOTAL_ANNUAL_DAYS = 180; // Constant fixed annual days
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 let currentUser = null;
 let selectedDay = "Monday";
@@ -796,6 +835,12 @@ function init() {
     deferredInstallPrompt = e;
     document.getElementById("installBanner").style.display = "flex";
   });
+
+  // Prevent accidental mobile back button from exiting app
+  window.history.pushState(null, "", window.location.href);
+  window.onpopstate = function () {
+    window.history.pushState(null, "", window.location.href);
+  };
 
   updateClock();
   setInterval(updateClock, 1000);
@@ -840,8 +885,6 @@ function showApp() {
   document.getElementById("userName").innerText = currentUser.name;
   document.getElementById("userPin").innerText = currentUser.pin;
   
-  checkInitialSetup();
-  checkDailyAttendancePrompt();
   renderAttendanceCard();
   renderTasks();
   renderDayButtons();
@@ -861,73 +904,32 @@ function copyUserPinAuto() {
   }
 }
 
-/* INITIAL SETUP: ASKS FOR DATA ONCE */
+/* ATTENDANCE STORAGE & METRICS */
 function getAttendanceData() {
   const key = "att_" + (currentUser ? currentUser.pin : "default");
   const data = localStorage.getItem(key);
   if (data) return JSON.parse(data);
-  return { working: 111, present: 64.5, absent: 36, errors: 10, lastDate: new Date().toDateString() };
+  // Default numbers without asking initial setup prompt
+  return { working: 111, present: 64.5, absent: 36, errors: 10 };
 }
 
-function checkInitialSetup() {
+function saveAttendanceInputs() {
+  const w = parseFloat(document.getElementById("inputWorking").value) || 0;
+  const p = parseFloat(document.getElementById("inputPresent").value) || 0;
+  const a = parseFloat(document.getElementById("inputAbsent").value) || 0;
+  const e = parseFloat(document.getElementById("inputErrors").value) || 0;
+
+  if (w <= 0 && p <= 0) {
+    alert("Please enter valid positive numbers.");
+    return;
+  }
+
+  const updatedData = { working: w, present: p, absent: a, errors: e };
   const key = "att_" + (currentUser ? currentUser.pin : "default");
-  if (!localStorage.getItem(key)) {
-    const w = prompt("First Time Setup:\nEnter Total Working Days (e.g., 111):", "111");
-    const p = prompt("Enter Present Days (e.g., 64.5):", "64.5");
-    const a = prompt("Enter Absent Days (e.g., 36):", "36");
-    const e = prompt("Enter Errors Count (e.g., 10):", "10");
-
-    const wNum = parseFloat(w) || 111;
-    const pNum = parseFloat(p) || 64.5;
-    const aNum = parseFloat(a) || 36;
-    const eNum = parseFloat(e) || 10;
-
-    const initialData = {
-      working: wNum,
-      present: pNum,
-      absent: aNum,
-      errors: eNum,
-      lastDate: new Date().toDateString()
-    };
-    localStorage.setItem(key, JSON.stringify(initialData));
-  }
-}
-
-/* DAILY PROMPT */
-function checkDailyAttendancePrompt() {
-  const todayStr = new Date().toDateString();
-  const dayName = new Date().toLocaleDateString('en-US', { weekday: 'long' });
+  localStorage.setItem(key, JSON.stringify(updatedData));
   
-  if (dayName === "Sunday") return;
-
-  const data = getAttendanceData();
-  if (data.lastDate !== todayStr) {
-    document.getElementById("dailyQuestionText").innerText = `Did you attend college on ${dayName} (${new Date().toLocaleDateString('en-IN', {day:'numeric', month:'short'})})?`;
-    document.getElementById("dailyQuestionCard").style.display = "block";
-  } else {
-    document.getElementById("dailyQuestionCard").style.display = "none";
-  }
-}
-
-function recordDailyAttendance(type) {
-  const data = getAttendanceData();
-  data.working += 1;
-  
-  if (type === 'present') {
-    data.present += 1;
-  } else if (type === 'absent') {
-    data.absent += 1;
-  } else if (type === 'error') {
-    data.errors += 1;
-    data.present += 0.5;
-  }
-  
-  data.lastDate = new Date().toDateString();
-  const key = "att_" + (currentUser ? currentUser.pin : "default");
-  localStorage.setItem(key, JSON.stringify(data));
-
-  document.getElementById("dailyQuestionCard").style.display = "none";
   renderAttendanceCard();
+  alert("Attendance details updated successfully!");
 }
 
 function renderAttendanceCard() {
@@ -937,7 +939,10 @@ function renderAttendanceCard() {
   const absent = data.absent || 0;
   const errors = data.errors || 0;
 
+  // 1. Overall Attendance % (Present / Conducted)
   const overallPercentage = ((present / working) * 100).toFixed(2);
+  
+  // 2. Examination Considered % (Present / Fixed 180 Days)
   const examPercentage = ((present / TOTAL_ANNUAL_DAYS) * 100).toFixed(2);
 
   document.getElementById("attPercentage").innerText = overallPercentage + "%";
@@ -947,6 +952,12 @@ function renderAttendanceCard() {
   document.getElementById("statPresent").innerText = present;
   document.getElementById("statAbsent").innerText = absent;
   document.getElementById("statErrors").innerText = errors;
+
+  // Pre-fill bottom input boxes
+  document.getElementById("inputWorking").value = working;
+  document.getElementById("inputPresent").value = present;
+  document.getElementById("inputAbsent").value = absent;
+  document.getElementById("inputErrors").value = errors;
 
   const bar = document.getElementById("attProgressBar");
   bar.style.width = Math.min(100, Math.max(0, overallPercentage)) + "%";
@@ -960,34 +971,7 @@ function renderAttendanceCard() {
   document.getElementById("condonationTargetText").innerHTML = `⚠️ <b>Condonation Range:</b> Attend ${neededFor65} days (Min 65% for Fee)`;
 }
 
-function editAttendancePrompt() {
-  const current = getAttendanceData();
-  const w = prompt("Edit Working Days:", current.working);
-  if (w === null) return;
-  const p = prompt("Edit Present Days:", current.present);
-  if (p === null) return;
-  const a = prompt("Edit Absent Days:", current.absent);
-  if (a === null) return;
-  const e = prompt("Edit Errors Count:", current.errors);
-  if (e === null) return;
-
-  const wNum = parseFloat(w) || 0;
-  const pNum = parseFloat(p) || 0;
-  const aNum = parseFloat(a) || 0;
-  const eNum = parseFloat(e) || 0;
-
-  const key = "att_" + (currentUser ? currentUser.pin : "default");
-  localStorage.setItem(key, JSON.stringify({
-    working: wNum,
-    present: pNum,
-    absent: aNum,
-    errors: eNum,
-    lastDate: current.lastDate
-  }));
-  renderAttendanceCard();
-}
-
-/* TASKS LIST WITH DELETE */
+/* TASKS BOARD */
 function renderTasks() {
   const container = document.getElementById("taskListContainer");
   if (!container) return;
@@ -1038,6 +1022,7 @@ function showAddTaskPrompt() {
   renderTasks();
 }
 
+/* TIMETABLE LOGIC */
 function renderDayButtons() {
   const container = document.getElementById("daySelector");
   container.innerHTML = DAYS.map(d => `
