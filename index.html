@@ -1,616 +1,1023 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Easy Time Tracker | 002 JNGPT DECE (C-26)</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bg: #0f172a;
-      --card: #1e293b;
-      --border: #334155;
-      --primary: #38bdf8;
-      --primary-hover: #0284c7;
-      --text: #f8fafc;
-      --muted: #94a3b8;
-      --success: #22c55e;
-      --warning: #f59e0b;
-    }
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<meta name="theme-color" content="#050811"/>
+<title>ECE Hub – JNGP Ramanthapur</title>
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: 'Inter', sans-serif;
-    }
+<!-- Web App Manifest for Direct Home Screen Installation -->
+<link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22ECE%20Time%20Tracker%22%2C%22short_name%22%3A%22ECE%20Hub%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23050811%22%2C%22theme_color%22%3A%22%23050811%22%7D"/>
 
-    body {
-      background-color: var(--bg);
-      color: var(--text);
-      line-height: 1.5;
-      padding: 1.25rem;
-    }
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700;800&display=swap" rel="stylesheet"/>
 
-    .container {
-      max-width: 960px;
-      margin: 0 auto;
-    }
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
+  
+  :root {
+    --bg: #050811;
+    --card: rgba(15, 23, 42, 0.75);
+    --card-border: rgba(255, 255, 255, 0.08);
+    --cyan: #06B6D4;
+    --violet: #8B5CF6;
+    --pink: #EC4899;
+    --emerald: #10B981;
+    --amber: #F59E0B;
+    --rose: #F43F5E;
+    --text-primary: #F8FAFC;
+    --text-muted: #94A3B8;
+  }
 
-    /* Header */
-    header {
-      text-align: center;
-      padding: 1.5rem 1rem;
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      margin-bottom: 1.25rem;
-    }
+  html, body { 
+    height: 100%; 
+    width: 100%; 
+    background: var(--bg); 
+    color: var(--text-primary); 
+    display: flex; 
+    justify-content: center;
+    background-image: 
+      radial-gradient(at 0% 0%, rgba(139, 92, 246, 0.16) 0px, transparent 50%),
+      radial-gradient(at 100% 100%, rgba(6, 182, 212, 0.14) 0px, transparent 50%);
+    background-attachment: fixed;
+  }
 
-    .college-title {
-      font-size: 0.85rem;
-      font-weight: 700;
-      color: var(--primary);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 0.35rem;
-    }
+  .mono { font-family: 'JetBrains Mono', monospace; }
 
-    h1 {
-      font-size: 1.65rem;
-      font-weight: 700;
-      margin-bottom: 0.25rem;
-    }
+  #app { 
+    width: 100%; 
+    max-width: 480px; 
+    height: 100vh; 
+    height: 100dvh; 
+    display: flex; 
+    flex-direction: column; 
+    position: relative; 
+    overflow: hidden;
+    border-left: 1px solid var(--card-border);
+    border-right: 1px solid var(--card-border);
+  }
 
-    .sub-header {
-      font-size: 0.92rem;
-      color: var(--muted);
-    }
+  /* Toast Notification */
+  #toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: rgba(16, 185, 129, 0.95);
+    color: #032018;
+    font-weight: 800;
+    font-size: 12px;
+    padding: 12px 20px;
+    border-radius: 999px;
+    box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4);
+    z-index: 9999;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    white-space: nowrap;
+  }
+  #toast.show { transform: translateX(-50%) translateY(0); }
 
-    /* Grid Cards */
-    .top-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
-      gap: 1.25rem;
-      margin-bottom: 1.25rem;
-    }
+  /* Login Screen */
+  #loginScreen {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    padding: 24px;
+  }
 
-    .card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 1.25rem;
-      margin-bottom: 1.25rem;
-    }
+  .login-box {
+    width: 100%;
+    background: rgba(15, 23, 42, 0.85);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 28px;
+    padding: 32px 24px;
+    text-align: center;
+    box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7);
+  }
 
-    .top-grid .card {
-      margin-bottom: 0;
-    }
+  .gradient-btn {
+    background: linear-gradient(135deg, #06B6D4 0%, #8B5CF6 50%, #EC4899 100%);
+    border: none;
+    color: #FFF;
+    font-weight: 800;
+    border-radius: 14px;
+    padding: 14px 20px;
+    cursor: pointer;
+    text-align: center;
+    width: 100%;
+    font-size: 14px;
+    box-shadow: 0 8px 20px -6px rgba(139, 92, 246, 0.5);
+    transition: transform 0.2s ease;
+  }
+  .gradient-btn:active { transform: scale(0.98); }
 
-    .card-title {
-      font-size: 1.05rem;
-      font-weight: 700;
-      margin-bottom: 0.9rem;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
+  /* Main Container */
+  #mainApp {
+    display: none;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    overflow-y: auto;
+    padding: 16px;
+    gap: 14px;
+    scroll-behavior: smooth;
+  }
 
-    .live-dot {
-      width: 9px;
-      height: 9px;
-      background: var(--success);
-      border-radius: 50%;
-      display: inline-block;
-    }
+  /* Header Card */
+  .header-card {
+    background: var(--card);
+    backdrop-filter: blur(16px);
+    border: 1px solid var(--card-border);
+    border-radius: 20px;
+    padding: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
 
-    .clock {
-      font-size: 1.75rem;
-      font-weight: 700;
-      color: var(--primary);
-    }
+  .highlight-name {
+    font-size: 16px;
+    font-weight: 900;
+    background: linear-gradient(90deg, #38BDF8, #818CF8, #EC4899);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: nameShift 4s linear infinite;
+    display: inline-block;
+  }
 
-    .date-text {
-      font-size: 0.88rem;
-      color: var(--muted);
-      margin-bottom: 0.85rem;
-    }
+  @keyframes nameShift {
+    0% { background-position: 0% center; }
+    100% { background-position: 200% center; }
+  }
 
-    .status-box {
-      background: rgba(15, 23, 42, 0.65);
-      border-left: 4px solid var(--primary);
-      padding: 0.75rem 0.9rem;
-      border-radius: 8px;
-    }
+  /* Live Attendance Hero Button Card */
+  .attendance-hero-bar {
+    background: linear-gradient(135deg, rgba(6, 182, 212, 0.18) 0%, rgba(16, 185, 129, 0.18) 100%);
+    border: 1.5px solid rgba(6, 182, 212, 0.5);
+    border-radius: 20px;
+    padding: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 8px 24px -6px rgba(6, 182, 212, 0.25);
+  }
 
-    .status-label {
-      font-size: 0.75rem;
-      color: var(--muted);
-      text-transform: uppercase;
-      font-weight: 600;
-    }
+  .live-check-btn {
+    background: linear-gradient(135deg, #10B981, #06B6D4);
+    color: #032018;
+    font-weight: 900;
+    font-size: 12px;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 16px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+  }
+  .live-check-btn:active { transform: scale(0.96); }
 
-    .status-value {
-      font-size: 1.05rem;
-      font-weight: 700;
-      margin-top: 0.15rem;
-    }
+  /* Install Banner */
+  #installBanner {
+    display: none;
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(236, 72, 153, 0.2));
+    border: 1px solid var(--violet);
+    border-radius: 16px;
+    padding: 12px 16px;
+    justify-content: space-between;
+    align-items: center;
+  }
 
-    /* SBTET Attendance Checker */
-    .pin-input {
-      width: 100%;
-      padding: 0.75rem 0.9rem;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      color: var(--text);
-      font-size: 0.95rem;
-      font-weight: 600;
-      text-transform: uppercase;
-      margin-bottom: 0.75rem;
-      outline: none;
-    }
+  /* Schedule Section */
+  .schedule-wrapper {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 22px;
+    padding: 18px;
+  }
 
-    .pin-input:focus {
-      border-color: var(--primary);
-    }
+  .spotlight-card {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.25) 0%, rgba(236, 72, 153, 0.2) 100%);
+    border: 2px solid #8B5CF6;
+    border-radius: 18px;
+    padding: 16px;
+    margin-bottom: 14px;
+    box-shadow: 0 0 25px rgba(139, 92, 246, 0.3);
+  }
 
-    .btn-group {
-      display: flex;
-      gap: 0.6rem;
-      flex-wrap: wrap;
-    }
+  .spotlight-card.idle {
+    background: rgba(11, 15, 25, 0.6);
+    border: 1px solid var(--card-border);
+    box-shadow: none;
+  }
 
-    .btn {
-      flex: 1;
-      padding: 0.7rem 0.9rem;
-      border: none;
-      border-radius: 8px;
-      font-size: 0.88rem;
-      font-weight: 600;
-      cursor: pointer;
-      text-align: center;
-      text-decoration: none;
-      transition: opacity 0.2s;
-    }
+  .live-pill {
+    background: linear-gradient(90deg, #10B981, #06B6D4);
+    color: #032018;
+    font-size: 10px;
+    font-weight: 900;
+    padding: 4px 10px;
+    border-radius: 999px;
+    letter-spacing: 0.5px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
 
-    .btn-primary {
-      background: var(--primary);
-      color: #0f172a;
-    }
+  .live-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #032018;
+    animation: livePulse 1.2s infinite ease-in-out;
+  }
 
-    .btn-secondary {
-      background: #334155;
-      color: var(--text);
-    }
+  @keyframes livePulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.3; transform: scale(0.7); }
+  }
 
-    .btn:hover {
-      opacity: 0.9;
-    }
+  .period-progress-bg {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 999px;
+    overflow: hidden;
+    margin-top: 10px;
+  }
 
-    .helper-msg {
-      font-size: 0.8rem;
-      color: var(--success);
-      margin-top: 0.5rem;
-      min-height: 1.1rem;
-    }
+  .period-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #10B981, #06B6D4, #EC4899);
+    border-radius: 999px;
+    transition: width 1s linear;
+  }
 
-    /* Day Tabs */
-    .day-tabs {
-      display: flex;
-      gap: 0.5rem;
-      overflow-x: auto;
-      padding-bottom: 0.5rem;
-      margin-bottom: 1rem;
-    }
+  .day-carousel {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    padding-bottom: 6px;
+    scrollbar-width: none;
+  }
+  .day-carousel::-webkit-scrollbar { display: none; }
 
-    .day-tab {
-      padding: 0.55rem 1rem;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      background: var(--bg);
-      color: var(--muted);
-      font-weight: 600;
-      font-size: 0.88rem;
-      cursor: pointer;
-      white-space: nowrap;
-    }
+  .day-pill {
+    background: rgba(11, 15, 25, 0.8);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 8px 16px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-muted);
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+  }
 
-    .day-tab.active {
-      background: var(--primary);
-      color: #0f172a;
-      border-color: var(--primary);
-    }
+  .day-pill.active {
+    background: linear-gradient(135deg, #06B6D4, #8B5CF6);
+    border-color: transparent;
+    color: #FFF;
+    box-shadow: 0 4px 14px rgba(6, 182, 212, 0.35);
+  }
 
-    /* Period List */
-    .period-list {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
-      gap: 0.85rem;
-    }
+  .period-item {
+    background: rgba(11, 15, 25, 0.7);
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    padding: 12px 14px;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+  }
 
-    .period-item {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 0.95rem;
-    }
+  .period-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: var(--violet);
+    opacity: 0.7;
+  }
 
-    .period-item.active-now {
-      border-color: var(--success);
-      box-shadow: 0 0 0 1px var(--success);
-    }
+  .period-item.lab-period::before { background: var(--cyan); }
+  .period-item.lunch-period::before { background: var(--amber); }
 
-    .period-time {
-      font-size: 0.8rem;
-      color: var(--primary);
-      font-weight: 600;
-      margin-bottom: 0.25rem;
-    }
+  .period-item.active-item {
+    border: 1px solid var(--cyan);
+    background: rgba(6, 182, 212, 0.12);
+  }
+  .period-item.active-item::before { background: var(--emerald); width: 6px; }
 
-    .period-subject {
-      font-size: 1.05rem;
-      font-weight: 700;
-      margin-bottom: 0.4rem;
-    }
+  /* Tasks Board with In-App Input */
+  .work-board-card {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.14) 0%, rgba(236, 72, 153, 0.14) 100%);
+    border: 1.5px solid rgba(245, 158, 11, 0.5);
+    border-radius: 22px;
+    padding: 18px;
+    box-shadow: 0 0 20px rgba(245, 158, 11, 0.15);
+  }
 
-    .badge {
-      display: inline-block;
-      font-size: 0.7rem;
-      font-weight: 600;
-      padding: 0.2rem 0.55rem;
-      border-radius: 4px;
-      background: rgba(56, 189, 248, 0.15);
-      color: var(--primary);
-    }
+  .quick-task-form {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+  }
 
-    /* Full Timetable Table */
-    .table-container {
-      overflow-x: auto;
-    }
+  .task-input {
+    flex: 1;
+    background: rgba(11, 15, 25, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+    padding: 10px 12px;
+    color: #FFF;
+    font-size: 12px;
+    outline: none;
+  }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      min-width: 720px;
-      font-size: 0.84rem;
-      text-align: center;
-    }
+  .task-add-btn {
+    background: var(--amber);
+    color: #000;
+    border: none;
+    border-radius: 10px;
+    padding: 0 14px;
+    font-weight: 900;
+    font-size: 12px;
+    cursor: pointer;
+  }
 
-    th, td {
-      border: 1px solid var(--border);
-      padding: 0.65rem 0.45rem;
-    }
+  .task-tag {
+    display: inline-block;
+    font-size: 9px;
+    font-weight: 800;
+    padding: 2px 7px;
+    border-radius: 5px;
+    margin-right: 6px;
+  }
+  .tag-record { background: rgba(245, 158, 11, 0.2); color: #FBBF24; border: 1px solid rgba(245, 158, 11, 0.4); }
+  .tag-done { text-decoration: line-through; opacity: 0.5; }
 
-    th {
-      background: var(--bg);
-      color: var(--primary);
-      font-weight: 700;
-    }
+  .task-item {
+    background: rgba(15, 23, 42, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-top: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+  }
 
-    .day-cell {
-      font-weight: 700;
-      background: rgba(15, 23, 42, 0.5);
-    }
+  .del-btn {
+    background: rgba(244, 63, 94, 0.2);
+    border: 1px solid rgba(244, 63, 94, 0.4);
+    color: #F43F5E;
+    border-radius: 8px;
+    padding: 6px 10px;
+    font-size: 11px;
+    cursor: pointer;
+    font-weight: 700;
+  }
 
-    .lunch-cell {
-      background: rgba(245, 158, 11, 0.12);
-      color: var(--warning);
-      font-weight: 700;
-      letter-spacing: 1px;
-    }
+  /* Classmate PIN Finder Directory */
+  .directory-card {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: 22px;
+    padding: 18px;
+  }
 
-    /* Footer */
-    footer {
-      text-align: center;
-      padding: 1.5rem 1rem;
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      margin-top: 1.25rem;
-    }
+  .search-box {
+    width: 100%;
+    background: rgba(11, 15, 25, 0.8);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 10px 14px;
+    color: #FFF;
+    font-size: 12px;
+    outline: none;
+    margin-top: 10px;
+  }
 
-    .insta-link {
-      display: inline-block;
-      margin-top: 0.65rem;
-      padding: 0.65rem 1.35rem;
-      border-radius: 999px;
-      background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
-      color: #fff;
-      font-weight: 600;
-      font-size: 0.9rem;
-      text-decoration: none;
-    }
-  </style>
+  .student-pill-list {
+    max-height: 150px;
+    overflow-y: auto;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .student-row {
+    background: rgba(11, 15, 25, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    padding: 8px 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+  }
+
+  /* Host & Contact Card */
+  .footer-contact-card {
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(7, 11, 19, 0.95));
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 22px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  }
+
+  .contact-links-grid {
+    display: flex;
+    gap: 10px;
+    margin-top: 14px;
+  }
+
+  .contact-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 12px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 800;
+    font-size: 12px;
+    color: #FFF;
+    transition: transform 0.2s ease;
+  }
+  .contact-btn:active { transform: scale(0.96); }
+
+  .btn-wa { background: linear-gradient(135deg, #25D366, #128C7E); box-shadow: 0 4px 14px rgba(37, 211, 102, 0.3); }
+  .btn-ig { background: linear-gradient(135deg, #E1306C, #C13584, #833AB4); box-shadow: 0 4px 14px rgba(225, 48, 108, 0.3); }
+  .btn-call { background: linear-gradient(135deg, #06B6D4, #3B82F6); box-shadow: 0 4px 14px rgba(6, 182, 212, 0.3); }
+</style>
 </head>
 <body>
 
-  <div class="container">
-    <!-- Header -->
-    <header>
-      <div class="college-title">002 JNGPT, RAMANTHAPUR</div>
-      <h1>Easy Time Tracker</h1>
-      <p class="sub-header">TIME TABLE DECE (C-26) I ST YEAR (ODD) 2026-27</p>
-    </header>
+<div id="app">
+  <!-- Toast Notification -->
+  <div id="toast" class="mono">📋 PIN Copied!</div>
 
-    <!-- Top Section: Live Class Tracker & SBTET Attendance -->
-    <div class="top-grid">
-      <div class="card">
-        <div class="card-title">
-          <span class="live-dot"></span> Live Class Status
-        </div>
-        <div id="live-clock" class="clock">--:--:--</div>
-        <div id="live-date" class="date-text">Loading date...</div>
-        <div class="status-box">
-          <div class="status-label">Current / Next Period</div>
-          <div id="current-period" class="status-value">Checking timetable...</div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-title">SBTET Attendance Quick Check</div>
-        <input 
-          type="text" 
-          id="pin-input" 
-          class="pin-input" 
-          placeholder="Enter PIN (e.g. 26002-EC-060)" 
-          value="26002-EC-060" 
-        />
-        <div class="btn-group">
-          <button class="btn btn-primary" onclick="checkOfficialAttendance()">
-            Copy PIN & Open Portal
-          </button>
-          <button class="btn btn-secondary" onclick="openRawApi()">
-            Open Direct Report
-          </button>
-        </div>
-        <div id="copy-status" class="helper-msg"></div>
-      </div>
+  <!-- Login Screen -->
+  <div id="loginScreen">
+    <div class="login-box">
+      <div style="width: 58px; height: 58px; margin: 0 auto 14px; background: linear-gradient(135deg, #06B6D4, #8B5CF6); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-weight: 900; color: #FFF; font-size: 18px; box-shadow: 0 8px 20px rgba(6, 182, 212, 0.35);">ECE</div>
+      <div class="mono" style="font-size: 11px; color: var(--cyan); font-weight: 700; letter-spacing: 1px;">002 · JNGP RAMANTHAPUR</div>
+      <h2 style="font-size: 22px; font-weight: 900; margin: 6px 0 4px;">ECE Work & Time Hub</h2>
+      <div class="mono" style="font-size: 11px; color: var(--pink); font-weight: 800; margin-bottom: 20px;">DESIGNED BY SREEJITH REDDY</div>
+      
+      <input type="text" id="pinInput" placeholder="Enter PIN (e.g. 051 or 26002-EC-051)" class="mono" style="width: 100%; background: #0B1120; border: 1px solid rgba(255,255,255,0.12); border-radius: 12px; padding: 14px; color: #FFF; text-align: center; margin-bottom: 12px; outline: none; font-size: 14px;" onkeypress="if(event.key==='Enter') handleLogin()" />
+      <div id="loginError" style="color: #F43F5E; font-size: 12px; margin-bottom: 12px; display: none;"></div>
+      <button onclick="handleLogin()" class="gradient-btn">Access Dashboard →</button>
     </div>
-
-    <!-- Daily Schedule View -->
-    <div class="card">
-      <div class="card-title">Daily Class Schedule</div>
-      <div id="day-tabs" class="day-tabs"></div>
-      <div id="period-list" class="period-list"></div>
-    </div>
-
-    <!-- Master Timetable Table -->
-    <div class="card">
-      <div class="card-title">Full Week Timetable (10:00 AM – 4:30 PM)</div>
-      <div class="table-container">
-        <table>
-          <thead>
-            <tr>
-              <th>DAYS</th>
-              <th>10:00 - 10:30</th>
-              <th>10:30 - 11:00</th>
-              <th>11:00 - 11:30</th>
-              <th>11:30 - 1:00</th>
-              <th>1:00 - 2:00</th>
-              <th>2:00 - 3:30</th>
-              <th>3:30 - 4:30</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td class="day-cell">MONDAY</td>
-              <td colspan="3">CHEMISTRY</td>
-              <td>PHYSICS</td>
-              <td rowspan="6" class="lunch-cell">LUNCH</td>
-              <td>MATHS</td>
-              <td>BE</td>
-            </tr>
-            <tr>
-              <td class="day-cell">TUESDAY</td>
-              <td colspan="2">BE</td>
-              <td colspan="2">B S LAB (11:00 - 1:00)</td>
-              <td colspan="2">BE LAB (2:00 - 4:30)</td>
-            </tr>
-            <tr>
-              <td class="day-cell">WEDNESDAY</td>
-              <td colspan="3">MATHS</td>
-              <td>CHEMISTRY</td>
-              <td>ENGLISH</td>
-              <td>FCP</td>
-            </tr>
-            <tr>
-              <td class="day-cell">THURSDAY</td>
-              <td colspan="3">PHYSICS (10:00-10:45) | BE (10:45-11:30)</td>
-              <td>FCP</td>
-              <td>ENGLISH</td>
-              <td>TUT</td>
-            </tr>
-            <tr>
-              <td class="day-cell">FRIDAY</td>
-              <td colspan="3">BE</td>
-              <td>FCP</td>
-              <td colspan="2">C & PYTHON LAB (2:00 - 4:30)</td>
-            </tr>
-            <tr>
-              <td class="day-cell">SATURDAY</td>
-              <td colspan="3">MATHS (10:00-10:45) | CHEMISTRY (10:45-11:30)</td>
-              <td>PHYSICS</td>
-              <td colspan="2">ENGINEERING DRAWING WITH CAD LAB (2:00 - 4:30)</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- Footer with Updated Instagram Link -->
-    <footer>
-      <p style="font-weight: 600;">Designed by Sreejith Reddy | 002 JNGPT DECE (C-26)</p>
-      <a 
-        href="https://www.instagram.com/srnest_hub?mdxt=MTh2eWtpeHd1Mzhraw==" 
-        target="_blank" 
-        rel="noopener noreferrer" 
-        class="insta-link"
-      >
-        Follow @srnest_hub on Instagram
-      </a>
-    </footer>
   </div>
 
-  <script>
-    // Updated Instagram URL
-    const INSTA_URL = "https://www.instagram.com/srnest_hub?mdxt=MTh2eWtpeHd1Mzhraw==";
+  <!-- Single Screen Dashboard -->
+  <div id="mainApp">
+    <!-- Header Card -->
+    <div class="header-card">
+      <div>
+        <div class="mono" style="font-size: 10px; color: var(--cyan); font-weight: 800;">002 · JNGP RAMANTHAPUR</div>
+        <div id="userName" class="highlight-name" style="margin-top: 2px;">Student</div>
+        <div class="mono" style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">
+          <span id="userPin" onclick="copyPinToast(this.innerText)" style="cursor: pointer; text-decoration: underline;">26002-EC-051</span> · <span onclick="handleLogout()" style="color: #F43F5E; cursor: pointer; font-weight: 700;">Logout</span>
+        </div>
+      </div>
+      <div style="text-align: right;">
+        <div id="clock" class="mono" style="font-size: 13px; font-weight: 800; color: var(--emerald);">00:00:00 AM</div>
+        <div id="date" class="mono" style="font-size: 10px; color: var(--text-muted); margin-top: 2px;">Today</div>
+      </div>
+    </div>
 
-    // Updated DECE (C-26) 1st Year (Odd) 2026-27 Timetable
-    const TIMETABLE = {
-      Monday: [
-        { start: "10:00", end: "11:30", subject: "CHEMISTRY", type: "Theory" },
-        { start: "11:30", end: "13:00", subject: "PHYSICS", type: "Theory" },
-        { start: "13:00", end: "14:00", subject: "LUNCH", type: "Break" },
-        { start: "14:00", end: "15:30", subject: "MATHS", type: "Theory" },
-        { start: "15:30", end: "16:30", subject: "BE", type: "Theory" }
-      ],
-      Tuesday: [
-        { start: "10:00", end: "11:00", subject: "BE", type: "Theory" },
-        { start: "11:00", end: "13:00", subject: "B S LAB", type: "Lab" },
-        { start: "13:00", end: "14:00", subject: "LUNCH", type: "Break" },
-        { start: "14:00", end: "16:30", subject: "BE LAB", type: "Lab" }
-      ],
-      Wednesday: [
-        { start: "10:00", end: "11:30", subject: "MATHS", type: "Theory" },
-        { start: "11:30", end: "13:00", subject: "CHEMISTRY", type: "Theory" },
-        { start: "13:00", end: "14:00", subject: "LUNCH", type: "Break" },
-        { start: "14:00", end: "15:30", subject: "ENGLISH", type: "Theory" },
-        { start: "15:30", end: "16:30", subject: "FCP", type: "Theory" }
-      ],
-      Thursday: [
-        { start: "10:00", end: "10:45", subject: "PHYSICS", type: "Theory" },
-        { start: "10:45", end: "11:30", subject: "BE", type: "Theory" },
-        { start: "11:30", end: "13:00", subject: "FCP", type: "Theory" },
-        { start: "13:00", end: "14:00", subject: "LUNCH", type: "Break" },
-        { start: "14:00", end: "15:30", subject: "ENGLISH", type: "Theory" },
-        { start: "15:30", end: "16:30", subject: "TUT", type: "Tutorial" }
-      ],
-      Friday: [
-        { start: "10:00", end: "11:30", subject: "BE", type: "Theory" },
-        { start: "11:30", end: "13:00", subject: "FCP", type: "Theory" },
-        { start: "13:00", end: "14:00", subject: "LUNCH", type: "Break" },
-        { start: "14:00", end: "16:30", subject: "C & PYTHON LAB", type: "Lab" }
-      ],
-      Saturday: [
-        { start: "10:00", end: "10:45", subject: "MATHS", type: "Theory" },
-        { start: "10:45", end: "11:30", subject: "CHEMISTRY", type: "Theory" },
-        { start: "11:30", end: "13:00", subject: "PHYSICS", type: "Theory" },
-        { start: "13:00", end: "14:00", subject: "LUNCH", type: "Break" },
-        { start: "14:00", end: "16:30", subject: "ENGINEERING DRAWING WITH CAD LAB", type: "Lab" }
-      ]
-    };
+    <!-- 1. TOP LIVE ATTENDANCE LAUNCHER -->
+    <div class="attendance-hero-bar">
+      <div>
+        <div class="mono" style="font-size: 10px; font-weight: 800; color: var(--cyan);">SBTET CONNECT PORTAL</div>
+        <div style="font-size: 15px; font-weight: 900; color: #FFF; margin-top: 2px;">Live Attendance Report</div>
+        <div class="mono" style="font-size: 10px; color: var(--text-muted); margin-top: 2px;">Auto-copies your PIN on tap</div>
+      </div>
+      <a href="https://sbtetconnect.app/attendance?hl=en-IN" target="_blank" onclick="copyUserPinAuto()" class="live-check-btn">
+        ⚡ Check Live ↗
+      </a>
+    </div>
 
-    const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-    let activeDay = "Monday";
+    <!-- PWA Install Banner -->
+    <div id="installBanner">
+      <div>
+        <div style="font-size: 13px; font-weight: 800; color: #FFF;">📲 Install ECE Hub App</div>
+        <div class="mono" style="font-size: 10px; color: var(--text-muted);">Add to home screen for instant access</div>
+      </div>
+      <button onclick="installPWA()" style="background: var(--violet); border: none; color: #FFF; font-weight: 800; padding: 8px 14px; border-radius: 10px; cursor: pointer; font-size: 12px;">Install</button>
+    </div>
 
-    function toMins(t) {
-      const [h, m] = t.split(":").map(Number);
-      return h * 60 + m;
+    <!-- 2. CLASS TIMETABLE & LIVE PROGRESS -->
+    <div class="schedule-wrapper">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <div>
+          <div class="mono" style="font-size: 10px; color: var(--cyan); font-weight: 800; letter-spacing: 0.5px;">ACADEMIC TIMETABLE</div>
+          <div style="font-size: 16px; font-weight: 900; color: #FFF;">ECE 1st Year Schedule</div>
+        </div>
+        <span class="mono" style="font-size: 10px; background: rgba(139, 92, 246, 0.2); color: var(--violet); padding: 4px 8px; border-radius: 6px; font-weight: 800;">C-26 SYLLABUS</span>
+      </div>
+
+      <!-- Ongoing Class Hero with Live Progress -->
+      <div id="spotlightContainer"></div>
+
+      <!-- Day Carousel -->
+      <div style="margin-bottom: 12px;">
+        <div id="daySelector" class="day-carousel"></div>
+      </div>
+
+      <!-- Schedule List -->
+      <div id="scheduleContainer"></div>
+    </div>
+
+    <!-- 3. UPGRADED WORK & LAB RECORD BOARD -->
+    <div class="work-board-card">
+      <div style="display: flex; justify-content: space-between; align-items: center;">
+        <div>
+          <span class="live-pill" style="background: #F59E0B; color: #000; font-size: 9px;">🚨 PENDING WORK</span>
+          <div style="font-size: 16px; font-weight: 900; color: #FFF; margin-top: 6px;">Lab Records & Assignments</div>
+        </div>
+        <span id="taskCountBadge" class="mono" style="font-size: 11px; color: var(--amber); font-weight: 800;">0 Pending</span>
+      </div>
+
+      <!-- In-App Quick Task Creator -->
+      <div class="quick-task-form">
+        <input type="text" id="newTaskTitle" class="task-input" placeholder="Add lab record or homework..." onkeypress="if(event.key==='Enter') addQuickTask()" />
+        <button onclick="addQuickTask()" class="task-add-btn">+ Add</button>
+      </div>
+      
+      <div id="taskListContainer" style="margin-top: 10px;"></div>
+    </div>
+
+    <!-- 4. CLASSMATE PIN FINDER DIRECTORY -->
+    <div class="directory-card">
+      <div class="mono" style="font-size: 10px; color: var(--cyan); font-weight: 800;">STUDENT DIRECTORY (66 STUDENTS)</div>
+      <div style="font-size: 15px; font-weight: 900; color: #FFF; margin-top: 2px;">Classmate PIN Lookup</div>
+      <input type="text" id="studentSearch" class="search-box mono" placeholder="🔍 Search classmate name or PIN (e.g. 051)..." oninput="renderDirectory()" />
+      <div id="directoryList" class="student-pill-list"></div>
+    </div>
+
+    <!-- 5. WEB HOST & CUSTOMER SERVICE CONTACT SECTION -->
+    <div class="footer-contact-card">
+      <div style="width: 50px; height: 50px; margin: 0 auto 10px; background: linear-gradient(135deg, #06B6D4, #EC4899); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 22px; box-shadow: 0 4px 14px rgba(236, 72, 153, 0.3);">
+        👨‍💻
+      </div>
+      <div class="mono" style="font-size: 10px; color: var(--cyan); font-weight: 800; letter-spacing: 1px;">WEB HOST & DEVELOPER</div>
+      <div style="font-size: 18px; font-weight: 900; color: #FFF; margin-top: 2px;">Ganta Sreejith Reddy</div>
+      <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">
+        ECE 1st Year · <b>JNGP POLYTECHNIC COLLEGE</b>, Ramanthapur
+      </div>
+
+      <div style="border-top: 1px solid rgba(255,255,255,0.08); margin: 14px 0 12px; padding-top: 12px;">
+        <div class="mono" style="font-size: 11px; font-weight: 800; color: var(--pink);">CUSTOMER SERVICE & SUPPORT</div>
+        <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">
+          Facing any issue or timetable mismatch? Contact me directly!
+        </div>
+      </div>
+
+      <div class="contact-links-grid">
+        <a href="https://wa.me/919063576302?text=Hi%20Sreejith,%20I%20have%20an%20issue%20with%20the%20ECE%20Time%20Tracker%20app" target="_blank" class="contact-btn btn-wa">
+          <span>💬</span> WhatsApp
+        </a>
+        <a href="https://www.instagram.com/srnest_hub?xtok=MTh2eWtpeHd1Mzhraw==" target="_blank" class="contact-btn btn-ig">
+          <span>📸</span> Instagram
+        </a>
+        <a href="tel:9063576302" class="contact-btn btn-call">
+          <span>📞</span> Call
+        </a>
+      </div>
+      
+      <div class="mono" style="font-size: 10px; color: var(--text-muted); margin-top: 14px;">
+        Number: +91 9063576302 · IG: @srnest_hub
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const STUDENTS = [
+  { pin: "26002-EC-001", name: "KARRI SRAVANI" },
+  { pin: "26002-EC-002", name: "SHAIK SHARFUDDIN" },
+  { pin: "26002-EC-003", name: "GUGULOTH KAVERI" },
+  { pin: "26002-EC-004", name: "JELLA VISHAL" },
+  { pin: "26002-EC-005", name: "PANDILLA VARSHITH" },
+  { pin: "26002-EC-006", name: "NIMMAKANTI VISHNU TEJA" },
+  { pin: "26002-EC-007", name: "KAPARAVENA LAXMI PRASANNA" },
+  { pin: "26002-EC-008", name: "TEPPA SUPRITHA" },
+  { pin: "26002-EC-009", name: "LINGANOLA VISHWANATH REDDY" },
+  { pin: "26002-EC-010", name: "MAMIDIMADA PAVAN" },
+  { pin: "26002-EC-011", name: "NAGULA ASHVITHA" },
+  { pin: "26002-EC-012", name: "GOUNIKADI LAVANYA" },
+  { pin: "26002-EC-013", name: "BALNE JAHNAVI" },
+  { pin: "26002-EC-014", name: "KONDALA YUGENDER YADAV" },
+  { pin: "26002-EC-015", name: "GUNTUKA SAHASRA" },
+  { pin: "26002-EC-016", name: "MUKKERA SPANDANA" },
+  { pin: "26002-EC-017", name: "GANDHAMALA HARSHAVARDHAN" },
+  { pin: "26002-EC-018", name: "KASINA CHAKRI" },
+  { pin: "26002-EC-019", name: "VIGNESHWAR MISKIN" },
+  { pin: "26002-EC-020", name: "BALLA SAHITHI" },
+  { pin: "26002-EC-021", name: "KOLANUPAKA NITHYA SRI" },
+  { pin: "26002-EC-022", name: "KURELLA SANJANA" },
+  { pin: "26002-EC-023", name: "C.SAI KUMAR" },
+  { pin: "26002-EC-024", name: "GUMMADAVELLI SREE SAI RAGHAV" },
+  { pin: "26002-EC-025", name: "SALLA KRISHIKA" },
+  { pin: "26002-EC-026", name: "KETHAVATH SRINU NAIK" },
+  { pin: "26002-EC-027", name: "TOTTADI GOWTHAM" },
+  { pin: "26002-EC-028", name: "U VAISHNAVI" },
+  { pin: "26002-EC-029", name: "BANKA TEJASHWI" },
+  { pin: "26002-EC-030", name: "SHIRAMSHETTY SRIDATHU" },
+  { pin: "26002-EC-031", name: "DEEPIKA SHIVAJI MANTHEN" },
+  { pin: "26002-EC-032", name: "CHALIGANTI SUSHANTH" },
+  { pin: "26002-EC-033", name: "DHEERAVATH PRATHIKA" },
+  { pin: "26002-EC-034", name: "RACHURI ARCHANA" },
+  { pin: "26002-EC-035", name: "RATHOD SHIVA SHANKAR" },
+  { pin: "26002-EC-036", name: "CHINTHAGALLA DIWIK MANIPRASAD" },
+  { pin: "26002-EC-037", name: "GOKINI KIRANMAI" },
+  { pin: "26002-EC-038", name: "BANAVATH KIRAN" },
+  { pin: "26002-EC-039", name: "PULI RIYON PRATHIK" },
+  { pin: "26002-EC-040", name: "PADIGELA LASYAPRIYA" },
+  { pin: "26002-EC-041", name: "GURRAM DAIVIKA" },
+  { pin: "26002-EC-042", name: "JATOTH NANDEESHWAR" },
+  { pin: "26002-EC-043", name: "SHAFIA SULTANA" },
+  { pin: "26002-EC-044", name: "VADIYALA SAI ANVESH REDDY" },
+  { pin: "26002-EC-045", name: "DAIDA SATHVIK" },
+  { pin: "26002-EC-046", name: "CHALAMALASHETTY DHIRAJ SAI SATHWIK" },
+  { pin: "26002-EC-047", name: "JORREGALA KARTHIK" },
+  { pin: "26002-EC-048", name: "PATANA LUCKY" },
+  { pin: "26002-EC-049", name: "CHILUKA KARTHIK" },
+  { pin: "26002-EC-050", name: "MD ABRAR PASHA" },
+  { pin: "26002-EC-051", name: "GANTA SREEJITH REDDY" },
+  { pin: "26002-EC-052", name: "TUPUDA SWETHA" },
+  { pin: "26002-EC-053", name: "GEETHIKA S" },
+  { pin: "26002-EC-054", name: "ERRA INDRAJA" },
+  { pin: "26002-EC-055", name: "MACHA SATHWIK" },
+  { pin: "26002-EC-056", name: "MALLIPUDI ABHINASH" },
+  { pin: "26002-EC-057", name: "BATHULA LUCKY JAISEEL" },
+  { pin: "26002-EC-058", name: "V.TILAK KUMAR REDDY" },
+  { pin: "26002-EC-059", name: "ARAMALLA AKANKSH" },
+  { pin: "26002-EC-060", name: "KARNE SHARANYA" },
+  { pin: "26002-EC-061", name: "BASHETTY VARSHITH KUMAR" },
+  { pin: "26002-EC-062", name: "KOMPALLY SRI SANJANA" },
+  { pin: "26002-EC-063", name: "VASAM JASHWANTH" },
+  { pin: "26002-EC-064", name: "PALAKURA SHIVA SHANKER" },
+  { pin: "26002-EC-065", name: "REBBANAMONI GANESH" },
+  { pin: "26002-EC-066", name: "SIRRA MADHUPRIYA" }
+];
+
+// Updated DECE (C-26) 1st Year (Odd) 2026-27 Timetable (10:00 AM - 04:30 PM)
+const TIMETABLE = {
+  Monday: [
+    { periodId: 1, start: "10:00", end: "11:30", label: "10:00 AM – 11:30 AM", subject: "CHEMISTRY", type: "theory" },
+    { periodId: 2, start: "11:30", end: "13:00", label: "11:30 AM – 01:00 PM", subject: "PHYSICS", type: "theory" },
+    { periodId: 3, start: "13:00", end: "14:00", label: "01:00 PM – 02:00 PM", subject: "LUNCH", type: "lunch" },
+    { periodId: 4, start: "14:00", end: "15:30", label: "02:00 PM – 03:30 PM", subject: "MATHS", type: "theory" },
+    { periodId: 5, start: "15:30", end: "16:30", label: "03:30 PM – 04:30 PM", subject: "BE", type: "theory" }
+  ],
+  Tuesday: [
+    { periodId: 1, start: "10:00", end: "11:00", label: "10:00 AM – 11:00 AM", subject: "BE", type: "theory" },
+    { periodId: 2, start: "11:00", end: "13:00", label: "11:00 AM – 01:00 PM", subject: "B S LAB", type: "lab" },
+    { periodId: 3, start: "13:00", end: "14:00", label: "01:00 PM – 02:00 PM", subject: "LUNCH", type: "lunch" },
+    { periodId: 4, start: "14:00", end: "16:30", label: "02:00 PM – 04:30 PM", subject: "BE LAB", type: "lab" }
+  ],
+  Wednesday: [
+    { periodId: 1, start: "10:00", end: "11:30", label: "10:00 AM – 11:30 AM", subject: "MATHS", type: "theory" },
+    { periodId: 2, start: "11:30", end: "13:00", label: "11:30 AM – 01:00 PM", subject: "CHEMISTRY", type: "theory" },
+    { periodId: 3, start: "13:00", end: "14:00", label: "01:00 PM – 02:00 PM", subject: "LUNCH", type: "lunch" },
+    { periodId: 4, start: "14:00", end: "15:30", label: "02:00 PM – 03:30 PM", subject: "ENGLISH", type: "theory" },
+    { periodId: 5, start: "15:30", end: "16:30", label: "03:30 PM – 04:30 PM", subject: "FCP", type: "theory" }
+  ],
+  Thursday: [
+    { periodId: 1, start: "10:00", end: "10:45", label: "10:00 AM – 10:45 AM", subject: "PHYSICS", type: "theory" },
+    { periodId: 2, start: "10:45", end: "11:30", label: "10:45 AM – 11:30 AM", subject: "BE", type: "theory" },
+    { periodId: 3, start: "11:30", end: "13:00", label: "11:30 AM – 01:00 PM", subject: "FCP", type: "theory" },
+    { periodId: 4, start: "13:00", end: "14:00", label: "01:00 PM – 02:00 PM", subject: "LUNCH", type: "lunch" },
+    { periodId: 5, start: "14:00", end: "15:30", label: "02:00 PM – 03:30 PM", subject: "ENGLISH", type: "theory" },
+    { periodId: 6, start: "15:30", end: "16:30", label: "03:30 PM – 04:30 PM", subject: "TUT", type: "theory" }
+  ],
+  Friday: [
+    { periodId: 1, start: "10:00", end: "11:30", label: "10:00 AM – 11:30 AM", subject: "BE", type: "theory" },
+    { periodId: 2, start: "11:30", end: "13:00", label: "11:30 AM – 01:00 PM", subject: "FCP", type: "theory" },
+    { periodId: 3, start: "13:00", end: "14:00", label: "01:00 PM – 02:00 PM", subject: "LUNCH", type: "lunch" },
+    { periodId: 4, start: "14:00", end: "16:30", label: "02:00 PM – 04:30 PM", subject: "C & PYTHON LAB", type: "lab" }
+  ],
+  Saturday: [
+    { periodId: 1, start: "10:00", end: "10:45", label: "10:00 AM – 10:45 AM", subject: "MATHS", type: "theory" },
+    { periodId: 2, start: "10:45", end: "11:30", label: "10:45 AM – 11:30 AM", subject: "CHEMISTRY", type: "theory" },
+    { periodId: 3, start: "11:30", end: "13:00", label: "11:30 AM – 01:00 PM", subject: "PHYSICS", type: "theory" },
+    { periodId: 4, start: "13:00", end: "14:00", label: "01:00 PM – 02:00 PM", subject: "LUNCH", type: "lunch" },
+    { periodId: 5, start: "14:00", end: "16:30", label: "02:00 PM – 04:30 PM", subject: "ENGINEERING DRAWING WITH CAD LAB", type: "lab" }
+  ]
+};
+
+const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+let currentUser = null;
+let selectedDay = "Monday";
+let userTasks = [];
+let deferredInstallPrompt = null;
+
+function init() {
+  const now = new Date();
+  const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  const currentDayName = dayNames[now.getDay()];
+  
+  if (DAYS.includes(currentDayName)) {
+    selectedDay = currentDayName;
+  }
+
+  const savedTasks = localStorage.getItem("ece_tasks");
+  userTasks = savedTasks ? JSON.parse(savedTasks) : [];
+
+  const savedUser = localStorage.getItem("ece_user");
+  if(savedUser) {
+    currentUser = JSON.parse(savedUser);
+    showApp();
+  }
+
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredInstallPrompt = e;
+    document.getElementById("installBanner").style.display = "flex";
+  });
+
+  // Prevent accidental mobile back button from exiting app
+  window.history.pushState(null, "", window.location.href);
+  window.onpopstate = function () {
+    window.history.pushState(null, "", window.location.href);
+  };
+
+  updateClock();
+  setInterval(updateClock, 1000);
+}
+
+function showToast(msg) {
+  const t = document.getElementById("toast");
+  t.innerText = msg;
+  t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), 2600);
+}
+
+function copyPinToast(pinText) {
+  navigator.clipboard.writeText(pinText);
+  showToast("📋 Copied: " + pinText);
+}
+
+function copyUserPinAuto() {
+  if (currentUser && currentUser.pin) {
+    navigator.clipboard.writeText(currentUser.pin);
+    showToast("📋 PIN " + currentUser.pin + " Copied!");
+  }
+}
+
+function installPWA() {
+  if (deferredInstallPrompt) {
+    deferredInstallPrompt.prompt();
+    deferredInstallPrompt.userChoice.then(() => {
+      deferredInstallPrompt = null;
+      document.getElementById("installBanner").style.display = "none";
+    });
+  } else {
+    showToast("Tap Chrome menu (⋮) → 'Add to Home screen'");
+  }
+}
+
+function handleLogin() {
+  const val = document.getElementById("pinInput").value.trim().toUpperCase();
+  if(!val) return;
+  
+  const found = STUDENTS.find(s => s.pin.toUpperCase().includes(val) || val.includes(s.pin.split('-').pop()));
+  if(found) {
+    currentUser = found;
+    localStorage.setItem("ece_user", JSON.stringify(currentUser));
+    showApp();
+  } else {
+    document.getElementById("loginError").innerText = "Invalid PIN! Please check and try again.";
+    document.getElementById("loginError").style.display = "block";
+  }
+}
+
+function handleLogout() {
+  localStorage.removeItem("ece_user");
+  location.reload();
+}
+
+function showApp() {
+  document.getElementById("loginScreen").style.display = "none";
+  document.getElementById("mainApp").style.display = "flex";
+  
+  document.getElementById("userName").innerText = currentUser.name;
+  document.getElementById("userPin").innerText = currentUser.pin;
+  
+  renderTasks();
+  renderDayButtons();
+  renderDashboard();
+  renderDirectory();
+}
+
+function updateClock() {
+  const now = new Date();
+  document.getElementById("clock").innerText = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true });
+  document.getElementById("date").innerText = now.toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short' });
+  renderDashboard();
+}
+
+/* UPGRADED TASKS BOARD */
+function renderTasks() {
+  const container = document.getElementById("taskListContainer");
+  const badge = document.getElementById("taskCountBadge");
+  if (!container) return;
+
+  const pendingCount = userTasks.filter(t => !t.done).length;
+  badge.innerText = `${pendingCount} Pending`;
+
+  if (userTasks.length === 0) {
+    container.innerHTML = `<div class="mono" style="font-size: 11px; color: var(--text-muted); text-align: center; padding: 12px;">No pending work! Type above to save lab records or notes.</div>`;
+    return;
+  }
+
+  container.innerHTML = userTasks.map(t => `
+    <div class="task-item">
+      <div style="flex: 1;">
+        <span class="task-tag tag-record">TASK</span>
+        <span class="${t.done ? 'tag-done' : ''}" style="font-weight: 700; font-size: 13px; color: ${t.done ? '#94A3B8' : '#FFF'};">${t.title}</span>
+        <div class="mono" style="font-size: 10px; color: var(--text-muted); margin-top: 3px;">Added: ${t.due}</div>
+      </div>
+      <input type="checkbox" ${t.done ? 'checked' : ''} onchange="toggleTask(${t.id})" style="width: 18px; height: 18px; accent-color: #10B981; cursor: pointer;"/>
+      <button onclick="deleteTask(${t.id})" class="del-btn">🗑️</button>
+    </div>
+  `).join('');
+}
+
+function addQuickTask() {
+  const input = document.getElementById("newTaskTitle");
+  const title = input.value.trim();
+  if (!title) return;
+
+  const todayStr = new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
+  userTasks.unshift({
+    id: Date.now(),
+    title: title,
+    due: todayStr,
+    done: false
+  });
+  input.value = "";
+  localStorage.setItem("ece_tasks", JSON.stringify(userTasks));
+  renderTasks();
+  showToast("✅ Work added to board!");
+}
+
+function toggleTask(id) {
+  userTasks = userTasks.map(t => t.id === id ? { ...t, done: !t.done } : t);
+  localStorage.setItem("ece_tasks", JSON.stringify(userTasks));
+  renderTasks();
+}
+
+function deleteTask(id) {
+  userTasks = userTasks.filter(t => t.id !== id);
+  localStorage.setItem("ece_tasks", JSON.stringify(userTasks));
+  renderTasks();
+}
+
+/* CLASSMATE DIRECTORY SEARCH */
+function renderDirectory() {
+  const q = (document.getElementById("studentSearch")?.value || "").trim().toUpperCase();
+  const listEl = document.getElementById("directoryList");
+  if (!listEl) return;
+
+  const filtered = STUDENTS.filter(s => s.name.includes(q) || s.pin.includes(q)).slice(0, 15);
+  listEl.innerHTML = filtered.map(s => `
+    <div class="student-row">
+      <div>
+        <div style="font-weight: 700; color: #FFF;">${s.name}</div>
+        <div class="mono" style="font-size: 10px; color: var(--cyan);">${s.pin}</div>
+      </div>
+      <button onclick="copyPinToast('${s.pin}')" class="mono" style="background: rgba(6, 182, 212, 0.15); border: 1px solid rgba(6, 182, 212, 0.4); color: var(--cyan); padding: 4px 10px; border-radius: 8px; font-size: 10px; font-weight: 800; cursor: pointer;">Copy PIN</button>
+    </div>
+  `).join('');
+}
+
+/* TIMETABLE & LIVE PROGRESS LOGIC */
+function renderDayButtons() {
+  const container = document.getElementById("daySelector");
+  container.innerHTML = DAYS.map(d => `
+    <button onclick="selectDay('${d}')" class="day-pill ${d === selectedDay ? 'active' : ''}">
+      ${d.slice(0,3).toUpperCase()}
+    </button>
+  `).join('');
+}
+
+function selectDay(d) { 
+  selectedDay = d; 
+  renderDayButtons(); 
+  renderDashboard(); 
+}
+
+function getPeriodStatus() {
+  const now = new Date();
+  const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  const todayName = dayNames[now.getDay()];
+
+  if (selectedDay !== todayName) return { activeId: null };
+
+  const currentSeconds = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
+  const daySchedule = TIMETABLE[selectedDay] || [];
+
+  for (let slot of daySchedule) {
+    const [sHours, sMins] = slot.start.split(":").map(Number);
+    const [eHours, eMins] = slot.end.split(":").map(Number);
+    const startSec = sHours * 3600 + sMins * 60;
+    const endSec = eHours * 3600 + eMins * 60;
+
+    if (currentSeconds >= startSec && currentSeconds < endSec) {
+      const totalDuration = endSec - startSec;
+      const elapsed = currentSeconds - startSec;
+      const remainingMins = Math.ceil((endSec - currentSeconds) / 60);
+      const progressPct = Math.min(100, Math.max(0, (elapsed / totalDuration) * 100)).toFixed(1);
+      return { activeId: slot.periodId, remainingMins, progressPct };
     }
+  }
+  return { activeId: null };
+}
 
-    function to12Hr(t) {
-      const [h, m] = t.split(":").map(Number);
-      const ampm = h >= 12 ? "PM" : "AM";
-      const hr = h % 12 || 12;
-      return `${hr}:${m.toString().padStart(2, "0")} ${ampm}`;
-    }
+function renderDashboard() {
+  const status = getPeriodStatus();
+  const activePeriodId = status.activeId;
+  const list = TIMETABLE[selectedDay] || [];
+  
+  const activeSubject = list.find(item => item.periodId === activePeriodId);
+  const nextSubject = activePeriodId ? list.find(item => item.periodId === activePeriodId + 1) : null;
 
-    function setupTabs() {
-      const todayIdx = new Date().getDay();
-      if (todayIdx >= 1 && todayIdx <= 6) {
-        activeDay = DAYS[todayIdx - 1];
-      }
-      renderTabs();
-      renderPeriods(activeDay);
-    }
+  const spotlightEl = document.getElementById("spotlightContainer");
+  if (activeSubject) {
+    spotlightEl.innerHTML = `
+      <div class="spotlight-card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <div class="live-pill"><span class="live-dot"></span> SESSION ${activeSubject.periodId} LIVE</div>
+          <span class="mono" style="font-size: 11px; font-weight: 800; color: var(--emerald);">${status.remainingMins} mins left</span>
+        </div>
+        <div style="font-size: 20px; font-weight: 900; color: #FFF; margin-bottom: 4px;">${activeSubject.subject}</div>
+        <div class="mono" style="font-size: 11px; color: #E0E7FF;">⏰ ${activeSubject.label}</div>
+        <div class="period-progress-bg">
+          <div class="period-progress-fill" style="width: ${status.progressPct}%;"></div>
+        </div>
+        ${nextSubject ? `<div class="mono" style="font-size: 10px; color: var(--text-muted); margin-top: 8px;">⏭️ Up Next: <b style="color:#FFF;">${nextSubject.subject}</b></div>` : ''}
+      </div>
+    `;
+  } else {
+    spotlightEl.innerHTML = `
+      <div class="spotlight-card idle">
+        <div class="mono" style="font-size: 10px; color: var(--text-muted); font-weight: 700;">CLASS STATUS · ${selectedDay.toUpperCase()}</div>
+        <div style="font-size: 15px; font-weight: 800; color: #FFF; margin-top: 2px;">No class currently ongoing</div>
+        <div class="mono" style="font-size: 10px; color: var(--cyan); margin-top: 4px;">College Hours: 10:00 AM – 04:30 PM</div>
+      </div>
+    `;
+  }
 
-    function renderTabs() {
-      const tabBox = document.getElementById("day-tabs");
-      tabBox.innerHTML = "";
-      DAYS.forEach(day => {
-        const btn = document.createElement("button");
-        btn.className = `day-tab ${day === activeDay ? "active" : ""}`;
-        btn.textContent = day;
-        btn.onclick = () => {
-          activeDay = day;
-          renderTabs();
-          renderPeriods(day);
-        };
-        tabBox.appendChild(btn);
-      });
-    }
+  document.getElementById("scheduleContainer").innerHTML = list.map(item => {
+    const isActive = item.periodId === activePeriodId;
+    const isLab = item.type === 'lab';
+    const isLunch = item.type === 'lunch';
 
-    function renderPeriods(day) {
-      const list = document.getElementById("period-list");
-      list.innerHTML = "";
-      const now = new Date();
-      const todayName = now.toLocaleDateString("en-US", { weekday: "long" });
-      const currentMins = now.getHours() * 60 + now.getMinutes();
+    return `
+      <div class="period-item ${isLab ? 'lab-period' : isLunch ? 'lunch-period' : ''} ${isActive ? 'active-item' : ''}">
+        <div style="padding-left: 6px;">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span class="mono" style="font-size: 10px; color: var(--text-muted); font-weight: 800;">P${item.periodId}</span>
+            <span style="font-size: 14px; font-weight: 800; color: ${isActive ? 'var(--cyan)' : '#FFF'};">${item.subject}</span>
+            ${isActive ? '<span class="live-pill" style="font-size: 8px; padding: 2px 6px;">NOW</span>' : ''}
+            ${isLab ? '<span class="mono" style="font-size: 9px; color: var(--cyan); background: rgba(6,182,212,0.15); padding: 2px 5px; border-radius: 4px;">LAB</span>' : ''}
+          </div>
+          <div class="mono" style="font-size: 10px; color: var(--text-muted); margin-top: 3px;">
+            ⏰ ${item.label}
+          </div>
+        </div>
+        <div style="font-size: 18px;">
+          ${isLunch ? '🍱' : isLab ? '💻' : '📖'}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
 
-      (TIMETABLE[day] || []).forEach(p => {
-        const isLive = day === todayName && currentMins >= toMins(p.start) && currentMins < toMins(p.end);
-        const div = document.createElement("div");
-        div.className = `period-item ${isLive ? "active-now" : ""}`;
-        div.innerHTML = `
-          <div class="period-time">${to12Hr(p.start)} - ${to12Hr(p.end)}</div>
-          <div class="period-subject">${p.subject}</div>
-          <span class="badge">${p.type}</span>
-        `;
-        list.appendChild(div);
-      });
-    }
-
-    function updateClock() {
-      const now = new Date();
-      document.getElementById("live-clock").textContent = now.toLocaleTimeString("en-US", {
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit"
-      });
-
-      const dayName = now.toLocaleDateString("en-US", { weekday: "long" });
-      const dateStr = now.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
-      document.getElementById("live-date").textContent = `${dayName}, ${dateStr}`;
-
-      const statusEl = document.getElementById("current-period");
-      const todaySchedule = TIMETABLE[dayName];
-      if (!todaySchedule) {
-        statusEl.textContent = "Sunday — No Classes Today";
-        return;
-      }
-
-      const mins = now.getHours() * 60 + now.getMinutes();
-      const current = todaySchedule.find(p => mins >= toMins(p.start) && mins < toMins(p.end));
-
-      if (current) {
-        statusEl.textContent = `${current.subject} (${to12Hr(current.start)} - ${to12Hr(current.end)})`;
-      } else if (mins < toMins("10:00")) {
-        statusEl.textContent = `Starts at 10:00 AM: ${todaySchedule[0].subject}`;
-      } else {
-        statusEl.textContent = "Classes Over for Today (After 4:30 PM)";
-      }
-    }
-
-    function checkOfficialAttendance() {
-      const pin = document.getElementById("pin-input").value.trim();
-      const msg = document.getElementById("copy-status");
-      if (pin) {
-        navigator.clipboard.writeText(pin).catch(() => {});
-        msg.textContent = `PIN "${pin}" copied! Paste it on the SBTET page.`;
-      }
-      window.open("https://www.sbtet.telangana.gov.in/index.html#!/index/AttendanceReport", "_blank");
-    }
-
-    function openRawApi() {
-      const pin = document.getElementById("pin-input").value.trim();
-      if (!pin) return alert("Please enter your PIN.");
-      window.open(`https://www.sbtet.telangana.gov.in/api/api/PreExamination/getAttendanceReport?Pin=${encodeURIComponent(pin)}`, "_blank");
-    }
-
-    setupTabs();
-    updateClock();
-    setInterval(updateClock, 1000);
-  </script>
+window.onload = init;
+</script>
 </body>
 </html>
