@@ -4,591 +4,477 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Easy Time Tracker | 002 JNGPT DECE (C-26)</title>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-dark: #060814;
-      --card-bg: rgba(18, 25, 54, 0.65);
-      --card-border: rgba(99, 102, 241, 0.35);
-      --accent: #00f2fe;
-      --accent-2: #4facfe;
-      --accent-pink: #ff0844;
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-      --live-green: #10b981;
+      --bg: #0f172a;
+      --card: #1e293b;
+      --border: #334155;
+      --primary: #38bdf8;
+      --primary-hover: #0284c7;
+      --text: #f8fafc;
+      --muted: #94a3b8;
+      --success: #22c55e;
+      --warning: #f59e0b;
     }
 
     * {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: 'Space Grotesk', sans-serif;
+      font-family: 'Inter', sans-serif;
     }
 
     body {
-      background-color: var(--bg-dark);
-      color: var(--text-main);
-      min-height: 100vh;
-      overflow-x: hidden;
-      perspective: 1200px;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      padding: 1.25rem;
     }
 
-    /* 3D Animated Background Canvas */
-    #bg-canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      z-index: -1;
-      background: radial-gradient(circle at 50% 20%, #161e42 0%, #060814 80%);
-    }
-
-    /* Main 3D Scene Container */
-    .scene-container {
-      max-width: 1100px;
+    .container {
+      max-width: 960px;
       margin: 0 auto;
-      padding: 2rem 1.25rem 4rem;
-      transform-style: preserve-3d;
     }
 
-    /* 3D Floating Header */
-    .hero-header {
+    /* Header */
+    header {
       text-align: center;
-      margin-bottom: 2.2rem;
-      transform-style: preserve-3d;
-      animation: float3D 6s ease-in-out infinite;
+      padding: 1.5rem 1rem;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      margin-bottom: 1.25rem;
     }
 
-    @keyframes float3D {
-      0%, 100% { transform: translateY(0px) rotateX(2deg) rotateY(-2deg); }
-      50% { transform: translateY(-10px) rotateX(-2deg) rotateY(2deg); }
-    }
-
-    .college-badge {
-      display: inline-block;
-      padding: 0.4rem 1.1rem;
-      border-radius: 999px;
-      background: rgba(0, 242, 254, 0.12);
-      border: 1px solid rgba(0, 242, 254, 0.4);
-      color: var(--accent);
+    .college-title {
       font-size: 0.85rem;
-      font-weight: 600;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      margin-bottom: 0.75rem;
-      box-shadow: 0 0 20px rgba(0, 242, 254, 0.25);
-    }
-
-    .hero-title {
-      font-size: clamp(1.8rem, 4vw, 2.8rem);
       font-weight: 700;
-      background: linear-gradient(90deg, #ffffff, #00f2fe, #4facfe);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      text-shadow: 0 10px 30px rgba(0, 242, 254, 0.2);
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 0.35rem;
     }
 
-    .hero-sub {
-      color: var(--text-muted);
-      font-size: 1rem;
-      margin-top: 0.4rem;
+    h1 {
+      font-size: 1.65rem;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
     }
 
-    /* Interactive 3D Tilt Cards */
-    .card-3d {
-      background: var(--card-bg);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid var(--card-border);
-      border-radius: 20px;
-      padding: 1.5rem;
-      margin-bottom: 1.75rem;
-      transform-style: preserve-3d;
-      transition: transform 0.15s ease-out, box-shadow 0.2s ease, border-color 0.2s ease;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.15);
-      position: relative;
+    .sub-header {
+      font-size: 0.92rem;
+      color: var(--muted);
     }
 
-    .card-3d:hover {
-      border-color: rgba(0, 242, 254, 0.65);
-      box-shadow: 0 25px 50px rgba(0, 242, 254, 0.18), inset 0 1px 2px rgba(255, 255, 255, 0.25);
-    }
-
-    .card-inner-3d {
-      transform: translateZ(25px);
-    }
-
-    /* Top Grid: Live Status + SBTET Attendance Hub */
+    /* Grid Cards */
     .top-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
-      gap: 1.5rem;
-      margin-bottom: 1.75rem;
+      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 1.25rem;
     }
 
-    .section-title {
-      font-size: 1.15rem;
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.25rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .top-grid .card {
+      margin-bottom: 0;
+    }
+
+    .card-title {
+      font-size: 1.05rem;
       font-weight: 700;
-      margin-bottom: 1rem;
+      margin-bottom: 0.9rem;
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      color: #fff;
     }
 
     .live-dot {
-      width: 10px;
-      height: 10px;
-      background-color: var(--live-green);
+      width: 9px;
+      height: 9px;
+      background: var(--success);
       border-radius: 50%;
-      box-shadow: 0 0 12px var(--live-green);
-      animation: pulse 1.5s infinite;
+      display: inline-block;
     }
 
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(1.35); opacity: 0.6; }
-    }
-
-    .clock-display {
-      font-size: 2rem;
+    .clock {
+      font-size: 1.75rem;
       font-weight: 700;
-      color: var(--accent);
-      margin-bottom: 0.4rem;
+      color: var(--primary);
     }
 
-    .current-period-box {
-      background: rgba(15, 23, 42, 0.7);
-      border-left: 4px solid var(--accent);
-      padding: 0.85rem 1rem;
-      border-radius: 10px;
-      margin-top: 0.75rem;
+    .date-text {
+      font-size: 0.88rem;
+      color: var(--muted);
+      margin-bottom: 0.85rem;
     }
 
-    .current-period-label {
-      font-size: 0.78rem;
+    .status-box {
+      background: rgba(15, 23, 42, 0.65);
+      border-left: 4px solid var(--primary);
+      padding: 0.75rem 0.9rem;
+      border-radius: 8px;
+    }
+
+    .status-label {
+      font-size: 0.75rem;
+      color: var(--muted);
       text-transform: uppercase;
-      color: var(--text-muted);
-      letter-spacing: 0.8px;
+      font-weight: 600;
     }
 
-    .current-period-name {
-      font-size: 1.2rem;
+    .status-value {
+      font-size: 1.05rem;
       font-weight: 700;
-      color: #fff;
-      margin-top: 0.2rem;
+      margin-top: 0.15rem;
     }
 
-    /* PIN Input & 3D Buttons */
-    .pin-input-group {
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-    }
-
+    /* SBTET Attendance Checker */
     .pin-input {
       width: 100%;
-      padding: 0.85rem 1rem;
-      border-radius: 12px;
-      border: 1px solid rgba(148, 163, 184, 0.35);
-      background: rgba(6, 8, 20, 0.75);
-      color: #fff;
-      font-size: 1rem;
+      padding: 0.75rem 0.9rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 0.95rem;
       font-weight: 600;
       text-transform: uppercase;
+      margin-bottom: 0.75rem;
       outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
     }
 
     .pin-input:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 15px rgba(0, 242, 254, 0.25);
+      border-color: var(--primary);
     }
 
-    .btn-row {
+    .btn-group {
       display: flex;
+      gap: 0.6rem;
       flex-wrap: wrap;
-      gap: 0.65rem;
     }
 
-    .btn-3d {
+    .btn {
       flex: 1;
-      min-width: 140px;
-      padding: 0.8rem 1rem;
+      padding: 0.7rem 0.9rem;
       border: none;
-      border-radius: 12px;
-      font-weight: 700;
-      font-size: 0.9rem;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      font-weight: 600;
       cursor: pointer;
       text-align: center;
       text-decoration: none;
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
-      transform: translateZ(15px);
+      transition: opacity 0.2s;
     }
 
     .btn-primary {
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
-      color: #04101e;
-      box-shadow: 0 8px 20px rgba(0, 242, 254, 0.3);
+      background: var(--primary);
+      color: #0f172a;
     }
 
     .btn-secondary {
-      background: rgba(255, 255, 255, 0.08);
-      color: #fff;
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: #334155;
+      color: var(--text);
     }
 
-    .btn-3d:hover {
-      transform: translateZ(25px) translateY(-2px);
+    .btn:hover {
+      opacity: 0.9;
     }
 
-    .btn-3d:active {
-      transform: translateZ(10px) translateY(1px);
+    .helper-msg {
+      font-size: 0.8rem;
+      color: var(--success);
+      margin-top: 0.5rem;
+      min-height: 1.1rem;
     }
 
-    .status-toast {
-      font-size: 0.82rem;
-      color: var(--live-green);
-      min-height: 1.2rem;
-      margin-top: 0.3rem;
-    }
-
-    /* Day Selector Pills */
+    /* Day Tabs */
     .day-tabs {
       display: flex;
-      gap: 0.6rem;
+      gap: 0.5rem;
       overflow-x: auto;
       padding-bottom: 0.5rem;
-      margin-bottom: 1.25rem;
-      scrollbar-width: none;
-    }
-
-    .day-tabs::-webkit-scrollbar {
-      display: none;
+      margin-bottom: 1rem;
     }
 
     .day-tab {
-      padding: 0.65rem 1.2rem;
-      border-radius: 12px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      color: var(--text-muted);
+      padding: 0.55rem 1rem;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--muted);
       font-weight: 600;
+      font-size: 0.88rem;
       cursor: pointer;
       white-space: nowrap;
-      transition: all 0.2s ease;
     }
 
     .day-tab.active {
-      background: linear-gradient(135deg, var(--accent), var(--accent-2));
-      color: #060814;
-      border-color: transparent;
-      box-shadow: 0 6px 20px rgba(0, 242, 254, 0.35);
-      transform: translateY(-2px);
+      background: var(--primary);
+      color: #0f172a;
+      border-color: var(--primary);
     }
 
-    /* 3D Period Cards Grid */
-    .periods-grid {
+    /* Period List */
+    .period-list {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-      gap: 1.1rem;
-      transform-style: preserve-3d;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 0.85rem;
     }
 
-    .period-card {
-      background: rgba(15, 23, 42, 0.78);
-      border: 1px solid rgba(148, 163, 184, 0.2);
-      border-radius: 16px;
-      padding: 1.15rem;
-      transform-style: preserve-3d;
-      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
-      position: relative;
-      overflow: hidden;
+    .period-item {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.95rem;
     }
 
-    .period-card:hover {
-      transform: translateY(-6px) rotateX(6deg) rotateY(-4deg) scale(1.02);
-      border-color: var(--accent);
-      box-shadow: 0 15px 30px rgba(0, 242, 254, 0.2);
-    }
-
-    .period-card.active-now {
-      border-color: var(--live-green);
-      box-shadow: 0 0 25px rgba(16, 185, 129, 0.3);
+    .period-item.active-now {
+      border-color: var(--success);
+      box-shadow: 0 0 0 1px var(--success);
     }
 
     .period-time {
-      font-size: 0.82rem;
+      font-size: 0.8rem;
+      color: var(--primary);
       font-weight: 600;
-      color: var(--accent);
-      margin-bottom: 0.4rem;
+      margin-bottom: 0.25rem;
     }
 
     .period-subject {
-      font-size: 1.15rem;
+      font-size: 1.05rem;
       font-weight: 700;
-      color: #fff;
-      margin-bottom: 0.6rem;
+      margin-bottom: 0.4rem;
     }
 
-    .period-badge {
+    .badge {
       display: inline-block;
-      font-size: 0.72rem;
-      font-weight: 700;
-      padding: 0.25rem 0.65rem;
-      border-radius: 6px;
-      text-transform: uppercase;
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 0.2rem 0.55rem;
+      border-radius: 4px;
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--primary);
     }
 
-    .type-Theory { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
-    .type-Lab { background: rgba(168, 85, 247, 0.2); color: #c084fc; }
-    .type-Break { background: rgba(245, 158, 11, 0.2); color: #fbbf24; }
-    .type-Tutorial { background: rgba(16, 185, 129, 0.2); color: #34d399; }
-
-    /* Full Master Table View */
-    .table-wrapper {
+    /* Full Timetable Table */
+    .table-container {
       overflow-x: auto;
-      border-radius: 14px;
-      border: 1px solid rgba(255, 255, 255, 0.12);
     }
 
-    table.master-table {
+    table {
       width: 100%;
       border-collapse: collapse;
-      min-width: 780px;
-      background: rgba(10, 15, 32, 0.85);
+      min-width: 720px;
+      font-size: 0.84rem;
       text-align: center;
-      font-size: 0.85rem;
     }
 
-    .master-table th, .master-table td {
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      padding: 0.7rem 0.5rem;
+    th, td {
+      border: 1px solid var(--border);
+      padding: 0.65rem 0.45rem;
     }
 
-    .master-table th {
-      background: rgba(0, 242, 254, 0.1);
-      color: var(--accent);
+    th {
+      background: var(--bg);
+      color: var(--primary);
       font-weight: 700;
     }
 
-    .master-table td.day-col {
+    .day-cell {
       font-weight: 700;
-      color: #fff;
-      background: rgba(255, 255, 255, 0.04);
+      background: rgba(15, 23, 42, 0.5);
     }
 
-    .master-table td.lunch-col {
+    .lunch-cell {
       background: rgba(245, 158, 11, 0.12);
-      color: #fbbf24;
+      color: var(--warning);
       font-weight: 700;
-      letter-spacing: 2px;
+      letter-spacing: 1px;
     }
 
-    /* Footer & Instagram 3D Button */
-    .footer-3d {
+    /* Footer */
+    footer {
       text-align: center;
-      margin-top: 2.5rem;
-      padding: 1.75rem;
-      border-radius: 20px;
-      background: rgba(18, 25, 54, 0.6);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      transform-style: preserve-3d;
+      padding: 1.5rem 1rem;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      margin-top: 1.25rem;
     }
 
-    .insta-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.6rem;
-      margin-top: 0.9rem;
-      padding: 0.8rem 1.6rem;
+    .insta-link {
+      display: inline-block;
+      margin-top: 0.65rem;
+      padding: 0.65rem 1.35rem;
       border-radius: 999px;
-      background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+      background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
       color: #fff;
-      font-weight: 700;
+      font-weight: 600;
+      font-size: 0.9rem;
       text-decoration: none;
-      box-shadow: 0 10px 25px rgba(220, 39, 67, 0.4);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-    }
-
-    .insta-btn:hover {
-      transform: translateY(-4px) scale(1.04);
-      box-shadow: 0 15px 30px rgba(220, 39, 67, 0.6);
     }
   </style>
 </head>
 <body>
 
-  <!-- 3D Starfield Motion Background -->
-  <canvas id="bg-canvas"></canvas>
-
-  <div class="scene-container">
-    <!-- 3D Floating Hero Header -->
-    <header class="hero-header">
-      <div class="college-badge">002 JNGPT, RAMANTHAPUR</div>
-      <h1 class="hero-title">EASY TIME TRACKER 3D</h1>
-      <p class="hero-sub">TIME TABLE DECE (C-26) I ST YEAR (ODD) 2026-27</p>
+  <div class="container">
+    <!-- Header -->
+    <header>
+      <div class="college-title">002 JNGPT, RAMANTHAPUR</div>
+      <h1>Easy Time Tracker</h1>
+      <p class="sub-header">TIME TABLE DECE (C-26) I ST YEAR (ODD) 2026-27</p>
     </header>
 
-    <!-- Top 3D Cards: Live Class Tracker + SBTET Attendance Checker -->
+    <!-- Top Section: Live Class Tracker & SBTET Attendance -->
     <div class="top-grid">
-      <!-- Live Class Status Card -->
-      <div class="card-3d tilt-card">
-        <div class="card-inner-3d">
-          <div class="section-title">
-            <span class="live-dot"></span>
-            Live Class Tracker
-          </div>
-          <div id="live-clock" class="clock-display">--:--:--</div>
-          <div id="live-date" style="color: var(--text-muted); font-size: 0.9rem;">Loading day...</div>
-          <div class="current-period-box">
-            <div class="current-period-label">Current / Next Session</div>
-            <div id="current-subject" class="current-period-name">Checking schedule...</div>
-          </div>
+      <div class="card">
+        <div class="card-title">
+          <span class="live-dot"></span> Live Class Status
+        </div>
+        <div id="live-clock" class="clock">--:--:--</div>
+        <div id="live-date" class="date-text">Loading date...</div>
+        <div class="status-box">
+          <div class="status-label">Current / Next Period</div>
+          <div id="current-period" class="status-value">Checking timetable...</div>
         </div>
       </div>
 
-      <!-- SBTET Attendance Quick Access Card -->
-      <div class="card-3d tilt-card">
-        <div class="card-inner-3d">
-          <div class="section-title">SBTET Attendance Hub</div>
-          <div class="pin-input-group">
-            <input 
-              type="text" 
-              id="student-pin" 
-              class="pin-input" 
-              placeholder="Enter PIN (e.g. 26002-EC-060)" 
-              value="26002-EC-060"
-            />
-            <div class="btn-row">
-              <button class="btn-3d btn-primary" onclick="openOfficialPortal()">
-                Copy PIN & Open Portal
-              </button>
-              <button class="btn-3d btn-secondary" onclick="openRawSbtetData()">
-                View Direct Data Tab
-              </button>
-            </div>
-            <div id="copy-toast" class="status-toast"></div>
-          </div>
+      <div class="card">
+        <div class="card-title">SBTET Attendance Quick Check</div>
+        <input 
+          type="text" 
+          id="pin-input" 
+          class="pin-input" 
+          placeholder="Enter PIN (e.g. 26002-EC-060)" 
+          value="26002-EC-060" 
+        />
+        <div class="btn-group">
+          <button class="btn btn-primary" onclick="checkOfficialAttendance()">
+            Copy PIN & Open Portal
+          </button>
+          <button class="btn btn-secondary" onclick="openRawApi()">
+            Open Direct Report
+          </button>
         </div>
+        <div id="copy-status" class="helper-msg"></div>
       </div>
     </div>
 
-    <!-- Interactive Daily 3D Schedule -->
-    <div class="card-3d tilt-card">
-      <div class="card-inner-3d">
-        <div class="section-title">Interactive 3D Daily Timetable</div>
-        <div id="day-tabs" class="day-tabs"></div>
-        <div id="periods-container" class="periods-grid"></div>
+    <!-- Daily Schedule View -->
+    <div class="card">
+      <div class="card-title">Daily Class Schedule</div>
+      <div id="day-tabs" class="day-tabs"></div>
+      <div id="period-list" class="period-list"></div>
+    </div>
+
+    <!-- Master Timetable Table -->
+    <div class="card">
+      <div class="card-title">Full Week Timetable (10:00 AM – 4:30 PM)</div>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>DAYS</th>
+              <th>10:00 - 10:30</th>
+              <th>10:30 - 11:00</th>
+              <th>11:00 - 11:30</th>
+              <th>11:30 - 1:00</th>
+              <th>1:00 - 2:00</th>
+              <th>2:00 - 3:30</th>
+              <th>3:30 - 4:30</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="day-cell">MONDAY</td>
+              <td colspan="3">CHEMISTRY</td>
+              <td>PHYSICS</td>
+              <td rowspan="6" class="lunch-cell">LUNCH</td>
+              <td>MATHS</td>
+              <td>BE</td>
+            </tr>
+            <tr>
+              <td class="day-cell">TUESDAY</td>
+              <td colspan="2">BE</td>
+              <td colspan="2">B S LAB (11:00 - 1:00)</td>
+              <td colspan="2">BE LAB (2:00 - 4:30)</td>
+            </tr>
+            <tr>
+              <td class="day-cell">WEDNESDAY</td>
+              <td colspan="3">MATHS</td>
+              <td>CHEMISTRY</td>
+              <td>ENGLISH</td>
+              <td>FCP</td>
+            </tr>
+            <tr>
+              <td class="day-cell">THURSDAY</td>
+              <td colspan="3">PHYSICS (10:00-10:45) | BE (10:45-11:30)</td>
+              <td>FCP</td>
+              <td>ENGLISH</td>
+              <td>TUT</td>
+            </tr>
+            <tr>
+              <td class="day-cell">FRIDAY</td>
+              <td colspan="3">BE</td>
+              <td>FCP</td>
+              <td colspan="2">C & PYTHON LAB (2:00 - 4:30)</td>
+            </tr>
+            <tr>
+              <td class="day-cell">SATURDAY</td>
+              <td colspan="3">MATHS (10:00-10:45) | CHEMISTRY (10:45-11:30)</td>
+              <td>PHYSICS</td>
+              <td colspan="2">ENGINEERING DRAWING WITH CAD LAB (2:00 - 4:30)</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
 
-    <!-- Complete Master Timetable Grid (Exact Match to JNGPT Sheet) -->
-    <div class="card-3d tilt-card">
-      <div class="card-inner-3d">
-        <div class="section-title">Master Schedule Overview (10:00 AM – 4:30 PM)</div>
-        <div class="table-wrapper">
-          <table class="master-table">
-            <thead>
-              <tr>
-                <th>DAYS</th>
-                <th>10:00 - 10:30</th>
-                <th>10:30 - 11:00</th>
-                <th>11:00 - 11:30</th>
-                <th>11:30 - 13:00</th>
-                <th>13:00 - 14:00</th>
-                <th>14:00 - 15:30</th>
-                <th>15:30 - 16:30</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td class="day-col">MONDAY</td>
-                <td colspan="3">CHEMISTRY (10:00 - 11:30)</td>
-                <td>PHYSICS</td>
-                <td rowspan="6" class="lunch-col">L<br>U<br>N<br>C<br>H</td>
-                <td>MATHS</td>
-                <td>BE</td>
-              </tr>
-              <tr>
-                <td class="day-col">TUESDAY</td>
-                <td colspan="2">BE (10:00 - 11:00)</td>
-                <td colspan="2">B S LAB (11:00 - 13:00)</td>
-                <td colspan="2">BE LAB (14:00 - 16:30)</td>
-              </tr>
-              <tr>
-                <td class="day-col">WEDNESDAY</td>
-                <td colspan="3">MATHS (10:00 - 11:30)</td>
-                <td>CHEMISTRY</td>
-                <td>ENGLISH</td>
-                <td>FCP</td>
-              </tr>
-              <tr>
-                <td class="day-col">THURSDAY</td>
-                <td colspan="3">PHYSICS (10:00-10:45) | BE (10:45-11:30)</td>
-                <td>FCP</td>
-                <td>ENGLISH</td>
-                <td>TUT</td>
-              </tr>
-              <tr>
-                <td class="day-col">FRIDAY</td>
-                <td colspan="3">BE (10:00 - 11:30)</td>
-                <td>FCP</td>
-                <td colspan="2">C & PYTHON LAB (14:00 - 16:30)</td>
-              </tr>
-              <tr>
-                <td class="day-col">SATURDAY</td>
-                <td colspan="3">MATHS (10:00-10:45) | CHEMISTRY (10:45-11:30)</td>
-                <td>PHYSICS</td>
-                <td colspan="2">ENGINEERING DRAWING WITH CAD LAB (14:00 - 16:30)</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <!-- 3D Footer with Updated @srnest_hub Instagram Link -->
-    <footer class="footer-3d tilt-card">
-      <div class="card-inner-3d">
-        <p style="font-weight: 600; font-size: 1.05rem;">Designed for 002 JNGPT Ramanthapur — DECE (C-26)</p>
-        <p style="color: var(--text-muted); font-size: 0.88rem; margin-top: 0.25rem;">Connect with us on Instagram for updates & resources</p>
-        <a 
-          href="https://www.instagram.com/srnest_hub?mdxt=MTh2eWtpeHd1Mzhraw==" 
-          target="_blank" 
-          rel="noopener noreferrer" 
-          class="insta-btn"
-        >
-          <span>Follow @srnest_hub on Instagram</span>
-        </a>
-      </div>
+    <!-- Footer with Updated Instagram Link -->
+    <footer>
+      <p style="font-weight: 600;">Designed by Sreejith Reddy | 002 JNGPT DECE (C-26)</p>
+      <a 
+        href="https://www.instagram.com/srnest_hub?mdxt=MTh2eWtpeHd1Mzhraw==" 
+        target="_blank" 
+        rel="noopener noreferrer" 
+        class="insta-link"
+      >
+        Follow @srnest_hub on Instagram
+      </a>
     </footer>
   </div>
 
   <script>
-    // Updated Instagram Profile URL
+    // Updated Instagram URL
     const INSTA_URL = "https://www.instagram.com/srnest_hub?mdxt=MTh2eWtpeHd1Mzhraw==";
 
-    // Updated 002 JNGPT, Ramanthapur DECE(C-26) 1st Year (Odd) 2026-27 Timetable
+    // Updated DECE (C-26) 1st Year (Odd) 2026-27 Timetable
     const TIMETABLE = {
       Monday: [
         { start: "10:00", end: "11:30", subject: "CHEMISTRY", type: "Theory" },
         { start: "11:30", end: "13:00", subject: "PHYSICS", type: "Theory" },
-        { start: "13:00", end: "14:00", subject: "LUNCH BREAK", type: "Break" },
+        { start: "13:00", end: "14:00", subject: "LUNCH", type: "Break" },
         { start: "14:00", end: "15:30", subject: "MATHS", type: "Theory" },
         { start: "15:30", end: "16:30", subject: "BE", type: "Theory" }
       ],
       Tuesday: [
         { start: "10:00", end: "11:00", subject: "BE", type: "Theory" },
         { start: "11:00", end: "13:00", subject: "B S LAB", type: "Lab" },
-        { start: "13:00", end: "14:00", subject: "LUNCH BREAK", type: "Break" },
+        { start: "13:00", end: "14:00", subject: "LUNCH", type: "Break" },
         { start: "14:00", end: "16:30", subject: "BE LAB", type: "Lab" }
       ],
       Wednesday: [
         { start: "10:00", end: "11:30", subject: "MATHS", type: "Theory" },
         { start: "11:30", end: "13:00", subject: "CHEMISTRY", type: "Theory" },
-        { start: "13:00", end: "14:00", subject: "LUNCH BREAK", type: "Break" },
+        { start: "13:00", end: "14:00", subject: "LUNCH", type: "Break" },
         { start: "14:00", end: "15:30", subject: "ENGLISH", type: "Theory" },
         { start: "15:30", end: "16:30", subject: "FCP", type: "Theory" }
       ],
@@ -596,89 +482,86 @@
         { start: "10:00", end: "10:45", subject: "PHYSICS", type: "Theory" },
         { start: "10:45", end: "11:30", subject: "BE", type: "Theory" },
         { start: "11:30", end: "13:00", subject: "FCP", type: "Theory" },
-        { start: "13:00", end: "14:00", subject: "LUNCH BREAK", type: "Break" },
+        { start: "13:00", end: "14:00", subject: "LUNCH", type: "Break" },
         { start: "14:00", end: "15:30", subject: "ENGLISH", type: "Theory" },
         { start: "15:30", end: "16:30", subject: "TUT", type: "Tutorial" }
       ],
       Friday: [
         { start: "10:00", end: "11:30", subject: "BE", type: "Theory" },
         { start: "11:30", end: "13:00", subject: "FCP", type: "Theory" },
-        { start: "13:00", end: "14:00", subject: "LUNCH BREAK", type: "Break" },
+        { start: "13:00", end: "14:00", subject: "LUNCH", type: "Break" },
         { start: "14:00", end: "16:30", subject: "C & PYTHON LAB", type: "Lab" }
       ],
       Saturday: [
         { start: "10:00", end: "10:45", subject: "MATHS", type: "Theory" },
         { start: "10:45", end: "11:30", subject: "CHEMISTRY", type: "Theory" },
         { start: "11:30", end: "13:00", subject: "PHYSICS", type: "Theory" },
-        { start: "13:00", end: "14:00", subject: "LUNCH BREAK", type: "Break" },
+        { start: "13:00", end: "14:00", subject: "LUNCH", type: "Break" },
         { start: "14:00", end: "16:30", subject: "ENGINEERING DRAWING WITH CAD LAB", type: "Lab" }
       ]
     };
 
     const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-    let selectedDay = "Monday";
+    let activeDay = "Monday";
 
-    function toMinutes(timeStr) {
-      const [h, m] = timeStr.split(":").map(Number);
+    function toMins(t) {
+      const [h, m] = t.split(":").map(Number);
       return h * 60 + m;
     }
 
-    function format12Hour(timeStr) {
-      const [h, m] = timeStr.split(":").map(Number);
-      const suffix = h >= 12 ? "PM" : "AM";
-      const hr12 = h % 12 || 12;
-      return `${hr12}:${m.toString().padStart(2, "0")} ${suffix}`;
+    function to12Hr(t) {
+      const [h, m] = t.split(":").map(Number);
+      const ampm = h >= 12 ? "PM" : "AM";
+      const hr = h % 12 || 12;
+      return `${hr}:${m.toString().padStart(2, "0")} ${ampm}`;
     }
 
-    function initDayTabs() {
-      const now = new Date();
-      const todayIndex = now.getDay(); // 0 = Sun, 1 = Mon ...
-      if (todayIndex >= 1 && todayIndex <= 6) {
-        selectedDay = DAYS[todayIndex - 1];
+    function setupTabs() {
+      const todayIdx = new Date().getDay();
+      if (todayIdx >= 1 && todayIdx <= 6) {
+        activeDay = DAYS[todayIdx - 1];
       }
+      renderTabs();
+      renderPeriods(activeDay);
+    }
 
-      const tabsContainer = document.getElementById("day-tabs");
-      tabsContainer.innerHTML = "";
-
+    function renderTabs() {
+      const tabBox = document.getElementById("day-tabs");
+      tabBox.innerHTML = "";
       DAYS.forEach(day => {
         const btn = document.createElement("button");
-        btn.className = `day-tab ${day === selectedDay ? "active" : ""}`;
+        btn.className = `day-tab ${day === activeDay ? "active" : ""}`;
         btn.textContent = day;
         btn.onclick = () => {
-          selectedDay = day;
-          initDayTabs();
-          renderDaySchedule(day);
+          activeDay = day;
+          renderTabs();
+          renderPeriods(day);
         };
-        tabsContainer.appendChild(btn);
+        tabBox.appendChild(btn);
       });
     }
 
-    function renderDaySchedule(day) {
-      const container = document.getElementById("periods-container");
-      container.innerHTML = "";
-      const periods = TIMETABLE[day] || [];
-
+    function renderPeriods(day) {
+      const list = document.getElementById("period-list");
+      list.innerHTML = "";
       const now = new Date();
-      const currentDayName = now.toLocaleDateString("en-US", { weekday: "long" });
-      const nowMins = now.getHours() * 60 + now.getMinutes();
+      const todayName = now.toLocaleDateString("en-US", { weekday: "long" });
+      const currentMins = now.getHours() * 60 + now.getMinutes();
 
-      periods.forEach(item => {
-        const startMins = toMinutes(item.start);
-        const endMins = toMinutes(item.end);
-        const isCurrent = (day === currentDayName) && (nowMins >= startMins && nowMins < endMins);
-
-        const card = document.createElement("div");
-        card.className = `period-card ${isCurrent ? "active-now" : ""}`;
-        card.innerHTML = `
-          <div class="period-time">${format12Hour(item.start)} – ${format12Hour(item.end)}</div>
-          <div class="period-subject">${item.subject}</div>
-          <span class="period-badge type-${item.type}">${item.type}</span>
+      (TIMETABLE[day] || []).forEach(p => {
+        const isLive = day === todayName && currentMins >= toMins(p.start) && currentMins < toMins(p.end);
+        const div = document.createElement("div");
+        div.className = `period-item ${isLive ? "active-now" : ""}`;
+        div.innerHTML = `
+          <div class="period-time">${to12Hr(p.start)} - ${to12Hr(p.end)}</div>
+          <div class="period-subject">${p.subject}</div>
+          <span class="badge">${p.type}</span>
         `;
-        container.appendChild(card);
+        list.appendChild(div);
       });
     }
 
-    function updateLiveClock() {
+    function updateClock() {
       const now = new Date();
       document.getElementById("live-clock").textContent = now.toLocaleTimeString("en-US", {
         hour: "2-digit",
@@ -690,121 +573,44 @@
       const dateStr = now.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
       document.getElementById("live-date").textContent = `${dayName}, ${dateStr}`;
 
-      const statusEl = document.getElementById("current-subject");
-      if (!TIMETABLE[dayName]) {
-        statusEl.textContent = "Sunday Holiday — Enjoy your day!";
+      const statusEl = document.getElementById("current-period");
+      const todaySchedule = TIMETABLE[dayName];
+      if (!todaySchedule) {
+        statusEl.textContent = "Sunday — No Classes Today";
         return;
       }
 
-      const nowMins = now.getHours() * 60 + now.getMinutes();
-      const todayPeriods = TIMETABLE[dayName];
-      const activePeriod = todayPeriods.find(p => nowMins >= toMinutes(p.start) && nowMins < toMinutes(p.end));
+      const mins = now.getHours() * 60 + now.getMinutes();
+      const current = todaySchedule.find(p => mins >= toMins(p.start) && mins < toMins(p.end));
 
-      if (activePeriod) {
-        statusEl.textContent = `NOW: ${activePeriod.subject} (${format12Hour(activePeriod.start)} - ${format12Hour(activePeriod.end)})`;
-      } else if (nowMins < toMinutes("10:00")) {
-        statusEl.textContent = `UP NEXT: ${todayPeriods[0].subject} at 10:00 AM`;
+      if (current) {
+        statusEl.textContent = `${current.subject} (${to12Hr(current.start)} - ${to12Hr(current.end)})`;
+      } else if (mins < toMins("10:00")) {
+        statusEl.textContent = `Starts at 10:00 AM: ${todaySchedule[0].subject}`;
       } else {
-        statusEl.textContent = "Classes Completed for Today (After 4:30 PM)";
+        statusEl.textContent = "Classes Over for Today (After 4:30 PM)";
       }
     }
 
-    // SBTET Attendance Helper Functions
-    function openOfficialPortal() {
-      const pin = document.getElementById("student-pin").value.trim();
-      const toast = document.getElementById("copy-toast");
+    function checkOfficialAttendance() {
+      const pin = document.getElementById("pin-input").value.trim();
+      const msg = document.getElementById("copy-status");
       if (pin) {
         navigator.clipboard.writeText(pin).catch(() => {});
-        toast.textContent = `PIN "${pin}" copied! Paste it on the SBTET page.`;
+        msg.textContent = `PIN "${pin}" copied! Paste it on the SBTET page.`;
       }
       window.open("https://www.sbtet.telangana.gov.in/index.html#!/index/AttendanceReport", "_blank");
     }
 
-    function openRawSbtetData() {
-      const pin = document.getElementById("student-pin").value.trim();
-      if (!pin) {
-        alert("Please enter your complete PIN first.");
-        return;
-      }
+    function openRawApi() {
+      const pin = document.getElementById("pin-input").value.trim();
+      if (!pin) return alert("Please enter your PIN.");
       window.open(`https://www.sbtet.telangana.gov.in/api/api/PreExamination/getAttendanceReport?Pin=${encodeURIComponent(pin)}`, "_blank");
     }
 
-    // 3D Interactive Tilt Motion Effect for Cards
-    function init3DTilt() {
-      const cards = document.querySelectorAll(".tilt-card");
-      cards.forEach(card => {
-        card.addEventListener("mousemove", e => {
-          const rect = card.getBoundingClientRect();
-          const x = e.clientX - rect.left;
-          const y = e.clientY - rect.top;
-          const centerX = rect.width / 2;
-          const centerY = rect.height / 2;
-          const rotateX = ((y - centerY) / centerY) * -6;
-          const rotateY = ((x - centerX) / centerX) * 6;
-          card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-        });
-
-        card.addEventListener("mouseleave", () => {
-          card.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg)";
-        });
-      });
-    }
-
-    // 3D Starfield Particle Background Canvas
-    function init3DBackground() {
-      const canvas = document.getElementById("bg-canvas");
-      const ctx = canvas.getContext("2d");
-      let width = canvas.width = window.innerWidth;
-      let height = canvas.height = window.innerHeight;
-
-      const stars = Array.from({ length: 140 }, () => ({
-        x: (Math.random() - 0.5) * width * 2,
-        y: (Math.random() - 0.5) * height * 2,
-        z: Math.random() * width
-      }));
-
-      window.addEventListener("resize", () => {
-        width = canvas.width = window.innerWidth;
-        height = canvas.height = window.innerHeight;
-      });
-
-      function animate() {
-        ctx.fillStyle = "rgba(6, 8, 20, 0.35)";
-        ctx.fillRect(0, 0, width, height);
-
-        const cx = width / 2;
-        const cy = height / 2;
-
-        stars.forEach(star => {
-          star.z -= 2.2;
-          if (star.z <= 0) {
-            star.z = width;
-            star.x = (Math.random() - 0.5) * width * 2;
-            star.y = (Math.random() - 0.5) * height * 2;
-          }
-
-          const sx = (star.x / star.z) * cx + cx;
-          const sy = (star.y / star.z) * cy + cy;
-          const radius = Math.max(0.6, (1 - star.z / width) * 2.8);
-
-          ctx.beginPath();
-          ctx.arc(sx, sy, radius, 0, Math.PI * 2);
-          ctx.fillStyle = "#00f2fe";
-          ctx.fill();
-        });
-
-        requestAnimationFrame(animate);
-      }
-      animate();
-    }
-
-    // Initialize Everything
-    initDayTabs();
-    renderDaySchedule(selectedDay);
-    updateLiveClock();
-    setInterval(updateLiveClock, 1000);
-    init3DTilt();
-    init3DBackground();
+    setupTabs();
+    updateClock();
+    setInterval(updateClock, 1000);
   </script>
 </body>
 </html>
