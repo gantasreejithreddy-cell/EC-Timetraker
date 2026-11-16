@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 <meta name="theme-color" content="#050811"/>
-<title>ECE Hub – JNGP Ramanthapur</title>
+<title>ECE Hub 3D – JNGP Ramanthapur</title>
 
 <!-- Web App Manifest for Direct Home Screen Installation -->
 <link rel="manifest" href="data:application/manifest+json,%7B%22name%22%3A%22ECE%20Time%20Tracker%22%2C%22short_name%22%3A%22ECE%20Hub%22%2C%22start_url%22%3A%22.%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%23050811%22%2C%22theme_color%22%3A%22%23050811%22%7D"/>
@@ -16,8 +16,8 @@
   
   :root {
     --bg: #050811;
-    --card: rgba(15, 23, 42, 0.75);
-    --card-border: rgba(255, 255, 255, 0.08);
+    --card: rgba(15, 23, 42, 0.72);
+    --card-border: rgba(255, 255, 255, 0.12);
     --cyan: #06B6D4;
     --violet: #8B5CF6;
     --pink: #EC4899;
@@ -35,10 +35,23 @@
     color: var(--text-primary); 
     display: flex; 
     justify-content: center;
-    background-image: 
-      radial-gradient(at 0% 0%, rgba(139, 92, 246, 0.16) 0px, transparent 50%),
-      radial-gradient(at 100% 100%, rgba(6, 182, 212, 0.14) 0px, transparent 50%);
-    background-attachment: fixed;
+    perspective: 1400px;
+    overflow: hidden;
+  }
+
+  /* 3D Animated Starfield & Cyber Grid Canvas */
+  #bgCanvas3D {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 0;
+    pointer-events: none;
+    background: 
+      radial-gradient(at 0% 0%, rgba(139, 92, 246, 0.22) 0px, transparent 55%),
+      radial-gradient(at 100% 100%, rgba(6, 182, 212, 0.18) 0px, transparent 55%),
+      #050811;
   }
 
   .mono { font-family: 'JetBrains Mono', monospace; }
@@ -51,29 +64,72 @@
     display: flex; 
     flex-direction: column; 
     position: relative; 
+    z-index: 2;
     overflow: hidden;
     border-left: 1px solid var(--card-border);
     border-right: 1px solid var(--card-border);
+    transform-style: preserve-3d;
+    perspective: 1200px;
   }
+
+  /* 3D Global Motion & Pop-Out Layers */
+  @keyframes float3D {
+    0%, 100% { transform: translateZ(0px) translateY(0px) rotateX(1deg) rotateY(-1deg); }
+    50% { transform: translateZ(14px) translateY(-5px) rotateX(-1.5deg) rotateY(1.5deg); }
+  }
+
+  @keyframes pulse3D {
+    0%, 100% { transform: translateZ(20px) scale(1); }
+    50% { transform: translateZ(32px) scale(1.04); }
+  }
+
+  .card-3d {
+    transform-style: preserve-3d;
+    transition: transform 0.18s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.25s ease, border-color 0.25s ease;
+    will-change: transform;
+    position: relative;
+  }
+
+  /* Glare reflection overlay on 3D cards */
+  .card-3d::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(circle at var(--glare-x, 50%) var(--glare-y, 50%), rgba(255, 255, 255, 0.14), transparent 60%);
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    pointer-events: none;
+    z-index: 3;
+  }
+
+  .card-3d:hover::after,
+  .card-3d:active::after {
+    opacity: 1;
+  }
+
+  .depth-layer-1 { transform: translateZ(15px); transform-style: preserve-3d; }
+  .depth-layer-2 { transform: translateZ(28px); transform-style: preserve-3d; }
+  .depth-layer-3 { transform: translateZ(42px); transform-style: preserve-3d; }
 
   /* Toast Notification */
   #toast {
     position: fixed;
     bottom: 24px;
     left: 50%;
-    transform: translateX(-50%) translateY(100px);
+    transform: translateX(-50%) translateY(100px) translateZ(80px);
     background: rgba(16, 185, 129, 0.95);
     color: #032018;
     font-weight: 800;
     font-size: 12px;
     padding: 12px 20px;
     border-radius: 999px;
-    box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4);
+    box-shadow: 0 15px 35px rgba(16, 185, 129, 0.5);
     z-index: 9999;
-    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
     white-space: nowrap;
   }
-  #toast.show { transform: translateX(-50%) translateY(0); }
+  #toast.show { transform: translateX(-50%) translateY(0) translateZ(80px); }
 
   /* Login Screen */
   #loginScreen {
@@ -83,17 +139,41 @@
     align-items: center;
     height: 100%;
     padding: 24px;
+    perspective: 1200px;
+    transform-style: preserve-3d;
   }
 
   .login-box {
     width: 100%;
-    background: rgba(15, 23, 42, 0.85);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(15, 23, 42, 0.82);
+    backdrop-filter: blur(22px);
+    -webkit-backdrop-filter: blur(22px);
+    border: 1px solid rgba(255, 255, 255, 0.16);
     border-radius: 28px;
     padding: 32px 24px;
     text-align: center;
-    box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7);
+    box-shadow: 
+      0 30px 60px -15px rgba(0, 0, 0, 0.85),
+      0 0 35px rgba(6, 182, 212, 0.2),
+      inset 0 1px 1px rgba(255, 255, 255, 0.2);
+    animation: float3D 5s ease-in-out infinite;
+    transform-style: preserve-3d;
+  }
+
+  .logo-cube-3d {
+    width: 62px;
+    height: 62px;
+    margin: 0 auto 14px;
+    background: linear-gradient(135deg, #06B6D4, #8B5CF6, #EC4899);
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    color: #FFF;
+    font-size: 19px;
+    box-shadow: 0 14px 30px rgba(6, 182, 212, 0.5), inset 0 2px 3px rgba(255,255,255,0.4);
+    animation: pulse3D 3s ease-in-out infinite;
   }
 
   .gradient-btn {
@@ -107,10 +187,12 @@
     text-align: center;
     width: 100%;
     font-size: 14px;
-    box-shadow: 0 8px 20px -6px rgba(139, 92, 246, 0.5);
-    transition: transform 0.2s ease;
+    box-shadow: 0 12px 25px -6px rgba(139, 92, 246, 0.65);
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+    transform: translateZ(25px);
   }
-  .gradient-btn:active { transform: scale(0.98); }
+  .gradient-btn:hover { transform: translateZ(35px) translateY(-2px); box-shadow: 0 18px 32px -6px rgba(236, 72, 153, 0.7); }
+  .gradient-btn:active { transform: translateZ(12px) scale(0.97); }
 
   /* Main Container */
   #mainApp {
@@ -119,21 +201,26 @@
     height: 100%;
     width: 100%;
     overflow-y: auto;
+    overflow-x: hidden;
     padding: 16px;
-    gap: 14px;
+    gap: 16px;
     scroll-behavior: smooth;
+    perspective: 1100px;
+    transform-style: preserve-3d;
   }
 
   /* Header Card */
   .header-card {
     background: var(--card);
-    backdrop-filter: blur(16px);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
     border: 1px solid var(--card-border);
-    border-radius: 20px;
+    border-radius: 22px;
     padding: 16px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    box-shadow: 0 16px 32px -10px rgba(0, 0, 0, 0.65), inset 0 1px 1px rgba(255, 255, 255, 0.15);
   }
 
   .highlight-name {
@@ -154,14 +241,14 @@
 
   /* Live Attendance Hero Button Card */
   .attendance-hero-bar {
-    background: linear-gradient(135deg, rgba(6, 182, 212, 0.18) 0%, rgba(16, 185, 129, 0.18) 100%);
-    border: 1.5px solid rgba(6, 182, 212, 0.5);
-    border-radius: 20px;
+    background: linear-gradient(135deg, rgba(6, 182, 212, 0.22) 0%, rgba(16, 185, 129, 0.22) 100%);
+    border: 1.5px solid rgba(6, 182, 212, 0.55);
+    border-radius: 22px;
     padding: 16px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 8px 24px -6px rgba(6, 182, 212, 0.25);
+    box-shadow: 0 16px 32px -8px rgba(6, 182, 212, 0.3), inset 0 1px 2px rgba(255, 255, 255, 0.2);
   }
 
   .live-check-btn {
@@ -170,51 +257,59 @@
     font-weight: 900;
     font-size: 12px;
     border: none;
-    border-radius: 12px;
+    border-radius: 14px;
     padding: 12px 16px;
     cursor: pointer;
     text-decoration: none;
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4);
-    transition: transform 0.2s ease;
+    box-shadow: 0 10px 22px rgba(16, 185, 129, 0.45), inset 0 1px 2px rgba(255, 255, 255, 0.4);
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
     flex-shrink: 0;
+    transform: translateZ(25px);
   }
-  .live-check-btn:active { transform: scale(0.96); }
+  .live-check-btn:hover { transform: translateZ(35px) translateY(-2px) scale(1.03); }
+  .live-check-btn:active { transform: translateZ(12px) scale(0.95); }
 
   /* Install Banner */
   #installBanner {
     display: none;
-    background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(236, 72, 153, 0.2));
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.24), rgba(236, 72, 153, 0.24));
     border: 1px solid var(--violet);
-    border-radius: 16px;
+    border-radius: 18px;
     padding: 12px 16px;
     justify-content: space-between;
     align-items: center;
+    box-shadow: 0 12px 28px rgba(139, 92, 246, 0.25);
   }
 
   /* Schedule Section */
   .schedule-wrapper {
     background: var(--card);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     border: 1px solid var(--card-border);
-    border-radius: 22px;
+    border-radius: 24px;
     padding: 18px;
+    box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.7), inset 0 1px 1px rgba(255, 255, 255, 0.14);
   }
 
   .spotlight-card {
-    background: linear-gradient(135deg, rgba(139, 92, 246, 0.25) 0%, rgba(236, 72, 153, 0.2) 100%);
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.3) 0%, rgba(236, 72, 153, 0.24) 100%);
     border: 2px solid #8B5CF6;
     border-radius: 18px;
     padding: 16px;
     margin-bottom: 14px;
-    box-shadow: 0 0 25px rgba(139, 92, 246, 0.3);
+    box-shadow: 0 14px 30px rgba(139, 92, 246, 0.35), inset 0 1px 2px rgba(255, 255, 255, 0.25);
+    transform: translateZ(18px);
+    transition: transform 0.25s ease;
   }
 
   .spotlight-card.idle {
-    background: rgba(11, 15, 25, 0.6);
+    background: rgba(11, 15, 25, 0.65);
     border: 1px solid var(--card-border);
-    box-shadow: none;
+    box-shadow: inset 0 1px 1px rgba(255,255,255,0.06);
   }
 
   .live-pill {
@@ -228,6 +323,7 @@
     display: inline-flex;
     align-items: center;
     gap: 5px;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
   }
 
   .live-dot {
@@ -263,13 +359,14 @@
     display: flex;
     gap: 8px;
     overflow-x: auto;
-    padding-bottom: 6px;
+    padding: 4px 2px 8px;
     scrollbar-width: none;
+    transform-style: preserve-3d;
   }
   .day-carousel::-webkit-scrollbar { display: none; }
 
   .day-pill {
-    background: rgba(11, 15, 25, 0.8);
+    background: rgba(11, 15, 25, 0.85);
     border: 1px solid var(--card-border);
     border-radius: 12px;
     padding: 8px 16px;
@@ -278,27 +375,43 @@
     color: var(--text-muted);
     cursor: pointer;
     flex-shrink: 0;
-    transition: all 0.2s ease;
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .day-pill:hover {
+    transform: translateY(-2px) translateZ(10px);
+    color: #FFF;
   }
 
   .day-pill.active {
     background: linear-gradient(135deg, #06B6D4, #8B5CF6);
     border-color: transparent;
     color: #FFF;
-    box-shadow: 0 4px 14px rgba(6, 182, 212, 0.35);
+    box-shadow: 0 8px 18px rgba(6, 182, 212, 0.45);
+    transform: translateY(-2px) translateZ(16px) scale(1.04);
   }
 
   .period-item {
-    background: rgba(11, 15, 25, 0.7);
+    background: rgba(11, 15, 25, 0.78);
     border: 1px solid var(--card-border);
-    border-radius: 14px;
+    border-radius: 15px;
     padding: 12px 14px;
-    margin-bottom: 8px;
+    margin-bottom: 9px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     position: relative;
     overflow: hidden;
+    transform-style: preserve-3d;
+    transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.4);
+  }
+
+  .period-item:hover,
+  .period-item:active {
+    transform: translateZ(20px) translateX(4px) rotateX(3deg) rotateY(-2deg);
+    border-color: rgba(6, 182, 212, 0.5);
+    box-shadow: 0 14px 26px rgba(6, 182, 212, 0.2);
   }
 
   .period-item::before {
@@ -309,37 +422,42 @@
     bottom: 0;
     width: 4px;
     background: var(--violet);
-    opacity: 0.7;
+    opacity: 0.85;
   }
 
   .period-item.lab-period::before { background: var(--cyan); }
   .period-item.lunch-period::before { background: var(--amber); }
 
   .period-item.active-item {
-    border: 1px solid var(--cyan);
-    background: rgba(6, 182, 212, 0.12);
+    border: 1.5px solid var(--cyan);
+    background: rgba(6, 182, 212, 0.16);
+    box-shadow: 0 12px 28px rgba(6, 182, 212, 0.3);
+    transform: translateZ(22px) scale(1.015);
   }
   .period-item.active-item::before { background: var(--emerald); width: 6px; }
 
   /* Tasks Board with In-App Input */
   .work-board-card {
-    background: linear-gradient(135deg, rgba(245, 158, 11, 0.14) 0%, rgba(236, 72, 153, 0.14) 100%);
-    border: 1.5px solid rgba(245, 158, 11, 0.5);
-    border-radius: 22px;
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.16) 0%, rgba(236, 72, 153, 0.16) 100%);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1.5px solid rgba(245, 158, 11, 0.55);
+    border-radius: 24px;
     padding: 18px;
-    box-shadow: 0 0 20px rgba(245, 158, 11, 0.15);
+    box-shadow: 0 18px 36px rgba(245, 158, 11, 0.18), inset 0 1px 2px rgba(255, 255, 255, 0.2);
   }
 
   .quick-task-form {
     display: flex;
     gap: 8px;
     margin-top: 12px;
+    transform: translateZ(16px);
   }
 
   .task-input {
     flex: 1;
-    background: rgba(11, 15, 25, 0.85);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(11, 15, 25, 0.88);
+    border: 1px solid rgba(255, 255, 255, 0.18);
     border-radius: 10px;
     padding: 10px 12px;
     color: #FFF;
@@ -348,7 +466,7 @@
   }
 
   .task-add-btn {
-    background: var(--amber);
+    background: linear-gradient(135deg, #F59E0B, #FBBF24);
     color: #000;
     border: none;
     border-radius: 10px;
@@ -356,7 +474,10 @@
     font-weight: 900;
     font-size: 12px;
     cursor: pointer;
+    box-shadow: 0 6px 15px rgba(245, 158, 11, 0.4);
+    transition: transform 0.18s ease;
   }
+  .task-add-btn:active { transform: scale(0.94); }
 
   .task-tag {
     display: inline-block;
@@ -366,12 +487,12 @@
     border-radius: 5px;
     margin-right: 6px;
   }
-  .tag-record { background: rgba(245, 158, 11, 0.2); color: #FBBF24; border: 1px solid rgba(245, 158, 11, 0.4); }
+  .tag-record { background: rgba(245, 158, 11, 0.22); color: #FBBF24; border: 1px solid rgba(245, 158, 11, 0.45); }
   .tag-done { text-decoration: line-through; opacity: 0.5; }
 
   .task-item {
-    background: rgba(15, 23, 42, 0.85);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(15, 23, 42, 0.88);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 12px;
     padding: 12px 14px;
     margin-top: 8px;
@@ -379,7 +500,9 @@
     justify-content: space-between;
     align-items: center;
     gap: 8px;
+    transition: transform 0.2s ease;
   }
+  .task-item:hover { transform: translateZ(14px) translateX(3px); }
 
   .del-btn {
     background: rgba(244, 63, 94, 0.2);
@@ -395,14 +518,17 @@
   /* Classmate PIN Finder Directory */
   .directory-card {
     background: var(--card);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     border: 1px solid var(--card-border);
-    border-radius: 22px;
+    border-radius: 24px;
     padding: 18px;
+    box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.65), inset 0 1px 1px rgba(255, 255, 255, 0.14);
   }
 
   .search-box {
     width: 100%;
-    background: rgba(11, 15, 25, 0.8);
+    background: rgba(11, 15, 25, 0.85);
     border: 1px solid var(--card-border);
     border-radius: 12px;
     padding: 10px 14px;
@@ -413,7 +539,7 @@
   }
 
   .student-pill-list {
-    max-height: 150px;
+    max-height: 155px;
     overflow-y: auto;
     margin-top: 10px;
     display: flex;
@@ -422,30 +548,51 @@
   }
 
   .student-row {
-    background: rgba(11, 15, 25, 0.6);
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    background: rgba(11, 15, 25, 0.68);
+    border: 1px solid rgba(255, 255, 255, 0.07);
     border-radius: 10px;
     padding: 8px 12px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     font-size: 12px;
+    transition: transform 0.18s ease, border-color 0.18s ease;
+  }
+  .student-row:hover {
+    transform: translateX(4px);
+    border-color: rgba(6, 182, 212, 0.45);
   }
 
   /* Host & Contact Card */
   .footer-contact-card {
     background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(7, 11, 19, 0.95));
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 22px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 24px;
     padding: 20px;
     text-align: center;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    box-shadow: 0 22px 45px rgba(0,0,0,0.7), inset 0 1px 2px rgba(255,255,255,0.18);
+    margin-bottom: 12px;
+  }
+
+  .dev-avatar-3d {
+    width: 54px;
+    height: 54px;
+    margin: 0 auto 10px;
+    background: linear-gradient(135deg, #06B6D4, #EC4899);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    box-shadow: 0 10px 24px rgba(236, 72, 153, 0.45);
+    animation: pulse3D 3.5s ease-in-out infinite;
   }
 
   .contact-links-grid {
     display: flex;
     gap: 10px;
     margin-top: 14px;
+    transform-style: preserve-3d;
   }
 
   .contact-btn {
@@ -460,16 +607,21 @@
     font-weight: 800;
     font-size: 12px;
     color: #FFF;
-    transition: transform 0.2s ease;
+    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+    transform: translateZ(20px);
   }
-  .contact-btn:active { transform: scale(0.96); }
+  .contact-btn:hover { transform: translateZ(32px) translateY(-3px); }
+  .contact-btn:active { transform: translateZ(10px) scale(0.95); }
 
-  .btn-wa { background: linear-gradient(135deg, #25D366, #128C7E); box-shadow: 0 4px 14px rgba(37, 211, 102, 0.3); }
-  .btn-ig { background: linear-gradient(135deg, #E1306C, #C13584, #833AB4); box-shadow: 0 4px 14px rgba(225, 48, 108, 0.3); }
-  .btn-call { background: linear-gradient(135deg, #06B6D4, #3B82F6); box-shadow: 0 4px 14px rgba(6, 182, 212, 0.3); }
+  .btn-wa { background: linear-gradient(135deg, #25D366, #128C7E); box-shadow: 0 8px 18px rgba(37, 211, 102, 0.35); }
+  .btn-ig { background: linear-gradient(135deg, #E1306C, #C13584, #833AB4); box-shadow: 0 8px 18px rgba(225, 48, 108, 0.35); }
+  .btn-call { background: linear-gradient(135deg, #06B6D4, #3B82F6); box-shadow: 0 8px 18px rgba(6, 182, 212, 0.35); }
 </style>
 </head>
 <body>
+
+<!-- 3D Animated Warp Starfield Canvas -->
+<canvas id="bgCanvas3D"></canvas>
 
 <div id="app">
   <!-- Toast Notification -->
@@ -477,38 +629,38 @@
 
   <!-- Login Screen -->
   <div id="loginScreen">
-    <div class="login-box">
-      <div style="width: 58px; height: 58px; margin: 0 auto 14px; background: linear-gradient(135deg, #06B6D4, #8B5CF6); border-radius: 16px; display: flex; align-items: center; justify-content: center; font-weight: 900; color: #FFF; font-size: 18px; box-shadow: 0 8px 20px rgba(6, 182, 212, 0.35);">ECE</div>
-      <div class="mono" style="font-size: 11px; color: var(--cyan); font-weight: 700; letter-spacing: 1px;">002 · JNGP RAMANTHAPUR</div>
-      <h2 style="font-size: 22px; font-weight: 900; margin: 6px 0 4px;">ECE Work & Time Hub</h2>
-      <div class="mono" style="font-size: 11px; color: var(--pink); font-weight: 800; margin-bottom: 20px;">DESIGNED BY SREEJITH REDDY</div>
+    <div class="login-box card-3d">
+      <div class="logo-cube-3d">ECE</div>
+      <div class="mono depth-layer-1" style="font-size: 11px; color: var(--cyan); font-weight: 700; letter-spacing: 1px;">002 · JNGP RAMANTHAPUR</div>
+      <h2 class="depth-layer-2" style="font-size: 22px; font-weight: 900; margin: 6px 0 4px;">ECE Work & Time Hub</h2>
+      <div class="mono depth-layer-1" style="font-size: 11px; color: var(--pink); font-weight: 800; margin-bottom: 20px;">DESIGNED BY SREEJITH REDDY</div>
       
-      <input type="text" id="pinInput" placeholder="Enter PIN (e.g. 051 or 26002-EC-051)" class="mono" style="width: 100%; background: #0B1120; border: 1px solid rgba(255,255,255,0.12); border-radius: 12px; padding: 14px; color: #FFF; text-align: center; margin-bottom: 12px; outline: none; font-size: 14px;" onkeypress="if(event.key==='Enter') handleLogin()" />
+      <input type="text" id="pinInput" placeholder="Enter PIN (e.g. 051 or 26002-EC-051)" class="mono depth-layer-2" style="width: 100%; background: #0B1120; border: 1px solid rgba(255,255,255,0.16); border-radius: 12px; padding: 14px; color: #FFF; text-align: center; margin-bottom: 12px; outline: none; font-size: 14px;" onkeypress="if(event.key==='Enter') handleLogin()" />
       <div id="loginError" style="color: #F43F5E; font-size: 12px; margin-bottom: 12px; display: none;"></div>
-      <button onclick="handleLogin()" class="gradient-btn">Access Dashboard →</button>
+      <button onclick="handleLogin()" class="gradient-btn">Access 3D Dashboard →</button>
     </div>
   </div>
 
   <!-- Single Screen Dashboard -->
   <div id="mainApp">
     <!-- Header Card -->
-    <div class="header-card">
-      <div>
+    <div class="header-card card-3d">
+      <div class="depth-layer-1">
         <div class="mono" style="font-size: 10px; color: var(--cyan); font-weight: 800;">002 · JNGP RAMANTHAPUR</div>
         <div id="userName" class="highlight-name" style="margin-top: 2px;">Student</div>
         <div class="mono" style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">
           <span id="userPin" onclick="copyPinToast(this.innerText)" style="cursor: pointer; text-decoration: underline;">26002-EC-051</span> · <span onclick="handleLogout()" style="color: #F43F5E; cursor: pointer; font-weight: 700;">Logout</span>
         </div>
       </div>
-      <div style="text-align: right;">
+      <div class="depth-layer-2" style="text-align: right;">
         <div id="clock" class="mono" style="font-size: 13px; font-weight: 800; color: var(--emerald);">00:00:00 AM</div>
         <div id="date" class="mono" style="font-size: 10px; color: var(--text-muted); margin-top: 2px;">Today</div>
       </div>
     </div>
 
     <!-- 1. TOP LIVE ATTENDANCE LAUNCHER -->
-    <div class="attendance-hero-bar">
-      <div>
+    <div class="attendance-hero-bar card-3d">
+      <div class="depth-layer-1">
         <div class="mono" style="font-size: 10px; font-weight: 800; color: var(--cyan);">SBTET CONNECT PORTAL</div>
         <div style="font-size: 15px; font-weight: 900; color: #FFF; margin-top: 2px;">Live Attendance Report</div>
         <div class="mono" style="font-size: 10px; color: var(--text-muted); margin-top: 2px;">Auto-copies your PIN on tap</div>
@@ -519,8 +671,8 @@
     </div>
 
     <!-- PWA Install Banner -->
-    <div id="installBanner">
-      <div>
+    <div id="installBanner" class="card-3d">
+      <div class="depth-layer-1">
         <div style="font-size: 13px; font-weight: 800; color: #FFF;">📲 Install ECE Hub App</div>
         <div class="mono" style="font-size: 10px; color: var(--text-muted);">Add to home screen for instant access</div>
       </div>
@@ -528,30 +680,30 @@
     </div>
 
     <!-- 2. CLASS TIMETABLE & LIVE PROGRESS -->
-    <div class="schedule-wrapper">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+    <div class="schedule-wrapper card-3d">
+      <div class="depth-layer-1" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
         <div>
           <div class="mono" style="font-size: 10px; color: var(--cyan); font-weight: 800; letter-spacing: 0.5px;">ACADEMIC TIMETABLE</div>
           <div style="font-size: 16px; font-weight: 900; color: #FFF;">ECE 1st Year Schedule</div>
         </div>
-        <span class="mono" style="font-size: 10px; background: rgba(139, 92, 246, 0.2); color: var(--violet); padding: 4px 8px; border-radius: 6px; font-weight: 800;">C-26 SYLLABUS</span>
+        <span class="mono" style="font-size: 10px; background: rgba(139, 92, 246, 0.25); color: var(--violet); padding: 4px 8px; border-radius: 6px; font-weight: 800;">C-26 SYLLABUS</span>
       </div>
 
       <!-- Ongoing Class Hero with Live Progress -->
-      <div id="spotlightContainer"></div>
+      <div id="spotlightContainer" class="depth-layer-2"></div>
 
       <!-- Day Carousel -->
-      <div style="margin-bottom: 12px;">
+      <div class="depth-layer-1" style="margin-bottom: 12px;">
         <div id="daySelector" class="day-carousel"></div>
       </div>
 
       <!-- Schedule List -->
-      <div id="scheduleContainer"></div>
+      <div id="scheduleContainer" class="depth-layer-1"></div>
     </div>
 
     <!-- 3. UPGRADED WORK & LAB RECORD BOARD -->
-    <div class="work-board-card">
-      <div style="display: flex; justify-content: space-between; align-items: center;">
+    <div class="work-board-card card-3d">
+      <div class="depth-layer-1" style="display: flex; justify-content: space-between; align-items: center;">
         <div>
           <span class="live-pill" style="background: #F59E0B; color: #000; font-size: 9px;">🚨 PENDING WORK</span>
           <div style="font-size: 16px; font-weight: 900; color: #FFF; margin-top: 6px;">Lab Records & Assignments</div>
@@ -565,29 +717,31 @@
         <button onclick="addQuickTask()" class="task-add-btn">+ Add</button>
       </div>
       
-      <div id="taskListContainer" style="margin-top: 10px;"></div>
+      <div id="taskListContainer" class="depth-layer-1" style="margin-top: 10px;"></div>
     </div>
 
     <!-- 4. CLASSMATE PIN FINDER DIRECTORY -->
-    <div class="directory-card">
-      <div class="mono" style="font-size: 10px; color: var(--cyan); font-weight: 800;">STUDENT DIRECTORY (66 STUDENTS)</div>
-      <div style="font-size: 15px; font-weight: 900; color: #FFF; margin-top: 2px;">Classmate PIN Lookup</div>
-      <input type="text" id="studentSearch" class="search-box mono" placeholder="🔍 Search classmate name or PIN (e.g. 051)..." oninput="renderDirectory()" />
-      <div id="directoryList" class="student-pill-list"></div>
+    <div class="directory-card card-3d">
+      <div class="depth-layer-1">
+        <div class="mono" style="font-size: 10px; color: var(--cyan); font-weight: 800;">STUDENT DIRECTORY (66 STUDENTS)</div>
+        <div style="font-size: 15px; font-weight: 900; color: #FFF; margin-top: 2px;">Classmate PIN Lookup</div>
+        <input type="text" id="studentSearch" class="search-box mono" placeholder="🔍 Search classmate name or PIN (e.g. 051)..." oninput="renderDirectory()" />
+        <div id="directoryList" class="student-pill-list"></div>
+      </div>
     </div>
 
     <!-- 5. WEB HOST & CUSTOMER SERVICE CONTACT SECTION -->
-    <div class="footer-contact-card">
-      <div style="width: 50px; height: 50px; margin: 0 auto 10px; background: linear-gradient(135deg, #06B6D4, #EC4899); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 22px; box-shadow: 0 4px 14px rgba(236, 72, 153, 0.3);">
+    <div class="footer-contact-card card-3d">
+      <div class="dev-avatar-3d">
         👨‍💻
       </div>
-      <div class="mono" style="font-size: 10px; color: var(--cyan); font-weight: 800; letter-spacing: 1px;">WEB HOST & DEVELOPER</div>
-      <div style="font-size: 18px; font-weight: 900; color: #FFF; margin-top: 2px;">Ganta Sreejith Reddy</div>
-      <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">
+      <div class="mono depth-layer-1" style="font-size: 10px; color: var(--cyan); font-weight: 800; letter-spacing: 1px;">WEB HOST & DEVELOPER</div>
+      <div class="depth-layer-2" style="font-size: 18px; font-weight: 900; color: #FFF; margin-top: 2px;">Ganta Sreejith Reddy</div>
+      <div class="depth-layer-1" style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">
         ECE 1st Year · <b>JNGP POLYTECHNIC COLLEGE</b>, Ramanthapur
       </div>
 
-      <div style="border-top: 1px solid rgba(255,255,255,0.08); margin: 14px 0 12px; padding-top: 12px;">
+      <div class="depth-layer-1" style="border-top: 1px solid rgba(255,255,255,0.08); margin: 14px 0 12px; padding-top: 12px;">
         <div class="mono" style="font-size: 11px; font-weight: 800; color: var(--pink);">CUSTOMER SERVICE & SUPPORT</div>
         <div style="font-size: 12px; color: var(--text-muted); margin-top: 2px;">
           Facing any issue or timetable mismatch? Contact me directly!
@@ -606,7 +760,7 @@
         </a>
       </div>
       
-      <div class="mono" style="font-size: 10px; color: var(--text-muted); margin-top: 14px;">
+      <div class="mono depth-layer-1" style="font-size: 10px; color: var(--text-muted); margin-top: 14px;">
         Number: +91 9063576302 · IG: @srnest_hub
       </div>
     </div>
@@ -764,8 +918,107 @@ function init() {
     window.history.pushState(null, "", window.location.href);
   };
 
+  init3DStarfield();
+  init3DTiltPhysics();
   updateClock();
   setInterval(updateClock, 1000);
+}
+
+/* 3D INTERACTIVE TILT MOTION PHYSICS (Mouse + Touch + Gyroscope) */
+function init3DTiltPhysics() {
+  const cards = document.querySelectorAll(".card-3d");
+
+  cards.forEach(card => {
+    const handleMove = (clientX, clientY) => {
+      const rect = card.getBoundingClientRect();
+      const x = clientX - rect.left;
+      const y = clientY - rect.top;
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+
+      const rotateX = ((y - centerY) / centerY) * -8;
+      const rotateY = ((x - centerX) / centerX) * 8;
+
+      card.style.setProperty("--glare-x", `${(x / rect.width) * 100}%`);
+      card.style.setProperty("--glare-y", `${(y / rect.height) * 100}%`);
+      card.style.transform = `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translateZ(6px)`;
+    };
+
+    const resetTilt = () => {
+      card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0px)`;
+    };
+
+    card.addEventListener("mousemove", e => handleMove(e.clientX, e.clientY));
+    card.addEventListener("mouseleave", resetTilt);
+
+    card.addEventListener("touchmove", e => {
+      if (e.touches.length > 0) {
+        const touch = e.touches[0];
+        handleMove(touch.clientX, touch.clientY);
+      }
+    }, { passive: true });
+    card.addEventListener("touchend", resetTilt);
+  });
+
+  // Mobile Device Orientation 3D Tilt
+  window.addEventListener("deviceorientation", e => {
+    if (!e.gamma || !e.beta) return;
+    const ry = Math.max(-8, Math.min(8, e.gamma / 4));
+    const rx = Math.max(-8, Math.min(8, (e.beta - 45) / 5));
+    cards.forEach(card => {
+      card.style.transform = `perspective(1000px) rotateX(${-rx.toFixed(2)}deg) rotateY(${ry.toFixed(2)}deg)`;
+    });
+  });
+}
+
+/* 3D WARP STARFIELD BACKGROUND */
+function init3DStarfield() {
+  const canvas = document.getElementById("bgCanvas3D");
+  if (!canvas) return;
+  const ctx = canvas.getContext("2d");
+  let w = canvas.width = window.innerWidth;
+  let h = canvas.height = window.innerHeight;
+
+  const colors = ["#06B6D4", "#8B5CF6", "#EC4899", "#10B981"];
+  const stars = Array.from({ length: 110 }, () => ({
+    x: (Math.random() - 0.5) * w * 2,
+    y: (Math.random() - 0.5) * h * 2,
+    z: Math.random() * w,
+    color: colors[Math.floor(Math.random() * colors.length)]
+  }));
+
+  window.addEventListener("resize", () => {
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+  });
+
+  function renderStars() {
+    ctx.fillStyle = "rgba(5, 8, 17, 0.35)";
+    ctx.fillRect(0, 0, w, h);
+
+    const cx = w / 2;
+    const cy = h / 2;
+
+    for (let s of stars) {
+      s.z -= 1.8;
+      if (s.z <= 1) {
+        s.z = w;
+        s.x = (Math.random() - 0.5) * w * 2;
+        s.y = (Math.random() - 0.5) * h * 2;
+      }
+
+      const sx = (s.x / s.z) * cx + cx;
+      const sy = (s.y / s.z) * cy + cy;
+      const radius = Math.max(0.5, (1 - s.z / w) * 2.6);
+
+      ctx.beginPath();
+      ctx.arc(sx, sy, radius, 0, Math.PI * 2);
+      ctx.fillStyle = s.color;
+      ctx.fill();
+    }
+    requestAnimationFrame(renderStars);
+  }
+  renderStars();
 }
 
 function showToast(msg) {
